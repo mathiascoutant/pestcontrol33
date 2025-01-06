@@ -1,0 +1,76 @@
+{
+  "name": "pestcontroll33-backend",
+  "version": "0.0.1",
+  "description": "Backend pour l'application de pestcontroll33",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "pestcontroll33",
+    "backend",
+    "express"
+  ],
+  "author": "Votre Nom",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.1",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.11.3",
+    "pg": "^8.13.1",
+    "sequelize": "^6.37.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.7",
+    "supertest": "^7.0.0"
+  },
+  "type": "module",
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest",
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.ts$": "babel-jest",
+      "^.+\\.mjs$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!supertest)"
+    ],
+    "extensionsToTreatAsEsm": [
+      ".ts",
+      ".tsx",
+      ".jsx"
+    ],
+    "moduleNameMapper": {
+      "^supertest$": "supertest"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "ts",
+      "tsx",
+      "mjs"
+    ],
+    "testEnvironment": "node",
+    "globals": {
+      "ts-jest": {
+        "useESM": true
+      }
+    },
+    "testMatch": [
+      "**/?(*.)+(spec|test).[jt]s?(x)",
+      "**/test.mjs"
+    ]
+  }
+}
