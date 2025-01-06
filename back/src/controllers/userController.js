@@ -93,14 +93,13 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    
-    const token = req.headers.authorization?.split(" ")[1]; 
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Token manquant" });
     }
 
     const decodedToken = verifyToken(token);
-    const userId = decodedToken.id || decodedToken.userId; 
+    const userId = decodedToken.id || decodedToken.userId;
 
     // Vérifier si l'utilisateur existe
     const existingUser = await UserService.getUserById(userId);
@@ -164,8 +163,7 @@ export const getUserProfileById = async (req, res) => {
 
 export const getUserStatus = async (req, res) => {
   try {
-  
-    const token = req.headers.authorization?.split(" ")[1]; 
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Token manquant" });
     }
@@ -174,12 +172,11 @@ export const getUserStatus = async (req, res) => {
     const decodedToken = verifyToken(token);
     const userId = decodedToken.id || decodedToken.userId;
 
-   
     const userInfo = await UserService.getUserById(userId);
     if (!userInfo) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
-    return res.status(200).json({ userInfo }); 
+    return res.status(200).json({ userInfo });
   } catch (error) {
     console.error("Erreur lors de la récupération des statuts:", error);
     return res.status(500).json({
@@ -191,8 +188,8 @@ export const getUserStatus = async (req, res) => {
 
 export const fetchAllUsers = async (req, res) => {
   try {
-    const users = await UserService.getAllUsers(); 
-    return res.status(200).json(users); 
+    const users = await UserService.getAllUsers();
+    return res.status(200).json(users);
   } catch (error) {
     console.error("Erreur lors de la récupération des utilisateurs:", error);
     return res.status(500).json({
@@ -204,8 +201,8 @@ export const fetchAllUsers = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await UserService.getAllUsers(); 
-    return res.status(200).json(users); 
+    const users = await UserService.getAllUsers();
+    return res.status(200).json(users);
   } catch (error) {
     console.error("Erreur lors de la récupération des utilisateurs:", error);
     return res.status(500).json({

@@ -5,15 +5,22 @@ import {
   updateProduct as updateProductService,
   deleteProduct as deleteProductService,
 } from "../services/productService.js";
-import Product from "../models/productModel.js"; 
-import { verifyToken } from "../utils/jwtUtils.js"; 
+import Product from "../models/productModel.js";
+import { verifyToken } from "../utils/jwtUtils.js";
+import Favorite from "../models/favoritesModel.js";
 
 export const addProduct = async (req, res) => {
   // Vérifier le token JWT
-  const token = req.headers.authorization?.split(" ")[1]; 
+  const token = req.headers.authorization?.split(" ")[1];
   const verified = verifyToken(token);
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
+  }
+
+  if (verified.admin != 1) {
+    return res.status(403).json({
+      message: "Vous n'avez pas l'autorisation pour créer un atricle",
+    });
   }
 
   try {
@@ -44,6 +51,7 @@ export const addProduct = async (req, res) => {
       stock,
       status,
       prix,
+      favorites: 0,
     });
     res.status(201).json({
       message: "Produit créé avec succès",
@@ -60,8 +68,40 @@ export const addProduct = async (req, res) => {
 
 export const fetchAllProducts = async (req, res) => {
   try {
-    const products = await getAllProducts(); 
-    res.status(200).json(products);
+    const token = req.headers.authorization?.split(" ")[1];
+    const verified = verifyToken(token); // Vérifier le token
+    const userId = verified ? verified.userId : null; // Récupérer l'ID de l'utilisateur si le token est valide
+
+    const products = await getAllProducts();
+
+    // Si l'utilisateur est authentifié, vérifier les likes
+    if (userId) {
+      // Récupérer tous les likes de l'utilisateur pour les produits
+      const userFavorites = await Favorite.findAll({
+        where: { userId: userId },
+      });
+
+      // Créer un ensemble d'IDs de produits que l'utilisateur a likés
+      const likedProductIds = new Set(
+        userFavorites.map((favorite) => favorite.productId)
+      );
+
+      // Ajouter la propriété 'like' à chaque produit
+      const productsWithLikes = products.map((product) => ({
+        ...product.toJSON(), // Convertir le produit en JSON
+        like: likedProductIds.has(product.id) ? 1 : 0, // Vérifier si le produit est liké
+      }));
+
+      return res.status(200).json(productsWithLikes);
+    }
+
+    // Si l'utilisateur n'est pas authentifié, renvoyer les produits sans la propriété 'like'
+    return res.status(200).json(
+      products.map((product) => ({
+        ...product.toJSON(),
+        // Ne pas ajouter 'like' pour les utilisateurs non authentifiés
+      }))
+    );
   } catch (error) {
     console.error("Erreur lors de la récupération des produits:", error);
     res.status(500).json({
@@ -73,9 +113,9 @@ export const fetchAllProducts = async (req, res) => {
 
 export const fetchProduct = async (req, res) => {
   try {
-    const productId = req.params.id; 
+    const productId = req.params.id;
 
-    const product = await getProductById(productId); 
+    const product = await getProductById(productId);
     if (!product) {
       return res.status(404).json({ message: "Produit non trouvé" });
     }
@@ -92,10 +132,15 @@ export const fetchProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   // Vérifier le token JWT
-  const token = req.headers.authorization?.split(" ")[1]; 
+  const token = req.headers.authorization?.split(" ")[1];
   const verified = verifyToken(token); // Vérifier le token
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
+  }
+  if (verified.admin != 1) {
+    return res.status(403).json({
+      message: "Vous n'avez pas l'autorisation pour créer un atricle",
+    });
   }
 
   try {
@@ -132,10 +177,16 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   // Vérifier le token JWT
-  const token = req.headers.authorization?.split(" ")[1]; 
+  const token = req.headers.authorization?.split(" ")[1];
   const verified = verifyToken(token); // Vérifier le token
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
+  }
+
+  if (verified.admin != 1) {
+    return res.status(403).json({
+      message: "Vous n'avez pas l'autorisation pour créer un atricle",
+    });
   }
 
   try {
@@ -155,6 +206,110 @@ export const deleteProduct = async (req, res) => {
     console.error("Erreur lors de la suppression du produit:", error);
     return res.status(500).json({
       message: "Erreur serveur lors de la suppression du produit",
+      error: error.message,
+    });
+  }
+};
+
+export const likeProduct = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  const verified = verifyToken(token);
+  if (!verified) {
+    return res.status(401).json({ message: "Token invalide ou manquant" });
+  }
+
+  const userId = verified.userId;
+  const { productId } = req.body;
+
+  if (!productId) {
+    return res.status(400).json({ message: "Le productId est requis" });
+  }
+
+  try {
+    const product = await Product.findByPk(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Produit non trouvé" });
+    }
+
+    const existingFavorite = await Favorite.findOne({
+      where: { userId: userId, productId: productId },
+    });
+
+    if (existingFavorite) {
+      return res.status(400).json({
+        message: "Vous ne pouvez pas liker plusieurs fois le même article.",
+      });
+    }
+
+    const favorite = await Favorite.create({
+      userId: userId,
+      productId: productId,
+    });
+
+    await Product.update(
+      { favorites: product.favorites + 1 },
+      { where: { id: productId } }
+    );
+
+    return res.status(201).json({
+      message: "Produit ajouté aux favoris avec succès",
+      favorite: favorite,
+    });
+  } catch (error) {
+    console.error("Erreur lors de l'ajout aux favoris:", error);
+    return res.status(500).json({
+      message: "Erreur serveur lors de l'ajout aux favoris",
+      error: error.message,
+    });
+  }
+};
+
+export const unlikeProduct = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  const verified = verifyToken(token);
+  if (!verified) {
+    return res.status(401).json({ message: "Token invalide ou manquant" });
+  }
+
+  const userId = verified.userId;
+  const { productId } = req.body;
+
+  if (!productId) {
+    return res.status(400).json({ message: "Le productId est requis" });
+  }
+
+  try {
+    const product = await Product.findByPk(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Produit non trouvé" });
+    }
+
+    const existingFavorite = await Favorite.findOne({
+      where: { userId: userId, productId: productId },
+    });
+
+    if (!existingFavorite) {
+      return res
+        .status(400)
+        .json({ message: "Vous n'avez pas encore liké ce produit." });
+    }
+
+    await Favorite.destroy({
+      where: { userId: userId, productId: productId },
+    });
+
+    await Product.update(
+      { favorites: product.favorites - 1 },
+      { where: { id: productId } }
+    );
+
+    return res.status(200).json({
+      message: "Produit retiré des favoris avec succès",
+    });
+  } catch (error) {
+    console.error("Erreur lors du retrait des favoris:", error);
+    return res.status(500).json({
+      message: "Erreur serveur lors du retrait des favoris",
       error: error.message,
     });
   }
