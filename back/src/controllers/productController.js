@@ -5,13 +5,13 @@ import {
   updateProduct as updateProductService,
   deleteProduct as deleteProductService,
 } from "../services/productService.js";
-import Product from "../models/productModel.js"; // Importer le modèle pour la vérification
-import { verifyToken } from "../utils/jwtUtils.js"; // Importer la fonction de vérification du token
+import Product from "../models/productModel.js"; 
+import { verifyToken } from "../utils/jwtUtils.js"; 
 
 export const addProduct = async (req, res) => {
   // Vérifier le token JWT
-  const token = req.headers.authorization?.split(" ")[1]; // Récupérer le token depuis l'en-tête
-  const verified = verifyToken(token); // Vérifier le token
+  const token = req.headers.authorization?.split(" ")[1]; 
+  const verified = verifyToken(token);
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
   }
@@ -60,7 +60,7 @@ export const addProduct = async (req, res) => {
 
 export const fetchAllProducts = async (req, res) => {
   try {
-    const products = await getAllProducts(); // Appeler la fonction du service pour récupérer tous les produits
+    const products = await getAllProducts(); 
     res.status(200).json(products);
   } catch (error) {
     console.error("Erreur lors de la récupération des produits:", error);
@@ -73,9 +73,9 @@ export const fetchAllProducts = async (req, res) => {
 
 export const fetchProduct = async (req, res) => {
   try {
-    const productId = req.params.id; // Récupérer l'ID du produit depuis les paramètres de l'URL
+    const productId = req.params.id; 
 
-    const product = await getProductById(productId); // Appeler le service pour récupérer le produit
+    const product = await getProductById(productId); 
     if (!product) {
       return res.status(404).json({ message: "Produit non trouvé" });
     }
@@ -92,15 +92,15 @@ export const fetchProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   // Vérifier le token JWT
-  const token = req.headers.authorization?.split(" ")[1]; // Récupérer le token depuis l'en-tête
+  const token = req.headers.authorization?.split(" ")[1]; 
   const verified = verifyToken(token); // Vérifier le token
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
   }
 
   try {
-    const productId = req.params.id; // Récupérer l'ID du produit depuis les paramètres de l'URL
-    const { nom, description, stock, status, prix } = req.body; // Récupérer les données du produit à mettre à jour
+    const productId = req.params.id;
+    const { nom, description, stock, status, prix } = req.body;
 
     // Vérifier si le produit existe
     const existingProduct = await getProductById(productId);
@@ -132,14 +132,14 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   // Vérifier le token JWT
-  const token = req.headers.authorization?.split(" ")[1]; // Récupérer le token depuis l'en-tête
+  const token = req.headers.authorization?.split(" ")[1]; 
   const verified = verifyToken(token); // Vérifier le token
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
   }
 
   try {
-    const productId = req.params.id; // Récupérer l'ID du produit depuis les paramètres de l'URL
+    const productId = req.params.id;
 
     // Vérifier si le produit existe
     const existingProduct = await getProductById(productId);

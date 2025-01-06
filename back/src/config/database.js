@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-// Configuration de la connexion à la base de données AWS
+// Configuration de la connexion à la base de données 
 const sequelize = new Sequelize({
   dialect: "mysql",
   host: "localhost",
@@ -16,7 +16,7 @@ const sequelize = new Sequelize({
   },
 });
 
-// Fonction pour tester la connexion
+// Tester la connexion
 const connectDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -27,7 +27,7 @@ const connectDatabase = async () => {
   }
 };
 
-// Fonction pour vérifier périodiquement la connexion
+// Vérifier périodiquement la connexion
 const checkDatabaseConnection = async () => {
   const isConnected = await connectDatabase();
   if (isConnected) {

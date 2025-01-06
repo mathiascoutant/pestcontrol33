@@ -59,7 +59,6 @@ export const updateUser = async (req, res) => {
       hasChanges = true;
     }
 
-    // Si aucune valeur n'a changé, renvoyer un tableau vide
     if (!hasChanges) {
       return res.status(200).json([]);
     }
@@ -67,7 +66,6 @@ export const updateUser = async (req, res) => {
     // Mettre à jour l'utilisateur
     await UserService.updateUser(userId, updatedFields);
 
-    // Récupérer l'utilisateur mis à jour
     const updatedUser = await UserService.getUserById(userId);
 
     // Formater la réponse
@@ -80,7 +78,6 @@ export const updateUser = async (req, res) => {
       updatedAt: updatedUser.updatedAt,
     };
 
-    // Renvoyer les informations de l'utilisateur mis à jour
     return res.status(200).json({
       message: "Utilisateur mis à jour avec succès",
       user: responseUser,
@@ -96,15 +93,14 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    // Vérifier le token JWT dans les en-têtes de la requête
-    const token = req.headers.authorization?.split(" ")[1]; // Récupérer le token du header Authorization
+    
+    const token = req.headers.authorization?.split(" ")[1]; 
     if (!token) {
       return res.status(401).json({ message: "Token manquant" });
     }
 
-    // Utiliser la fonction verifyToken pour décoder le token
     const decodedToken = verifyToken(token);
-    const userId = decodedToken.id || decodedToken.userId; // Récupérer l'ID de l'utilisateur
+    const userId = decodedToken.id || decodedToken.userId; 
 
     // Vérifier si l'utilisateur existe
     const existingUser = await UserService.getUserById(userId);
@@ -129,7 +125,7 @@ export const deleteUser = async (req, res) => {
 
 export const getUserProfileById = async (req, res) => {
   try {
-    const userId = req.params.userId; // Récupérer l'ID depuis les paramètres de la requête
+    const userId = req.params.userId;
     const user = await User.findOne({
       where: { id: userId },
     });
@@ -168,8 +164,8 @@ export const getUserProfileById = async (req, res) => {
 
 export const getUserStatus = async (req, res) => {
   try {
-    // Vérifier le token JWT dans les en-têtes de la requête
-    const token = req.headers.authorization?.split(" ")[1]; // Récupérer le token du header Authorization
+  
+    const token = req.headers.authorization?.split(" ")[1]; 
     if (!token) {
       return res.status(401).json({ message: "Token manquant" });
     }

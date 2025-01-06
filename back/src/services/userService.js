@@ -41,7 +41,6 @@ export const UserService = {
         }
       }
 
-      // Vérifier si l'adresse mail a changé
       if (updatedData.email) {
         if (updatedData.email !== currentUser.email) {
           const existingUser = await User.findOne({
@@ -56,7 +55,6 @@ export const UserService = {
         }
       }
 
-      // Mettre à jour l'utilisateur
       const updatedUser = await User.update(updatedData, {
         where: { id: userId },
       });
@@ -105,7 +103,7 @@ export const UserService = {
 
   getAllUsers: async () => {
     try {
-      const users = await User.findAll(); // Récupérer tous les utilisateurs
+      const users = await User.findAll();
       return users;
     } catch (error) {
       throw new Error(
