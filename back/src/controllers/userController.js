@@ -1,6 +1,7 @@
 import { UserService } from "../services/userService.js";
 import { verifyToken } from "../utils/jwtUtils.js";
 import User from "../models/userModel.js";
+import * as userService from "../services/userService.js";
 
 export const createUser = async (req, res) => {
   try {
@@ -209,5 +210,42 @@ export const getAllUsers = async (req, res) => {
       message: "Erreur serveur lors de la récupération des utilisateurs",
       error: error.message,
     });
+  }
+};
+
+export const deleteUserAdmin = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  const verified = verifyToken(token);
+
+  if (!verified) {
+    return res.status(401).json({ message: "Token invalide ou manquant" });
+  }
+
+  if (verified.admin !== 1) {
+    return res.status(403).json({
+      message: "Vous n'avez pas l'autorisation de supprimer des utilisateurs.",
+    });
+  }
+
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ message: "L'ID de l'utilisateur est requis." });
+  }
+
+  try {
+    const existingUser = await User.findByPk(userId);
+    if (!existingUser) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    await UserService.deleteUserById(userId);
+    return res
+      .status(200)
+      .json({ message: "Utilisateur supprimé avec succès." });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };

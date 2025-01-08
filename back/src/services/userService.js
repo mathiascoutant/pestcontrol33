@@ -20,13 +20,11 @@ export const UserService = {
 
   updateUser: async (userId, updatedData) => {
     try {
-      // Récupérer l'utilisateur actuel
       const currentUser = await User.findById(userId);
       if (!currentUser) {
         throw new Error("Utilisateur non trouvé.");
       }
 
-      // Vérifier si le pseudo a changé
       if (updatedData.pseudo) {
         if (updatedData.pseudo !== currentUser.pseudo) {
           const existingUser = await User.findOne({
@@ -108,6 +106,16 @@ export const UserService = {
     } catch (error) {
       throw new Error(
         "Erreur lors de la récupération des utilisateurs: " + error.message
+      );
+    }
+  },
+
+  deleteUserById: async (userId) => {
+    try {
+      await User.destroy({ where: { id: userId } });
+    } catch (error) {
+      throw new Error(
+        "Erreur lors de la suppression de l'utilisateur: " + error.message
       );
     }
   },
