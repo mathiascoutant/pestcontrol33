@@ -1,7 +1,6 @@
 import { UserService } from "../services/userService.js";
 import { verifyToken } from "../utils/jwtUtils.js";
 import User from "../models/userModel.js";
-import * as userService from "../services/userService.js";
 
 export const createUser = async (req, res) => {
   try {
@@ -64,7 +63,6 @@ export const updateUser = async (req, res) => {
       return res.status(200).json([]);
     }
 
-    // Mettre à jour l'utilisateur
     await UserService.updateUser(userId, updatedFields);
 
     const updatedUser = await UserService.getUserById(userId);
@@ -102,13 +100,11 @@ export const deleteUser = async (req, res) => {
     const decodedToken = verifyToken(token);
     const userId = decodedToken.id || decodedToken.userId;
 
-    // Vérifier si l'utilisateur existe
     const existingUser = await UserService.getUserById(userId);
     if (!existingUser) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
-    // Supprimer l'utilisateur
     await UserService.deleteUser(userId);
 
     return res
@@ -169,9 +165,8 @@ export const getUserStatus = async (req, res) => {
       return res.status(401).json({ message: "Token manquant" });
     }
 
-    // Utiliser la fonction verifyToken pour décoder le token
     const decodedToken = verifyToken(token);
-    const userId = decodedToken.id || decodedToken.userId;
+    const userId = decodedToken.userId;
 
     const userInfo = await UserService.getUserById(userId);
     if (!userInfo) {

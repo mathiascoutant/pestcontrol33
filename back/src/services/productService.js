@@ -11,7 +11,7 @@ export const createProduct = async (productData) => {
 
 export const getAllProducts = async () => {
   try {
-    const products = await Product.findAll(); // Récupérer tous les produits
+    const products = await Product.findAll();
     return products;
   } catch (error) {
     throw new Error(
@@ -22,7 +22,7 @@ export const getAllProducts = async () => {
 
 export const getProductById = async (id) => {
   try {
-    const product = await Product.findByPk(id); // Récupérer le produit par ID
+    const product = await Product.findByPk(id);
     return product;
   } catch (error) {
     throw new Error(
@@ -41,7 +41,6 @@ export const updateProduct = async (id, productData) => {
       throw new Error("Aucun produit trouvé pour mettre à jour");
     }
 
-    // Récupérer le produit mis à jour
     const updatedProduct = await getProductById(id);
     return updatedProduct;
   } catch (error) {

@@ -4,6 +4,7 @@ import authRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import productsRoutes from "./src/routes/productsRoutes.js";
 import shoppingRoutes from "./src/routes/shoppingRoutes.js";
+import discountRoutes from "./src/routes/discountRoutes.js";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(`/${api}/auth`, authRoutes);
 app.use(`/${api}/users`, userRoutes);
 app.use(`/${api}/products`, productsRoutes);
 app.use(`/${api}/shopping`, shoppingRoutes);
+app.use(`/${api}/discount`, discountRoutes);
 
 // Gestion des erreurs 404
 app.use((req, res) => {

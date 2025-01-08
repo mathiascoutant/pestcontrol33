@@ -8,6 +8,8 @@ import {
 import Product from "../models/productModel.js";
 import { verifyToken } from "../utils/jwtUtils.js";
 import Favorite from "../models/favoritesModel.js";
+import Discount from "../models/discountModel.js";
+import { Op } from "sequelize";
 
 export const addProduct = async (req, res) => {
   // Vérifier le token JWT
@@ -69,39 +71,59 @@ export const addProduct = async (req, res) => {
 export const fetchAllProducts = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    const verified = verifyToken(token); // Vérifier le token
-    const userId = verified ? verified.userId : null; // Récupérer l'ID de l'utilisateur si le token est valide
+    const verified = verifyToken(token); 
+    const userId = verified ? verified.userId : null; 
+    const isAdmin = verified && verified.admin === 1; 
 
     const products = await getAllProducts();
 
-    // Si l'utilisateur est authentifié, vérifier les likes
+    const productIds = products.map((product) => product.id);
+
+    const discounts = await Discount.findAll({
+      where: {
+        productId: productIds,
+        endDate: { [Op.gte]: new Date() },
+      },
+    });
+
+    const discountMap = {};
+    discounts.forEach((discount) => {
+      discountMap[discount.productId] = {
+        newPrice: discount.newPrice,
+        discount: discount.discount,
+      };
+    });
+
+    let likedProductIds = new Set();
     if (userId) {
-      // Récupérer tous les likes de l'utilisateur pour les produits
+
       const userFavorites = await Favorite.findAll({
         where: { userId: userId },
       });
 
-      // Créer un ensemble d'IDs de produits que l'utilisateur a likés
-      const likedProductIds = new Set(
+      likedProductIds = new Set(
         userFavorites.map((favorite) => favorite.productId)
       );
-
-      // Ajouter la propriété 'like' à chaque produit
-      const productsWithLikes = products.map((product) => ({
-        ...product.toJSON(), // Convertir le produit en JSON
-        like: likedProductIds.has(product.id) ? 1 : 0, // Vérifier si le produit est liké
-      }));
-
-      return res.status(200).json(productsWithLikes);
     }
 
-    // Si l'utilisateur n'est pas authentifié, renvoyer les produits sans la propriété 'like'
-    return res.status(200).json(
-      products.map((product) => ({
-        ...product.toJSON(),
-        // Ne pas ajouter 'like' pour les utilisateurs non authentifiés
-      }))
-    );
+    const productsWithLikes = products.map((product) => {
+      const discountInfo = discountMap[product.id] || {};
+      const productData = {
+        ...product.toJSON(), 
+        newPrice: discountInfo.newPrice || null,
+        discount: discountInfo.discount || null,
+        like: likedProductIds.has(product.id) ? 1 : 0, 
+      };
+
+     
+      if (!isAdmin) {
+        delete productData.favorites; 
+      }
+
+      return productData;
+    });
+
+    return res.status(200).json(productsWithLikes);
   } catch (error) {
     console.error("Erreur lors de la récupération des produits:", error);
     res.status(500).json({
@@ -113,27 +135,67 @@ export const fetchAllProducts = async (req, res) => {
 
 export const fetchProduct = async (req, res) => {
   try {
-    const productId = req.params.id;
+    const token = req.headers.authorization?.split(" ")[1];
+    const verified = verifyToken(token); 
+    const userId = verified ? verified.userId : null; 
+    const isAdmin = verified && verified.admin === 1; 
 
-    const product = await getProductById(productId);
+    const productId = req.params.id; 
+
+    const product = await Product.findByPk(productId);
     if (!product) {
-      return res.status(404).json({ message: "Produit non trouvé" });
+      return res.status(404).json({ message: "Produit non trouvé." });
     }
 
-    return res.status(200).json(product); // Renvoyer le produit trouvé
+    const discounts = await Discount.findAll({
+      where: {
+        productId: productId,
+        endDate: { [Op.gte]: new Date() }, 
+      },
+    });
+
+    const discountInfo =
+      discounts.length > 0
+        ? {
+            newPrice: discounts[0].newPrice,
+            discount: discounts[0].discount,
+          }
+        : {};
+
+    let like = 0;
+    if (userId) {
+      const userFavorite = await Favorite.findOne({
+        where: { userId: userId, productId: productId },
+      });
+      like = userFavorite ? 1 : 0; 
+    }
+
+   
+    const productData = {
+      ...product.toJSON(), 
+      newPrice: discountInfo.newPrice || null,
+      discount: discountInfo.discount || null,
+      like: like, 
+    };
+
+    if (!isAdmin) {
+      delete productData.favorites; 
+    }
+
+    return res.status(200).json(productData);
   } catch (error) {
     console.error("Erreur lors de la récupération du produit:", error);
     return res.status(500).json({
-      message: "Erreur serveur lors de la récupération du produit",
+      message: "Erreur lors de la récupération du produit",
       error: error.message,
     });
   }
 };
 
 export const updateProduct = async (req, res) => {
-  // Vérifier le token JWT
+
   const token = req.headers.authorization?.split(" ")[1];
-  const verified = verifyToken(token); // Vérifier le token
+  const verified = verifyToken(token); 
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
   }
@@ -147,13 +209,11 @@ export const updateProduct = async (req, res) => {
     const productId = req.params.id;
     const { nom, description, stock, status, prix } = req.body;
 
-    // Vérifier si le produit existe
     const existingProduct = await getProductById(productId);
     if (!existingProduct) {
       return res.status(404).json({ message: "Produit non trouvé" });
     }
 
-    // Mettre à jour le produit
     const updatedProduct = await updateProductService(productId, {
       nom,
       description,
@@ -176,9 +236,9 @@ export const updateProduct = async (req, res) => {
 };
 
 export const deleteProduct = async (req, res) => {
-  // Vérifier le token JWT
+
   const token = req.headers.authorization?.split(" ")[1];
-  const verified = verifyToken(token); // Vérifier le token
+  const verified = verifyToken(token); 
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
   }
@@ -192,13 +252,11 @@ export const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
 
-    // Vérifier si le produit existe
     const existingProduct = await getProductById(productId);
     if (!existingProduct) {
       return res.status(404).json({ message: "Produit non trouvé" });
     }
 
-    // Supprimer le produit
     await deleteProductService(productId);
 
     return res.status(200).json({ message: "Produit supprimé avec succès" });
@@ -265,6 +323,7 @@ export const likeProduct = async (req, res) => {
 };
 
 export const unlikeProduct = async (req, res) => {
+  
   const token = req.headers.authorization?.split(" ")[1];
   const verified = verifyToken(token);
   if (!verified) {

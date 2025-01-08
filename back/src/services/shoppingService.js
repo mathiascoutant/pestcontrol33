@@ -2,8 +2,8 @@ import ShoppingCart from "../models/shoppingModel.js";
 import Product from "../models/productModel.js";
 
 export const addShoppingItem = async (userId, productId, quantity) => {
-  // Vérifiez la quantité disponible dans la table products
-  const product = await Product.findOne({ where: { id: productId } });
+
+    const product = await Product.findOne({ where: { id: productId } });
   if (!product) {
     throw new Error("Produit non trouvé");
   }
@@ -12,7 +12,6 @@ export const addShoppingItem = async (userId, productId, quantity) => {
     throw new Error("Quantité demandée supérieure au stock disponible");
   }
 
-  // Vérifiez si l'article est déjà dans le panier
   const existingItem = await ShoppingCart.findOne({
     where: { userId, productId },
   });
