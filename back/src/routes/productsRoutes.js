@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-// Route pour les produits
+// Routes pour les produits
 router.post("/add", addProduct);
 router.get("/", fetchAllProducts);
 router.get("/:id", fetchProduct);

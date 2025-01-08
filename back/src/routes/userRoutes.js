@@ -4,7 +4,7 @@ import { protect } from "../controllers/authController.js";
 
 const router = express.Router();
 
-// Route utilisateurs
+// Routes utilisateurs
 router.get("/profile/:userId", protect, userController.getUserProfileById);
 router.put("/", userController.updateUser);
 router.get("/status", userController.getUserStatus);
