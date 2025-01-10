@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import CustomButton from "./components/UI/CustomButton";
 
 function Home() {
   return (
@@ -59,6 +60,16 @@ function Home() {
             Connexion
           </Link>
         </Button>
+      </Box>
+      <Box>
+        <CustomButton
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={() => alert("Bouton cliqué !")}
+        >
+          Hello
+        </CustomButton>
       </Box>
     </Box>
   );
