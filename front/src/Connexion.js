@@ -1,12 +1,11 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import ConnexionForm from "./components/Auth/ConnexionForm";
 
 function Connexion() {
   return (
     <Box>
-      <Typography variant="h4" sx={{ textAlign: "center", mt: 5 }} gutterBottom>
-        Connexion
-      </Typography>
+      <ConnexionForm />
     </Box>
   );
 }
