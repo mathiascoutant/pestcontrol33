@@ -20,13 +20,11 @@ export const UserService = {
 
   updateUser: async (userId, updatedData) => {
     try {
-      // Récupérer l'utilisateur actuel
       const currentUser = await User.findById(userId);
       if (!currentUser) {
         throw new Error("Utilisateur non trouvé.");
       }
 
-      // Vérifier si le pseudo a changé
       if (updatedData.pseudo) {
         if (updatedData.pseudo !== currentUser.pseudo) {
           const existingUser = await User.findOne({
@@ -41,7 +39,6 @@ export const UserService = {
         }
       }
 
-      // Vérifier si l'adresse mail a changé
       if (updatedData.email) {
         if (updatedData.email !== currentUser.email) {
           const existingUser = await User.findOne({
@@ -56,7 +53,6 @@ export const UserService = {
         }
       }
 
-      // Mettre à jour l'utilisateur
       const updatedUser = await User.update(updatedData, {
         where: { id: userId },
       });
@@ -105,11 +101,21 @@ export const UserService = {
 
   getAllUsers: async () => {
     try {
-      const users = await User.findAll(); // Récupérer tous les utilisateurs
+      const users = await User.findAll();
       return users;
     } catch (error) {
       throw new Error(
         "Erreur lors de la récupération des utilisateurs: " + error.message
+      );
+    }
+  },
+
+  deleteUserById: async (userId) => {
+    try {
+      await User.destroy({ where: { id: userId } });
+    } catch (error) {
+      throw new Error(
+        "Erreur lors de la suppression de l'utilisateur: " + error.message
       );
     }
   },

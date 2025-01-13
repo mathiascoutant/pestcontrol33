@@ -1,36 +1,44 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../config/database.js'; // Assurez-vous que le chemin est correct
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/database.js";
 
-const Product = sequelize.define('produits', {
+const Product = sequelize.define(
+  "produits",
+  {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
     nom: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
+      type: DataTypes.STRING(255),
+      allowNull: false,
     },
     description: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
+      type: DataTypes.STRING(255),
+      allowNull: false,
     },
     stock: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     status: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     prix: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
     },
-}, {
-    tableName: 'produits',
-    timestamps: false, 
-});
+    favorites: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: "produits",
+    timestamps: false,
+  }
+);
 
 Product.findById = async function (id) {
   return await this.findOne({

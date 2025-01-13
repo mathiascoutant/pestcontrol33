@@ -94,6 +94,8 @@ export const login = async (req, res) => {
       pseudo: user.pseudo,
       email: user.email,
       createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      admin: user.admin,
     };
 
     // Envoyer le token et les informations de l'utilisateur au client

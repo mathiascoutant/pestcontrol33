@@ -64,7 +64,6 @@ const User = sequelize.define(
   }
 );
 
-// Ajoutez cette méthode statique au modèle User
 User.findByEmail = async function (email) {
   return await this.findOne({
     where: { email: email },
