@@ -1,13 +1,13 @@
 import { Sequelize } from "sequelize";
-// Configuration de la connexion à la base de données 
+// Configuration de la connexion à la base de données
 const sequelize = new Sequelize({
   dialect: "mysql",
-  host: "localhost",
-  username: "admin",
-  password: "admin",
-  database: "test",
+  host: "sql7.freesqldatabase.com",
+  username: "sql7757369",
+  password: "gZfzpZcU2i",
+  database: "sql7757369",
   logging: false,
-  port: 3307,
+  port: 3306,
   pool: {
     max: 5,
     min: 0,
