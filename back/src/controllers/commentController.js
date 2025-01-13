@@ -1,7 +1,6 @@
 import { verifyToken } from "../utils/jwtUtils.js";
 import * as commentService from "../services/commentService.js";
 import User from "../models/userModel.js";
-import Comment from "../models/commentModel.js";
 
 export const addComment = async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
