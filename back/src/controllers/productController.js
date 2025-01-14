@@ -10,9 +10,44 @@ import { verifyToken } from "../utils/jwtUtils.js";
 import Favorite from "../models/favoritesModel.js";
 import Discount from "../models/discountModel.js";
 import { Op } from "sequelize";
+import multer from "multer";
+import { uploadFile } from "../services/uploadService.js";
+import { MEDIA_CONFIG } from "../config/mediaConfig.js";
+
+const storage = multer.memoryStorage();
+const uploadMiddleware = multer({
+  storage: storage,
+  limits: {
+    fileSize: MEDIA_CONFIG.MAX_FILE_SIZE,
+  },
+  fileFilter: (req, file, cb) => {
+    // Vérifier si le fichier est une image ou une vidéo
+    const isImage = file.mimetype.startsWith("image/");
+    const isVideo = file.mimetype.startsWith("video/");
+
+    if (isImage || isVideo) {
+      cb(null, true);
+    } else {
+      cb(new Error("Format de fichier non supporté"));
+    }
+  },
+});
+
+export const handleUpload = (req, res, next) => {
+  // Utiliser .any() pour accepter tous les champs
+  uploadMiddleware.any()(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return res
+        .status(400)
+        .json({ message: `Erreur d'upload: ${err.message}` });
+    } else if (err) {
+      return res.status(400).json({ message: err.message });
+    }
+    next();
+  });
+};
 
 export const addProduct = async (req, res) => {
-  // Vérifier le token JWT
   const token = req.headers.authorization?.split(" ")[1];
   const verified = verifyToken(token);
   if (!verified) {
@@ -21,23 +56,32 @@ export const addProduct = async (req, res) => {
 
   if (verified.admin != 1) {
     return res.status(403).json({
-      message: "Vous n'avez pas l'autorisation pour créer un atricle",
+      message: "Vous n'avez pas l'autorisation pour créer un article",
     });
   }
 
   try {
     const { nom, description, stock, status, prix } = req.body;
 
-    if (
-      !nom ||
-      !description ||
-      stock === undefined ||
-      status === undefined ||
-      prix === undefined
-    ) {
+    if (!nom || !description || !stock || !status || !prix) {
       return res
         .status(400)
-        .json({ message: "Tous les champs sont obligatoires" });
+        .json({ message: "Tous les champs sont obligatoires." });
+    }
+
+    if (!req.files || req.files.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Vous devez fournir au moins une image." });
+    }
+
+    const imageFiles = req.files.filter((file) =>
+      file.mimetype.startsWith("image/")
+    );
+    if (imageFiles.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Vous devez fournir au moins une image valide." });
     }
 
     const existingProduct = await Product.findOne({ where: { nom } });
@@ -54,10 +98,54 @@ export const addProduct = async (req, res) => {
       status,
       prix,
       favorites: 0,
+      medias: {
+        imageUrls: [],
+        videoUrls: [],
+      },
     });
+
+    const mediaUrls = {
+      imageUrls: [],
+      videoUrls: [],
+    };
+
+    if (req.files && req.files.length > 0) {
+      const mediaFiles = req.files.filter(
+        (file) => file.fieldname === "@media"
+      );
+
+      for (let i = 0; i < mediaFiles.length; i++) {
+        const mediaFile = mediaFiles[i];
+        const isImage = mediaFile.mimetype.startsWith("image/");
+
+        const mediaResult = await uploadFile(mediaFile, newProduct.id, i + 1);
+
+        if (mediaResult.success) {
+          const baseUrl = `${MEDIA_CONFIG.BASE_URL}`;
+          if (isImage) {
+            mediaUrls.imageUrls.push(
+              `${baseUrl}/media/images/${mediaResult.filename}`
+            );
+          } else {
+            mediaUrls.videoUrls.push(
+              `${baseUrl}/media/videos/${mediaResult.filename}`
+            );
+          }
+        }
+      }
+    }
+
+    await newProduct.update({ medias: mediaUrls });
+
+    const productData = newProduct.toJSON();
+    delete productData.medias;
+
     res.status(201).json({
       message: "Produit créé avec succès",
-      product: newProduct,
+      product: {
+        ...productData,
+        mediaUrls,
+      },
     });
   } catch (error) {
     console.error("Erreur lors de la création du produit:", error);
@@ -71,9 +159,9 @@ export const addProduct = async (req, res) => {
 export const fetchAllProducts = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    const verified = verifyToken(token); 
-    const userId = verified ? verified.userId : null; 
-    const isAdmin = verified && verified.admin === 1; 
+    const verified = verifyToken(token);
+    const userId = verified ? verified.userId : null;
+    const isAdmin = verified && verified.admin === 1;
 
     const products = await getAllProducts();
 
@@ -96,7 +184,6 @@ export const fetchAllProducts = async (req, res) => {
 
     let likedProductIds = new Set();
     if (userId) {
-
       const userFavorites = await Favorite.findAll({
         where: { userId: userId },
       });
@@ -109,15 +196,14 @@ export const fetchAllProducts = async (req, res) => {
     const productsWithLikes = products.map((product) => {
       const discountInfo = discountMap[product.id] || {};
       const productData = {
-        ...product.toJSON(), 
+        ...product.toJSON(),
         newPrice: discountInfo.newPrice || null,
         discount: discountInfo.discount || null,
-        like: likedProductIds.has(product.id) ? 1 : 0, 
+        like: likedProductIds.has(product.id) ? 1 : 0,
       };
 
-     
       if (!isAdmin) {
-        delete productData.favorites; 
+        delete productData.favorites;
       }
 
       return productData;
@@ -136,11 +222,11 @@ export const fetchAllProducts = async (req, res) => {
 export const fetchProduct = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    const verified = verifyToken(token); 
-    const userId = verified ? verified.userId : null; 
-    const isAdmin = verified && verified.admin === 1; 
+    const verified = token ? verifyToken(token) : null;
+    const userId = verified ? verified.userId : null;
+    const isAdmin = verified && verified.admin === 1;
 
-    const productId = req.params.id; 
+    const productId = req.params.id;
 
     const product = await Product.findByPk(productId);
     if (!product) {
@@ -150,7 +236,7 @@ export const fetchProduct = async (req, res) => {
     const discounts = await Discount.findAll({
       where: {
         productId: productId,
-        endDate: { [Op.gte]: new Date() }, 
+        endDate: { [Op.gte]: new Date() },
       },
     });
 
@@ -167,35 +253,47 @@ export const fetchProduct = async (req, res) => {
       const userFavorite = await Favorite.findOne({
         where: { userId: userId, productId: productId },
       });
-      like = userFavorite ? 1 : 0; 
+      like = userFavorite ? 1 : 0;
     }
 
-   
-    const productData = {
-      ...product.toJSON(), 
-      newPrice: discountInfo.newPrice || null,
-      discount: discountInfo.discount || null,
-      like: like, 
+    const medias = product.medias;
+
+    const mediaUrls = {
+      imageUrls: medias.imageUrls,
+      videoUrls: medias.videoUrls,
     };
 
-    if (!isAdmin) {
-      delete productData.favorites; 
+    const productData = {
+      id: product.id,
+      nom: product.nom,
+      description: product.description,
+      stock: product.stock,
+      status: product.status,
+      prix: product.prix,
+      newPrice: discountInfo.newPrice || null,
+      discount: discountInfo.discount || null,
+      like: like,
+    };
+
+    if (isAdmin) {
+      productData.favorites = product.favorites;
     }
+
+    productData.medias = mediaUrls;
 
     return res.status(200).json(productData);
   } catch (error) {
     console.error("Erreur lors de la récupération du produit:", error);
     return res.status(500).json({
       message: "Erreur lors de la récupération du produit",
-      error: error.message,
+      error: "Une erreur est survenue, veuillez réessayer plus tard.",
     });
   }
 };
 
 export const updateProduct = async (req, res) => {
-
   const token = req.headers.authorization?.split(" ")[1];
-  const verified = verifyToken(token); 
+  const verified = verifyToken(token);
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
   }
@@ -236,9 +334,8 @@ export const updateProduct = async (req, res) => {
 };
 
 export const deleteProduct = async (req, res) => {
-
   const token = req.headers.authorization?.split(" ")[1];
-  const verified = verifyToken(token); 
+  const verified = verifyToken(token);
   if (!verified) {
     return res.status(401).json({ message: "Token invalide ou manquant" });
   }
@@ -323,7 +420,6 @@ export const likeProduct = async (req, res) => {
 };
 
 export const unlikeProduct = async (req, res) => {
-  
   const token = req.headers.authorization?.split(" ")[1];
   const verified = verifyToken(token);
   if (!verified) {
