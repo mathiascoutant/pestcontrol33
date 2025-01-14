@@ -7,12 +7,13 @@ import {
   deleteProduct,
   likeProduct,
   unlikeProduct,
+  handleUpload,
 } from "../controllers/productController.js";
 
 const router = express.Router();
 
 // Routes pour les produits
-router.post("/add", addProduct);
+router.post("/add", handleUpload, addProduct);
 router.get("/", fetchAllProducts);
 router.get("/:id", fetchProduct);
 router.put("/:id", updateProduct);

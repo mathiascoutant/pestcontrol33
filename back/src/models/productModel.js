@@ -33,6 +33,21 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    medias: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defaultValue: JSON.stringify({
+        imageUrls: [],
+        videoUrls: [],
+      }),
+      get() {
+        const value = this.getDataValue("medias");
+        return value ? JSON.parse(value) : { imageUrls: [], videoUrls: [] };
+      },
+      set(value) {
+        this.setDataValue("medias", JSON.stringify(value));
+      },
+    },
   },
   {
     tableName: "produits",

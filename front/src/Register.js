@@ -1,12 +1,11 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import RegisterForm from "./components/Auth/RegisterForm";
+import { Box } from "@mui/material";
 
 function Register() {
   return (
     <Box>
-      <Typography variant="h4" sx={{ textAlign: "center", mt: 5 }} gutterBottom>
-        S'inscrire
-      </Typography>
+      <RegisterForm />
     </Box>
   );
 }
