@@ -31,7 +31,7 @@ function ConnexionForm() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://pestcontrol33.vercel.app/api/v1/auth/login",
+        "http://37.187.225.41:3002/api/v1/auth/login",
         formData
       );
 

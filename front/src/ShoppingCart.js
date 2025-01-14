@@ -49,6 +49,7 @@ function ShoppingCart() {
     setCartItems(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     calculateTotal(updatedCart);
+    window.dispatchEvent(new Event("cartUpdate"));
   };
 
   const removeItem = (id) => {
@@ -56,6 +57,7 @@ function ShoppingCart() {
     setCartItems(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     calculateTotal(updatedCart);
+    window.dispatchEvent(new Event("cartUpdate"));
   };
 
   return (
@@ -101,7 +103,6 @@ function ShoppingCart() {
             sx={{
               textAlign: "center",
               py: 5,
-              bgcolor: "#ba9b73",
               borderRadius: 1,
             }}
           >
@@ -113,16 +114,17 @@ function ShoppingCart() {
             </Typography>
             <Button
               variant="contained"
-              href="/produits"
+              color="primary"
               sx={{
-                bgcolor: "#000",
                 color: "#fff",
-                "&:hover": {
-                  bgcolor: "#333",
-                },
               }}
             >
-              Continuer mes achats
+              <Link
+                to="/shop"
+                style={{ textDecoration: "none", color: "#fff" }}
+              >
+                Continuer mes achats
+              </Link>
             </Button>
           </Box>
         ) : (

@@ -13,6 +13,7 @@ import {
   Container,
   Snackbar,
   Alert,
+  Badge,
 } from "@mui/material";
 import {
   Person as PersonIcon,
@@ -33,6 +34,7 @@ function Header() {
     message: "",
     severity: "success",
   });
+  const [cartItemCount, setCartItemCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,9 +42,8 @@ function Header() {
     if (token) {
       setIsAuthenticated(true);
       const decodedToken = jwtDecode(token);
-      console.log("Token décodé:", decodedToken);
 
-      fetch("https://pestcontrol33.vercel.app/api/v1/users")
+      fetch("http://37.187.225.41:3002/api/v1/users")
         .then((response) => response.json())
         .then((users) => {
           const currentUser = users.find(
@@ -64,6 +65,26 @@ function Header() {
           );
         });
     }
+  }, []);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const count = cart.reduce((total, item) => total + item.quantity, 0);
+      setCartItemCount(count);
+    };
+
+    updateCartCount();
+
+    const handleCartUpdate = () => {
+      updateCartCount();
+    };
+
+    window.addEventListener("cartUpdate", handleCartUpdate);
+
+    return () => {
+      window.removeEventListener("cartUpdate", handleCartUpdate);
+    };
   }, []);
 
   const handleProfileClick = (event) => {
@@ -136,7 +157,9 @@ function Header() {
               <FavoriteIcon />
             </IconButton>
             <IconButton color="inherit" component={Link} to="/shopping">
-              <ShoppingCartIcon />
+              <Badge badgeContent={cartItemCount} color="error">
+                <ShoppingCartIcon />
+              </Badge>
             </IconButton>
             <IconButton
               color="inherit"

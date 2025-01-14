@@ -33,7 +33,7 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    fetch("https://pestcontrol33.vercel.app/api/v1/users")
+    fetch("http://37.187.225.41:3002/api/v1/users")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);

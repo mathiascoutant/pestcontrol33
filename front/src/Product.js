@@ -9,7 +9,7 @@ function Product() {
 
   useEffect(() => {
     console.log("Fetching product data for ID:", id);
-    fetch(`https://pestcontrol33.vercel.app/api/v1/products/${id}`)
+    fetch(`http://37.187.225.41:3002/api/v1/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Product data received:", data);

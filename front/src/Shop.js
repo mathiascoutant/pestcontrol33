@@ -11,10 +11,16 @@ function Shop() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "https://pestcontrol33.vercel.app/api/v1/products/"
+          "http://37.187.225.41:3002/api/v1/products/"
         );
         const data = await response.json();
-        setProducts(data);
+        console.log(data);
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          console.error("Les données récupérées ne sont pas un tableau");
+          setProducts([]);
+        }
       } catch (error) {
         console.error("Erreur lors de la récupération des produits:", error);
       }
@@ -39,6 +45,9 @@ function Shop() {
             <Grid item xs={12} sm={6} md={3} key={product.id}>
               <CardProduct
                 id={product.id}
+                image={
+                  product.medias?.imageUrls?.[0] || "default-image-url.jpg"
+                }
                 promotion={product.discount ? `-${product.discount}%` : null}
                 name={product.nom}
                 status={product.stock > 0 ? "En stock" : "Rupture de stock"}

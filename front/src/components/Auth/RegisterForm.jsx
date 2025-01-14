@@ -40,7 +40,7 @@ function RegisterForm() {
 
     try {
       const response = await fetch(
-        "https://pestcontrol33.vercel.app/api/v1/auth/register",
+        "http://37.187.225.41:3002/api/v1/auth/register",
         {
           method: "POST",
           headers: {
