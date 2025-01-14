@@ -24,3 +24,4 @@ yarn-error.log*
 /toto/
 # VSCode
 .vscode/
+/build
