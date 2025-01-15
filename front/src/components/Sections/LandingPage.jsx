@@ -1,13 +1,13 @@
 import React from "react";
 import { Box, Card, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import backgroundImage from "../../Assets/landingpage.jpg";
+import backgroundImage from "../../Assets/house.jpg";
 
 function LandingPage() {
   return (
     <Box
       sx={{
-        minHeight: "95vh",
+        minHeight: "100vh",
         width: "100%",
         margin: 0,
         padding: 0,

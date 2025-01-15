@@ -6,6 +6,8 @@ import { IconButton, Snackbar, Alert } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Link } from "react-router-dom";
 
 function CardProduct({ promotion, name, status, price, reduction, id, image }) {
   const navigate = useNavigate();
@@ -161,7 +163,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
       onClick={handleCardClick}
       sx={{
         width: 250,
-        height: 450,
+        height: 400,
         display: "flex",
         flexDirection: "column",
         padding: 2,
@@ -245,20 +247,14 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
         level="h6"
         sx={{
           fontWeight: "bold",
-          fontSize: "19px",
-          mb: 2,
-          mt: 1.5,
-          height: "48px",
+          fontSize: "20px",
           overflow: "hidden",
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
+          display: "block",
           textOverflow: "ellipsis",
-          whiteSpace: "normal",
-          lineHeight: "24px",
+          whiteSpace: "nowrap",
           textAlign: "left",
+          textTransform: "capitalize",
         }}
-        gutterBottom
       >
         {name}
       </Typography>
@@ -272,7 +268,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
           py: 0.1,
           borderRadius: 2.5,
           textAlign: "center",
-          mb: 1,
+          fontSize: "12px",
         }}
       >
         {status}
@@ -280,7 +276,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
 
       <Box
         sx={{
-          marginTop: "auto",
+          mt: 3.5,
           display: "flex",
           alignItems: "center",
           width: "100%",
@@ -360,12 +356,29 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
         >
           <FavoriteIcon color={isFavorited ? "error" : "inherit"} />
         </IconButton>
+        <IconButton
+          sx={{
+            mt: 2,
+            color: "white",
+            height: "55px",
+            backgroundColor: "rgba(255, 255, 255, 0.3)",
+            borderRadius: "50%",
+            padding: 2,
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.5)",
+            },
+          }}
+        >
+          <Link to={`/product/${id}`}>
+            <ArrowForwardIcon sx={{ color: "white" }} />
+          </Link>
+        </IconButton>
       </Box>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}

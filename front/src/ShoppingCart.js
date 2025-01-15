@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Header from "./components/Layouts/Header";
-import Footer from "./components/Layouts/Footer";
 import fondImage from "./Assets/fond.png";
 import { Link } from "react-router-dom";
 
@@ -74,10 +73,11 @@ function ShoppingCart() {
           justifyContent: "center",
           alignItems: "center",
           mb: 5,
+          mt: 8,
         }}
       >
         <Typography
-          variant="h3"
+          variant="h4"
           sx={{
             color: "#000",
             mb: 2,
@@ -162,7 +162,7 @@ function ShoppingCart() {
                               }}
                             >
                               <img
-                                src="https://i.ebayimg.com/images/g/lnIAAOSwrudm12oS/s-l1600.webp"
+                                src={item.medias?.imageUrls?.[0]}
                                 alt={item.name}
                                 style={{
                                   width: "100%",
@@ -254,7 +254,6 @@ function ShoppingCart() {
           </Box>
         )}
       </Container>
-      <Footer />
     </>
   );
 }

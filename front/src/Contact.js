@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import Header from "./components/Layouts/Header";
-import Footer from "./components/Layouts/Footer";
+
 function Contact() {
   return (
     <Box>
@@ -13,7 +13,6 @@ function Contact() {
       >
         Contact
       </Typography>
-      <Footer />
     </Box>
   );
 }

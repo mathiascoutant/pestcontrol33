@@ -1,7 +1,9 @@
-import { Box, Container, Typography, Grid } from "@mui/material";
+import { Box, Container, Typography, Grid, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Header from "./components/Layouts/Header";
 import CardProduct from "./components/Layouts/CardProduct";
+import fondImage from "../src/Assets/fond.png";
 
 function Favorites() {
   const [favorites, setFavorites] = useState([]);
@@ -43,21 +45,74 @@ function Favorites() {
   }, []);
 
   return (
-    <Box sx={{ mt: 10 }}>
+    <Box>
       <Header />
+      <Box
+        sx={{
+          backgroundImage: `url(${fondImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: "300px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          mb: 5,
+          mt: 8,
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            color: "#000",
+            mb: 2,
+            fontWeight: "bold",
+          }}
+        >
+          Mes favoris
+        </Typography>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Typography sx={{ color: "#000" }}>
+            <Link to="/" style={{ textDecoration: "none", color: "#000" }}>
+              Accueil
+            </Link>
+          </Typography>
+          <Typography sx={{ color: "#000" }}>{">"}</Typography>
+          <Typography sx={{ color: "#000" }}>Mes favoris</Typography>
+        </Box>
+      </Box>
       <Box sx={{ flexGrow: 1, py: 3, mt: 10 }}>
         <Container maxWidth="lg">
-          <Typography variant="h4" sx={{ mb: 5, textAlign: "center" }}>
-            Mes Favoris
-          </Typography>
           {loading ? (
             <Typography variant="body1" sx={{ textAlign: "center" }}>
               Chargement de vos favoris...
             </Typography>
           ) : favorites.length === 0 ? (
-            <Typography variant="h6" sx={{ textAlign: "center" }}>
-              Vous n'avez pas encore de favoris
-            </Typography>
+            <>
+              <Typography variant="h6" sx={{ textAlign: "center" }}>
+                Vous n'avez pas encore de favoris
+              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    color: "#fff",
+                    mt: 2,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Link
+                    to="/shop"
+                    style={{ textDecoration: "none", color: "#fff" }}
+                  >
+                    Découvrir nos produits
+                  </Link>
+                </Button>
+              </Box>
+            </>
           ) : (
             <Grid container spacing={3} justifyContent="center">
               {favorites.map((product) => (

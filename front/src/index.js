@@ -18,6 +18,8 @@ const defaultTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 5,
+          textTransform: "capitalize",
+          color: "white",
         },
       },
     },

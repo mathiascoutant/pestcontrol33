@@ -115,7 +115,7 @@ function Header() {
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              Pestcontroll33
+              PestControl33
             </Typography>
           </Link>
           <Box sx={{ display: "flex", gap: 1 }}>
@@ -123,7 +123,7 @@ function Header() {
               component={Link}
               to="/"
               color="inherit"
-              sx={{ textTransform: "capitalize" }}
+              sx={{ textTransform: "capitalize", color: "black" }}
             >
               Accueil
             </Button>
@@ -131,7 +131,7 @@ function Header() {
               component={Link}
               to="/about"
               color="inherit"
-              sx={{ textTransform: "capitalize" }}
+              sx={{ textTransform: "capitalize", color: "black" }}
             >
               À propos
             </Button>
@@ -139,7 +139,7 @@ function Header() {
               component={Link}
               to="/shop"
               color="inherit"
-              sx={{ textTransform: "capitalize" }}
+              sx={{ textTransform: "capitalize", color: "black" }}
             >
               Nos produits
             </Button>
@@ -147,7 +147,7 @@ function Header() {
               component={Link}
               to="/contact"
               color="inherit"
-              sx={{ textTransform: "capitalize" }}
+              sx={{ textTransform: "capitalize", color: "black" }}
             >
               Contact
             </Button>
@@ -232,6 +232,7 @@ function Header() {
                         <Typography>Dashboard</Typography>
                       </MenuItem>
                     ),
+                    <Divider key="divider-2" variant="middle" />,
                     <MenuItem
                       key="profile"
                       component={Link}
@@ -249,7 +250,25 @@ function Header() {
                       />
                       <Typography>Profil</Typography>
                     </MenuItem>,
-                    <Divider key="divider-2" />,
+                    <Divider key="divider-2" variant="middle" />,
+                    <MenuItem
+                      key="commande"
+                      component={Link}
+                      to="/commande"
+                      onClick={handleClose}
+                      sx={{
+                        display: "flex",
+                        gap: 1,
+                        "&:hover": { bgcolor: "action.hover" },
+                      }}
+                    >
+                      <SettingsIcon
+                        fontSize="small"
+                        sx={{ color: "#728996" }}
+                      />
+                      <Typography>Mes commandes</Typography>
+                    </MenuItem>,
+                    <Divider key="divider-2" variant="middle" />,
                     <MenuItem
                       key="logout"
                       onClick={handleLogout}

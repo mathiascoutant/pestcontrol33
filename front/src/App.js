@@ -11,6 +11,7 @@ import Favorites from "./Favorites";
 import Profil from "./Profil";
 import Dashboard from "./Dashboard";
 import Layout from "./components/Layout";
+import Commande from "./Commande";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profil" element={<Profil />} />
+          <Route path="/commande" element={<Commande />} />
           <Route path="/register" element={<Register />} />
           <Route path="/connexion" element={<Connexion />} />
           <Route path="/product/:id" element={<Product />} />
