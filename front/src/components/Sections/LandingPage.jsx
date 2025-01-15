@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Card, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import backgroundImage from "../../Assets/house.jpg";
+import backgroundImage from "../../Assets/housse.jpg";
 
 function LandingPage() {
   return (
@@ -15,7 +15,7 @@ function LandingPage() {
         overflow: "hidden",
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: "bottom",
         display: "flex",
         justifyContent: "flex-end",
         alignItems: "center",
