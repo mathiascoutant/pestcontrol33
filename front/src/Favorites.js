@@ -1,4 +1,4 @@
-import { Box, Container, Typography, Grid, Button } from "@mui/material";
+import { Box, Container, Typography, Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "./components/Layouts/Header";
@@ -10,13 +10,16 @@ function Favorites() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        const token = localStorage.getItem("token");
+    const fetchLikedProducts = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("Token d'utilisateur non trouvé");
+        return;
+      }
 
-        // Récupérer tous les produits
-        const productsResponse = await fetch(
-          "http://37.187.225.41:3002/api/v1/products",
+      try {
+        const response = await fetch(
+          "http://37.187.225.41:3002/api/v1/products/likes",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -24,24 +27,32 @@ function Favorites() {
             },
           }
         );
-        const allProducts = await productsResponse.json();
 
-        // Filtrer les produits qui ont des likes
-        const favoriteProducts = allProducts.filter(
-          (product) => product.like > 0
-        );
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(
+            `Erreur lors de la récupération des produits likés : ${errorMessage}`
+          );
+        }
 
-        console.log("Produits likés trouvés:", favoriteProducts);
-        setFavorites(favoriteProducts);
+        const data = await response.json();
+        console.log("Produits likés récupérés :", data);
+
+        if (Array.isArray(data.favorites)) {
+          setFavorites(data.favorites);
+        } else {
+          console.error("Les produits likés ne sont pas un tableau");
+          setFavorites([]);
+        }
       } catch (error) {
-        console.error("Error fetching favorites:", error);
+        console.error("Erreur lors du chargement des produits likés :", error);
         setFavorites([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchFavorites();
+    fetchLikedProducts();
   }, []);
 
   return (
@@ -88,31 +99,9 @@ function Favorites() {
               Chargement de vos favoris...
             </Typography>
           ) : favorites.length === 0 ? (
-            <>
-              <Typography variant="h6" sx={{ textAlign: "center" }}>
-                Vous n'avez pas encore de favoris
-              </Typography>
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    color: "#fff",
-                    mt: 2,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Link
-                    to="/shop"
-                    style={{ textDecoration: "none", color: "#fff" }}
-                  >
-                    Découvrir nos produits
-                  </Link>
-                </Button>
-              </Box>
-            </>
+            <Typography variant="h6" sx={{ textAlign: "center" }}>
+              Vous n'avez pas encore de favoris
+            </Typography>
           ) : (
             <Grid container spacing={3} justifyContent="center">
               {favorites.map((product) => (

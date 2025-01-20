@@ -13,7 +13,6 @@ import {
   Container,
   Snackbar,
   Alert,
-  Badge,
 } from "@mui/material";
 import {
   Person as PersonIcon,
@@ -34,7 +33,6 @@ function Header() {
     message: "",
     severity: "success",
   });
-  const [cartItemCount, setCartItemCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,13 +40,13 @@ function Header() {
     if (token) {
       setIsAuthenticated(true);
       const decodedToken = jwtDecode(token);
+      const userId = decodedToken.userId;
 
+      // Charger les informations de l'utilisateur
       fetch("http://37.187.225.41:3002/api/v1/users")
         .then((response) => response.json())
         .then((users) => {
-          const currentUser = users.find(
-            (user) => user.id === decodedToken.userId
-          );
+          const currentUser = users.find((user) => user.id === userId);
 
           if (currentUser) {
             const fullName = `${currentUser.prenom} ${currentUser.nom}`;
@@ -67,26 +65,6 @@ function Header() {
     }
   }, []);
 
-  useEffect(() => {
-    const updateCartCount = () => {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const count = cart.reduce((total, item) => total + item.quantity, 0);
-      setCartItemCount(count);
-    };
-
-    updateCartCount();
-
-    const handleCartUpdate = () => {
-      updateCartCount();
-    };
-
-    window.addEventListener("cartUpdate", handleCartUpdate);
-
-    return () => {
-      window.removeEventListener("cartUpdate", handleCartUpdate);
-    };
-  }, []);
-
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -95,7 +73,15 @@ function Header() {
     setAnchorEl(null);
   };
 
+  // Nettoyer le panier lié à l'utilisateur lors de la déconnexion
   const handleLogout = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.userId;
+      localStorage.removeItem(`cart_${userId}`); // Supprimer le panier spécifique à cet utilisateur
+    }
+
     localStorage.removeItem("token");
     setIsAuthenticated(false);
     setSnackbar({
@@ -157,9 +143,7 @@ function Header() {
               <FavoriteIcon />
             </IconButton>
             <IconButton color="inherit" component={Link} to="/shopping">
-              <Badge badgeContent={cartItemCount} color="error">
-                <ShoppingCartIcon />
-              </Badge>
+              <ShoppingCartIcon />
             </IconButton>
             <IconButton
               color="inherit"
@@ -232,7 +216,12 @@ function Header() {
                         <Typography>Dashboard</Typography>
                       </MenuItem>
                     ),
-                    <Divider key="divider-2" variant="middle" />,
+                    isAdmin && (
+                      <Divider
+                        key="divider-dashboard-profile"
+                        variant="middle"
+                      />
+                    ),
                     <MenuItem
                       key="profile"
                       component={Link}

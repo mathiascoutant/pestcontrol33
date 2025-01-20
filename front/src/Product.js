@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
-  Button,
   TextField,
   Tabs,
   Tab,
@@ -11,71 +10,83 @@ import {
   Link as MuiLink,
   Card,
   CardMedia,
-  CardContent,
   IconButton,
   Grid,
+  Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CardProduct from "./components/Layouts/CardProduct";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import StarIcon from "@mui/icons-material/Star";
 import ReviewCard from "./components/UI/ReviewCard";
-import Banner from "./components/UI/Banner";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 function Product() {
   const [product, setProduct] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const { id } = useParams();
   const [similarProducts, setSimilarProducts] = useState([]);
-
   const [tabValue, setTabValue] = useState(0);
-  const [selectedImage, setSelectedImage] = useState("");
-
   const [customerReviews, setCustomerReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
   useEffect(() => {
-    fetch(`http://37.187.225.41:3002/api/v1/products/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Product data received:", data);
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(
+          `http://37.187.225.41:3002/api/v1/products/${id}`
+        );
+        const data = await response.json();
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const existingProductInCart = cart.find(
+          (item) => item.productId === data.id
+        );
+
+        // Mettre à jour le stock en fonction de la quantité dans le panier
+        if (existingProductInCart) {
+          data.stock -= existingProductInCart.quantity;
+        }
+
         setProduct(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching product:", error);
-      });
-  }, [id]);
-  useEffect(() => {
-    fetch(`http://37.187.225.41:3002/api/v1/products`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("All products data received:", data);
-        setSimilarProducts(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching all products:", error);
-      });
+      }
+    };
+    fetchProduct();
   }, [id]);
 
-  const calculateAverageRating = (reviews) => {
-    if (reviews.length === 0) return 0;
-    const total = reviews.reduce((acc, review) => acc + review.notation, 0);
-    return (total / reviews.length).toFixed(1);
-  };
+  const fetchSimilarProducts = useCallback(async () => {
+    try {
+      const response = await fetch(`http://37.187.225.41:3002/api/v1/products`);
+      const data = await response.json();
+      setSimilarProducts(data);
+    } catch (error) {
+      console.error("Error fetching similar products:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSimilarProducts();
+  }, [fetchSimilarProducts]);
 
   const fetchReviews = useCallback(async () => {
     try {
       const response = await fetch(
         `http://37.187.225.41:3002/api/v1/comment/${id}`
       );
-      const reviews = await response.json();
-      setCustomerReviews(reviews);
-      setAverageRating(calculateAverageRating(reviews));
+      const data = await response.json();
+      setCustomerReviews(data.comments);
+      setAverageRating(data.averageRating);
     } catch (error) {
       console.error("Error fetching reviews:", error);
     }
@@ -84,6 +95,82 @@ function Product() {
   useEffect(() => {
     fetchReviews();
   }, [fetchReviews]);
+
+  useEffect(() => {
+    const updateCart = () => {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const updatedCart = cart.filter((item) => {
+        const addedTime = item.addedAt || 0;
+        return Date.now() - addedTime < 24 * 60 * 60 * 1000; // 1 jour
+      });
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+    };
+    updateCart();
+  }, []);
+
+  const addToCart = async (productId, quantity) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(
+        "http://37.187.225.41:3002/api/v1/shopping/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ productId, quantity }),
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        setOpenSnackbar(true);
+
+        // Mettre à jour le stock localement en fonction de la quantité ajoutée au panier
+        setProduct((prevProduct) => ({
+          ...prevProduct,
+          stock: prevProduct.stock - quantity,
+        }));
+
+        // Stocker la quantité dans le localStorage
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const existingProductIndex = cart.findIndex(
+          (item) => item.productId === productId
+        );
+        if (existingProductIndex > -1) {
+          cart[existingProductIndex].quantity += quantity; // Mettre à jour la quantité si le produit existe déjà
+        } else {
+          cart.push({ productId, quantity }); // Ajouter le produit avec la quantité
+        }
+        localStorage.setItem("cart", JSON.stringify(cart)); // Mettre à jour le localStorage
+      } else {
+        console.error("Erreur lors de l'ajout au panier :", data);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'ajout au panier :", error);
+    }
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
+  if (!product) return <div>Chargement...</div>;
+
+  const images = product.medias.imageUrls;
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const handleAddComment = () => {
+    navigate(`/addcomment/${product.id}`);
+  };
 
   const renderTabPanel = (value) => {
     switch (value) {
@@ -95,11 +182,16 @@ function Product() {
           </Typography>
         );
       case 1:
-        return <Typography>Conseils d'utilisation ici.</Typography>;
+        return <Typography>{product.conseilsUtilisation}</Typography>;
       case 2:
         return (
           <Box>
-            <Typography variant="h6">Avis des clients :</Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="h6">Avis des clients :</Typography>
+              <Button variant="contained" onClick={handleAddComment}>
+                Ajouter un avis
+              </Button>
+            </Box>
             <Grid container spacing={2}>
               {Array.isArray(customerReviews) &&
                 customerReviews.map((review) => (
@@ -114,8 +206,6 @@ function Product() {
         return null;
     }
   };
-
-  if (!product) return <div>Chargement...</div>;
 
   return (
     <Box sx={{ mt: 8 }}>
@@ -156,12 +246,52 @@ function Product() {
           </Typography>
         </Breadcrumbs>
       </Box>
-      <Box sx={{ display: "flex", gap: 4, p: 4 }}>
+      <Box sx={{ display: "flex", gap: 2, p: 4 }}>
+        {/* Colonne des petites images */}
         <Box
           sx={{
-            width: "40%",
-            ml: 4,
-            bgcolor: "#F9F1E7",
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+            height: "270px",
+            overflowY: "auto",
+            mt: 2,
+            width: "10%",
+            alignItems: "center",
+          }}
+        >
+          {images.slice(0, 3).map((image, index) => (
+            <Card
+              key={index}
+              sx={{
+                cursor: "pointer",
+                width: "80px",
+                height: "80px",
+                objectFit: "cover",
+                borderRadius: "10px",
+                overflow: "hidden",
+              }}
+              onClick={() => setCurrentImageIndex(index)}
+            >
+              <CardMedia
+                component="img"
+                image={image}
+                alt={`Produit ${index}`}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </Card>
+          ))}
+          <Button onClick={handleNextImage} sx={{ mt: 2, color: "black" }}>
+            <ArrowForwardIosIcon fontSize="small" />
+          </Button>
+        </Box>
+
+        <Box
+          sx={{
             borderRadius: "10px",
             display: "flex",
             flexDirection: "column",
@@ -169,75 +299,69 @@ function Product() {
             p: 2,
           }}
         >
-          {product.images && product.images.length > 0 && (
-            <Typography variant="caption" sx={{ mb: 1 }}>
-              {product.images.length} images disponibles
-            </Typography>
-          )}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {product.images &&
-              product.images.map((image, index) => (
-                <Card
-                  key={index}
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => setSelectedImage(image)}
-                >
-                  <CardMedia
-                    component="img"
-                    image={image}
-                    alt={product.nom}
-                    sx={{ height: "100px", objectFit: "cover" }}
-                  />
-                  <CardContent>
-                    <Typography variant="body2" color="text.secondary">
-                      Image {index + 1}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ))}
-          </Box>
           <img
-            src={selectedImage || product.image || "/default-product-image.jpg"}
+            src={images[currentImageIndex]}
             alt={product.nom}
-            style={{ width: "90%", marginBottom: "1rem", borderRadius: "10px" }}
+            style={{
+              maxWidth: "500px",
+              height: "420px",
+              borderRadius: "10px",
+            }}
           />
         </Box>
         <Box sx={{ width: "60%" }}>
           <Typography variant="h5" sx={{ mb: 4 }} gutterBottom>
             {product.nom.charAt(0).toUpperCase() + product.nom.slice(1)}
           </Typography>
-
-          <Typography
-            variant="h5"
-            color="text.secondary"
-            sx={{ fontWeight: "light" }}
-            gutterBottom
-          >
-            {product.newPrice || product.prix}€
-          </Typography>
-
-          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-            {Array.from({ length: 5 }, (_, index) => {
-              if (index < Math.floor(averageRating)) {
-                return <StarIcon key={index} sx={{ color: "#FFC700" }} />;
-              } else if (
-                index === Math.floor(averageRating) &&
-                averageRating % 1 !== 0
-              ) {
-                return (
-                  <StarIcon
-                    key={index}
-                    sx={{ color: "#FFC700" }}
-                    style={{ opacity: 0.5 }}
-                  />
-                );
-              } else {
-                return <StarIcon key={index} sx={{ color: "disabled" }} />;
-              }
-            })}
-            <Typography variant="body2" sx={{ ml: 1 }}>
-              {averageRating} / 5
+          <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              {product.newPrice ? product.newPrice + "€" : product.prix + "€"}
             </Typography>
+            {product.discount && (
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                sx={{
+                  fontWeight: "light",
+                  textDecoration: "line-through",
+                  mt: 1,
+                }}
+                gutterBottom
+              >
+                {product.prix}€
+              </Typography>
+            )}
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            {Array.isArray(customerReviews) && customerReviews.length > 0 ? (
+              <>
+                {Array.from({ length: 5 }, (_, index) => {
+                  if (index < Math.floor(averageRating)) {
+                    return <StarIcon key={index} sx={{ color: "#FFC700" }} />;
+                  } else if (
+                    index === Math.floor(averageRating) &&
+                    averageRating % 1 !== 0
+                  ) {
+                    return (
+                      <StarIcon
+                        key={index}
+                        sx={{ color: "#FFC700" }}
+                        style={{ opacity: 0.5 }}
+                      />
+                    );
+                  } else {
+                    return <StarIcon key={index} sx={{ color: "disabled" }} />;
+                  }
+                })}
+                <Typography variant="body2" sx={{ ml: 1 }}>
+                  {averageRating} / 5
+                </Typography>
+              </>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                Pas d'avis pour le moment.
+              </Typography>
+            )}
           </Box>
 
           {product.discount && (
@@ -270,11 +394,13 @@ function Product() {
               defaultValue={1}
               InputProps={{ inputProps: { min: 1, max: product.stock } }}
               size="small"
+              onChange={(e) => setQuantity(e.target.value)}
             />
             <Button
               variant="contained"
               color="primary"
               disabled={product.stock === 0}
+              onClick={() => addToCart(product.id, quantity)}
             >
               Ajouter au panier
             </Button>
@@ -343,13 +469,26 @@ function Product() {
               price={product.newPrice || product.prix}
               reduction={product.discount ? `-${product.discount}%` : null}
               status={product.stock > 0 ? "En stock" : "Rupture de stock"}
-              image={product.image}
+              image={product.medias?.imageUrls?.[0]}
               promotion={product.promotion}
             />
           ))}
         </Box>
       </Box>
-      <Banner />
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Le produit a bien été ajouté au panier !
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

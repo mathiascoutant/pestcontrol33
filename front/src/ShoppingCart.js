@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -13,32 +13,120 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Header from "./components/Layouts/Header";
 import fondImage from "./Assets/fond.png";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function ShoppingCart() {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [couponCode, setCouponCode] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Pour gérer la couleur de la Snackbar
+
+  const fetchCartItems = useCallback(async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get(
+        `http://37.187.225.41:3002/api/v1/shopping/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const cartItems = response.data;
+
+      // Vérifiez si le panier est vide
+      if (cartItems.length === 0) {
+        setCartItems([]); // Assurez-vous de définir un tableau vide si aucun produit
+        setTotal(0); // Réinitialisez le total
+        return;
+      }
+
+      // Récupérer les détails des produits pour chaque article du panier
+      const itemsWithDetails = await Promise.all(
+        cartItems.map(async (item) => {
+          const productDetails = await fetchProductDetails(item.productId);
+          return {
+            ...item,
+            price: productDetails ? productDetails.prix : 0,
+            name: productDetails ? productDetails.nom : "Produit non trouvé",
+          };
+        })
+      );
+
+      setCartItems(itemsWithDetails);
+      calculateTotal(itemsWithDetails);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des produits :", error);
+    }
+  }, []);
 
   useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    setCartItems(cart);
-    calculateTotal(cart);
-  }, []);
+    fetchCartItems();
+  }, [fetchCartItems]);
+
+  const fetchProductDetails = async (productId) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(
+        `http://37.187.225.41:3002/api/v1/products/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des détails du produit :",
+        error
+      );
+      return null;
+    }
+  };
 
   const calculateTotal = (items) => {
     const sum = items.reduce((acc, item) => {
-      const price = parseFloat(item.price.replace("€", ""));
-      return acc + price * item.quantity;
+      const price =
+        item.price && typeof item.price === "string"
+          ? parseFloat(item.price.replace("€", "").trim())
+          : 0;
+
+      return acc + price * (item.quantity || 0);
     }, 0);
     setTotal(sum);
   };
 
-  const updateQuantity = (id, newQuantity) => {
+  const fetchProductById = async (userId) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get(
+        `http://37.187.225.41:3002/api/v1/shopping/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des produits :", error);
+      return [];
+    }
+  };
+
+  const updateQuantity = async (id, newQuantity) => {
     if (newQuantity < 1) return;
 
     const updatedCart = cartItems.map((item) =>
@@ -49,14 +137,82 @@ function ShoppingCart() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     calculateTotal(updatedCart);
     window.dispatchEvent(new Event("cartUpdate"));
+
+    const userId = 5;
+    const products = await fetchProductById(userId);
+    console.log(products);
   };
 
-  const removeItem = (id) => {
+  const removeItemFromAPI = async (productId, quantity) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("Token non trouvé");
+      return;
+    }
+
+    try {
+      const response = await axios.delete(
+        "http://37.187.225.41:3002/api/v1/shopping/",
+        {
+          data: {
+            productId,
+            quantity, // Assurez-vous d'envoyer la quantité
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Produit supprimé avec succès :", response.data);
+      } else {
+        console.error("Erreur lors de la suppression :", response.data);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression du produit :", error);
+    }
+  };
+
+  const removeItem = async (id) => {
+    if (!id || typeof id !== "number") {
+      console.error("ID invalide :", id);
+      return;
+    }
+
+    // Récupérer l'élément correspondant à l'ID dans le panier
+    const itemToRemove = cartItems.find((item) => item.id === id);
+    if (!itemToRemove) {
+      console.error("Produit non trouvé dans le panier");
+      return;
+    }
+
+    // Suppression de l'élément dans l'API avec l'ID et la quantité
+    await removeItemFromAPI(itemToRemove.productId, itemToRemove.quantity);
+
+    // Mise à jour du panier local après suppression
     const updatedCart = cartItems.filter((item) => item.id !== id);
     setCartItems(updatedCart);
+
+    // Mise à jour du localStorage pour refléter les modifications
     localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    // Recalcul du total
     calculateTotal(updatedCart);
+
+    // Déclenchement d'un événement de mise à jour du panier
     window.dispatchEvent(new Event("cartUpdate"));
+
+    // Afficher la Snackbar après la suppression
+    setSnackbarMessage("Produit supprimé avec succès !");
+    setSnackbarSeverity("success"); // Définir le type de notification
+    setSnackbarOpen(true);
+  };
+
+  // Fonction pour fermer la Snackbar
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -254,6 +410,25 @@ function ShoppingCart() {
           </Box>
         )}
       </Container>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{
+            width: "100%",
+            bgcolor: snackbarSeverity === "success" ? "green" : "red",
+            color: "#fff",
+          }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

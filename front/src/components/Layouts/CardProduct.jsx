@@ -20,8 +20,9 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
   const [isFavorited, setIsFavorited] = React.useState(false);
 
   const showSnackbar = (message, severity) => {
+    const finalSeverity = severity === "error" ? "error" : "success";
     setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
+    setSnackbarSeverity(finalSeverity);
     setSnackbarOpen(true);
   };
 
@@ -70,32 +71,65 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
   const [snackbarMessage, setSnackbarMessage] = React.useState("");
   const [snackbarSeverity, setSnackbarSeverity] = React.useState("success");
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (status === "Rupture de stock") {
       showSnackbar("Ce produit est en rupture de stock", "error");
       return;
     }
 
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      showSnackbar("Veuillez vous connecter pour ajouter au panier", "error");
+      return;
+    }
 
-    if (isInCart) {
-      const newCart = cart.filter((item) => item.id !== id);
-      localStorage.setItem("cart", JSON.stringify(newCart));
-      setIsInCart(false);
-      showSnackbar("Produit retiré du panier", "success");
-    } else {
-      const newCart = [
-        ...cart,
+    try {
+      const cartItem = {
+        productId: id,
+        quantity: 1,
+      };
+
+      console.log(cartItem);
+
+      const response = await fetch(
+        "http://37.187.225.41:3002/api/v1/shopping/add",
         {
-          id,
-          name,
-          price,
-          quantity: 1,
-        },
-      ];
-      localStorage.setItem("cart", JSON.stringify(newCart));
-      setIsInCart(true);
-      showSnackbar("Produit ajouté au panier", "success");
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(cartItem),
+          credentials: "omit",
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.message === "Article ajouté avec succès") {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const newCart = [
+          ...cart,
+          {
+            productId: id,
+            quantity: 1,
+          },
+        ];
+        localStorage.setItem("cart", JSON.stringify(newCart));
+        setIsInCart(true);
+        showSnackbar("Produit ajouté au panier", "success");
+      } else if (data.message === "Quantité mise à jour avec succès") {
+        showSnackbar("Quantité mise à jour avec succès", "success");
+      } else {
+        throw new Error(data.message || "Une erreur est survenue");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      showSnackbar(
+        error.message || "Erreur lors de l'ajout au panier",
+        "error"
+      );
     }
   };
 
@@ -157,7 +191,6 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
       navigate(`/product/${id}`);
     }
   };
-
   return (
     <Card
       onClick={handleCardClick}

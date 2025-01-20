@@ -15,21 +15,21 @@ import {
   TableRow,
   Chip,
 } from "@mui/material";
-import {
-  People as PeopleIcon,
-  ShoppingCart as ShoppingCartIcon,
-  AttachMoney as AttachMoneyIcon,
-  Timeline as TimelineIcon,
-} from "@mui/icons-material";
-import Header from "./components/Layouts/Header";
+import LoopIcon from "@mui/icons-material/Loop";
+import { Link } from "react-router-dom";
+import CheckIcon from "@mui/icons-material/Check";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 
 function Dashboard() {
   const [users, setUsers] = useState([]);
+  const [products, setProducts] = useState([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalOrders: 0,
     totalRevenue: 0,
     activeUsers: 0,
+    totalProducts: 0,
   });
 
   useEffect(() => {
@@ -38,6 +38,16 @@ function Dashboard() {
       .then((data) => {
         setUsers(data);
         setStats((prev) => ({ ...prev, totalUsers: data.length }));
+      })
+      .catch((error) => console.error("Erreur:", error));
+  }, []);
+
+  useEffect(() => {
+    fetch("http://37.187.225.41:3002/api/v1/products")
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data);
+        setStats((prev) => ({ ...prev, totalProducts: data.length }));
       })
       .catch((error) => console.error("Erreur:", error));
   }, []);
@@ -78,7 +88,6 @@ function Dashboard() {
 
   return (
     <>
-      <Header />
       <Box sx={{ flexGrow: 1, py: 3, mt: 10 }}>
         <Container maxWidth="lg">
           <Typography variant="h4" sx={{ mb: 5 }}>
@@ -95,34 +104,38 @@ function Dashboard() {
           </Typography>
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} sm={6} md={3}>
+              <Link style={{ textDecoration: "none" }} to="/allproduct">
+                <StatCard
+                  title="Produits"
+                  value={stats.totalProducts}
+                  icon={
+                    <NotificationsNoneOutlinedIcon sx={{ color: "#2196f3" }} />
+                  }
+                  color="#2196f3"
+                />
+              </Link>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
               <StatCard
-                title="Utilisateurs Total"
-                value={stats.totalUsers}
-                icon={<PeopleIcon sx={{ color: "#2196f3" }} />}
-                color="#2196f3"
+                title="Commandes en cours"
+                value={stats.totalOrders}
+                icon={<LoopIcon sx={{ color: "orange" }} />}
+                color="#cfaf69"
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <StatCard
-                title="Commandes"
-                value={stats.totalOrders}
-                icon={<ShoppingCartIcon sx={{ color: "#4caf50" }} />}
+                title="Commandes terminées"
+                value={`${stats.totalRevenue}`}
+                icon={<CheckIcon sx={{ color: "#4caf50" }} />}
                 color="#4caf50"
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <StatCard
-                title="Revenu"
-                value={`${stats.totalRevenue}€`}
-                icon={<AttachMoneyIcon sx={{ color: "#ff9800" }} />}
-                color="#ff9800"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <StatCard
-                title="Utilisateurs Actifs"
+                title="Mes factures"
                 value={stats.activeUsers}
-                icon={<TimelineIcon sx={{ color: "#f44336" }} />}
+                icon={<LibraryBooksOutlinedIcon sx={{ color: "#f44336" }} />}
                 color="#f44336"
               />
             </Grid>

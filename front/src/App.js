@@ -12,6 +12,9 @@ import Profil from "./Profil";
 import Dashboard from "./Dashboard";
 import Layout from "./components/Layout";
 import Commande from "./Commande";
+import AddProduct from "./AddProduct";
+import AllProduct from "./AllProduct";
+import AddComment from "./AddComment";
 
 function App() {
   return (
@@ -21,10 +24,13 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/addcomment/:productId" element={<AddComment />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/shopping" element={<ShoppingCart />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/allproduct" element={<AllProduct />} />
+          <Route path="/addproduct" element={<AddProduct />} />
           <Route path="/profil" element={<Profil />} />
           <Route path="/commande" element={<Commande />} />
           <Route path="/register" element={<Register />} />

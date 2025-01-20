@@ -33,10 +33,12 @@ const ProductSection = ({ products }) => {
             key={product.id}
             id={product.id}
             name={product.nom}
-            price={product.newPrice || product.prix}
+            price={
+              product.newPrice ? product.newPrice + "€" : product.prix + "€"
+            }
             reduction={product.discount ? `-${product.discount}%` : null}
             status={product.stock > 0 ? "En stock" : "Rupture de stock"}
-            image={product.image}
+            image={product.medias?.imageUrls?.[0]}
             promotion={product.promotion}
           />
         ))}
