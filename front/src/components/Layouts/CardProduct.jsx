@@ -17,7 +17,10 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
     return cart.some((item) => item.id === id);
   });
 
-  const [isFavorited, setIsFavorited] = React.useState(false);
+  const [isFavorited, setIsFavorited] = React.useState(() => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    return favorites.includes(id); // Vérifie si l'id du produit est dans les favoris
+  });
 
   const showSnackbar = (message, severity) => {
     const finalSeverity = severity === "error" ? "error" : "success";
@@ -88,8 +91,6 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
         productId: id,
         quantity: 1,
       };
-
-      console.log(cartItem);
 
       const response = await fetch(
         "http://37.187.225.41:3002/api/v1/shopping/add",

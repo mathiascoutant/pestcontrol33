@@ -100,7 +100,7 @@ function ShoppingCart() {
       const price =
         item.price && typeof item.price === "string"
           ? parseFloat(item.price.replace("€", "").trim())
-          : 0;
+          : parseFloat(item.price) || 0;
 
       return acc + price * (item.quantity || 0);
     }, 0);
@@ -318,7 +318,12 @@ function ShoppingCart() {
                               }}
                             >
                               <img
-                                src={item.medias?.imageUrls?.[0]}
+                                src={
+                                  (item.medias &&
+                                    item.medias.imageUrls &&
+                                    item.medias.imageUrls[0]) ||
+                                  "default-image-url.jpg"
+                                }
                                 alt={item.name}
                                 style={{
                                   width: "100%",
@@ -348,8 +353,11 @@ function ShoppingCart() {
                         </TableCell>
                         <TableCell>
                           {(
-                            parseFloat(item.price.replace("€", "")) *
-                            item.quantity
+                            parseFloat(
+                              item.price.replace
+                                ? item.price.replace("€", "").trim()
+                                : item.price
+                            ) * item.quantity
                           ).toFixed(2)}
                           €
                         </TableCell>
