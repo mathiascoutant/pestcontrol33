@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Box,
   Typography,
@@ -35,6 +35,7 @@ function Product() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
+  const reviewsRef = useRef(null);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -128,13 +129,11 @@ function Product() {
       if (response.ok) {
         setOpenSnackbar(true);
 
-        // Mettre à jour le stock localement en fonction de la quantité ajoutée au panier
         setProduct((prevProduct) => ({
           ...prevProduct,
           stock: prevProduct.stock - quantity,
         }));
 
-        // Stocker la quantité dans le localStorage
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         const existingProductIndex = cart.findIndex(
           (item) => item.productId === productId
@@ -144,7 +143,7 @@ function Product() {
         } else {
           cart.push({ productId, quantity }); // Ajouter le produit avec la quantité
         }
-        localStorage.setItem("cart", JSON.stringify(cart)); // Mettre à jour le localStorage
+        localStorage.setItem("cart", JSON.stringify(cart));
       } else {
         console.error("Erreur lors de l'ajout au panier :", data);
       }
@@ -185,7 +184,7 @@ function Product() {
         return <Typography>{product.conseilsUtilisation}</Typography>;
       case 2:
         return (
-          <Box>
+          <Box ref={reviewsRef}>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="h6">Avis des clients :</Typography>
               <Button variant="contained" onClick={handleAddComment}>
@@ -355,6 +354,23 @@ function Product() {
                 })}
                 <Typography variant="body2" sx={{ ml: 1 }}>
                   {averageRating} / 5
+                </Typography>
+                <Typography
+                  component={Link}
+                  onClick={() => setTabValue(2)}
+                  variant="body2"
+                  sx={{
+                    ml: 1,
+                    fontWeight: "semibold",
+                    textDecoration: "none",
+                    color: "black",
+                    cursor: "pointer",
+                    "&:hover": {
+                      color: "primary.main",
+                    },
+                  }}
+                >
+                  ({customerReviews.length} avis)
                 </Typography>
               </>
             ) : (

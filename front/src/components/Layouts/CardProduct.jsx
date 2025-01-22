@@ -239,6 +239,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
           width: "100%",
           height: "250px",
           backgroundColor: "#fff",
+          borderRadius: 1.5
         }}
       >
         {image && image.endsWith(".mp4") ? (

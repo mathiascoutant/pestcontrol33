@@ -22,6 +22,8 @@ import {
   Logout as LogoutIcon,
 } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
+import UpdateIcon from "@mui/icons-material/Update";
+import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 
 function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -211,7 +213,7 @@ function Header() {
                       >
                         <SettingsIcon
                           fontSize="small"
-                          sx={{ color: "#728996" }}
+                          sx={{ color: "primary.main" }}
                         />
                         <Typography>Dashboard</Typography>
                       </MenuItem>
@@ -233,9 +235,9 @@ function Header() {
                         "&:hover": { bgcolor: "action.hover" },
                       }}
                     >
-                      <SettingsIcon
+                      <UpdateIcon
                         fontSize="small"
-                        sx={{ color: "#728996" }}
+                        sx={{ color: "primary.main" }}
                       />
                       <Typography>Profil</Typography>
                     </MenuItem>,
@@ -251,9 +253,9 @@ function Header() {
                         "&:hover": { bgcolor: "action.hover" },
                       }}
                     >
-                      <SettingsIcon
+                      <LibraryBooksOutlinedIcon
                         fontSize="small"
-                        sx={{ color: "#728996" }}
+                        sx={{ color: "primary.main" }}
                       />
                       <Typography>Mes commandes</Typography>
                     </MenuItem>,

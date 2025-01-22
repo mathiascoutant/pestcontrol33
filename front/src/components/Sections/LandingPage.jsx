@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Card, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import backgroundImage from "../../Assets/landing.webp";
+import backgroundImage from "../../Assets/landing.jpg";
 
 function LandingPage() {
   return (

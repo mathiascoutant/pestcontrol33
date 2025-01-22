@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import fondImage from "./Assets/landing.webp";
+import fondImage from "./Assets/landing.jpg";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 function AddComment() {
@@ -81,7 +81,7 @@ function AddComment() {
         height: "100vh",
         backgroundImage: `url(${fondImage})`,
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: "bottom",
       }}
     >
       <Card sx={{ width: "100%", maxWidth: 600, p: 2, borderRadius: 2 }}>
