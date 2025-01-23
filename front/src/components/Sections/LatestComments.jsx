@@ -11,7 +11,7 @@ const LatestComments = () => {
   useEffect(() => {
     const fetchComments = async () => {
       const response = await fetch(
-        "http://37.187.225.41:3002/api/v1/comment/latest"
+        `${process.env.REACT_APP_API_BASE_URL}/comment/latest`
       );
       const data = await response.json();
       setComments(data);

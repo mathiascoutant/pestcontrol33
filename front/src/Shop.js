@@ -24,7 +24,7 @@ function Shop() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "http://37.187.225.41:3002/api/v1/products/"
+          `${process.env.REACT_APP_API_BASE_URL}/products/`
         );
         const data = await response.json();
         if (Array.isArray(data)) {

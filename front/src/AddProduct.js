@@ -29,7 +29,7 @@ function AddProduct() {
   useEffect(() => {
     if (id) {
       axios
-        .get(`http://37.187.225.41:3002/api/v1/products/${id}`, {
+        .get(`${process.env.REACT_APP_API_BASE_URL}/products/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -71,7 +71,7 @@ function AddProduct() {
       if (id) {
         // Update product
         const response = await axios.put(
-          `http://37.187.225.41:3002/api/v1/products/${id}`,
+          `${process.env.REACT_APP_API_BASE_URL}/products/${id}`,
           formData,
           {
             headers: {
@@ -85,7 +85,7 @@ function AddProduct() {
       } else {
         // Add new product
         const response = await axios.post(
-          "http://37.187.225.41:3002/api/v1/products/add",
+          `${process.env.REACT_APP_API_BASE_URL}/products/add`,
           formData,
           {
             headers: {

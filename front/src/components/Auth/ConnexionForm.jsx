@@ -31,7 +31,7 @@ function ConnexionForm() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://37.187.225.41:3002/api/v1/auth/login",
+        `${process.env.REACT_APP_API_BASE_URL}/auth/login`,
         formData
       );
 

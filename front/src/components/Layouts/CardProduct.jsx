@@ -38,7 +38,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
 
     try {
       const response = await fetch(
-        "http://37.187.225.41:3002/api/v1/products/like",
+        `${process.env.REACT_APP_API_BASE_URL}/products/like`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -93,7 +93,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
       };
 
       const response = await fetch(
-        "http://37.187.225.41:3002/api/v1/shopping/add",
+        `${process.env.REACT_APP_API_BASE_URL}/shopping/add`,
         {
           method: "POST",
           headers: {
@@ -146,7 +146,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
       const endpoint = isFavorited ? "unlike" : "like";
 
       const response = await fetch(
-        `http://37.187.225.41:3002/api/v1/products/${endpoint}`,
+        `${process.env.REACT_APP_API_BASE_URL}/products/${endpoint}`,
         {
           method: "POST",
           headers: {

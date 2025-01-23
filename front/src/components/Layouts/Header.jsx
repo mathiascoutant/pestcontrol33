@@ -45,7 +45,7 @@ function Header() {
       const userId = decodedToken.userId;
 
       // Charger les informations de l'utilisateur
-      fetch("http://37.187.225.41:3002/api/v1/users")
+      fetch(`${process.env.REACT_APP_API_BASE_URL}/users`)
         .then((response) => response.json())
         .then((users) => {
           const currentUser = users.find((user) => user.id === userId);

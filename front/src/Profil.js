@@ -26,6 +26,11 @@ function Profil() {
     prenom: "",
     pseudo: "",
     email: "",
+    telephone: "",
+    adresse: "",
+    codePostal: "",
+    ville: "",
+    pays: "",
   });
 
   const [error, setError] = useState(null);
@@ -40,7 +45,7 @@ function Profil() {
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.userId;
 
-    fetch(`http://37.187.225.41:3002/api/v1/users/${userId}`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users/${userId}`)
       .then((response) => response.json())
       .then((userData) => {
         if (userData) {
@@ -49,6 +54,11 @@ function Profil() {
             prenom: userData.prenom || "",
             pseudo: userData.pseudo || "",
             email: userData.email || "",
+            telephone: userData.telephone || "",
+            adresse: userData.adresse || "",
+            codePostal: userData.codePostal || "",
+            ville: userData.ville || "",
+            pays: userData.pays || "",
           });
         } else {
           setError("Utilisateur non trouvé");
@@ -70,7 +80,7 @@ function Profil() {
     if (token) {
       try {
         const response = await fetch(
-          "http://37.187.225.41:3002/api/v1/users/",
+          `${process.env.REACT_APP_API_BASE_URL}/users/`,
           {
             method: "PUT",
             headers: {
@@ -161,6 +171,41 @@ function Profil() {
             label="Email"
             name="email"
             value={user.email || ""}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Téléphone"
+            name="telephone"
+            value={user.telephone || ""}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Adresse"
+            name="adresse"
+            value={user.adresse || ""}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Code postal"
+            name="codePostal"
+            value={user.codePostal || ""}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Ville"
+            name="ville"
+            value={user.ville || ""}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Pays"
+            name="pays"
+            value={user.pays || ""}
             onChange={handleChange}
             fullWidth
           />

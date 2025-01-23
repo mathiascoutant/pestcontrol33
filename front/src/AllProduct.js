@@ -37,7 +37,7 @@ function AllProduct() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "http://37.187.225.41:3002/api/v1/products/"
+          `${process.env.REACT_APP_API_BASE_URL}/products/`
         );
         const data = await response.json();
 
@@ -45,7 +45,7 @@ function AllProduct() {
         const productsWithReviews = await Promise.all(
           data.map(async (product) => {
             const reviewResponse = await fetch(
-              `http://37.187.225.41:3002/api/v1/comment/${product.id}`
+              `${process.env.REACT_APP_API_BASE_URL}/comment/${product.id}`
             );
             const reviewData = await reviewResponse.json();
             return { ...product, reviewCount: reviewData.commentCount || 0 };
@@ -75,7 +75,7 @@ function AllProduct() {
       }
 
       const response = await fetch(
-        `http://37.187.225.41:3002/api/v1/products/${id}`,
+        `${process.env.REACT_APP_API_BASE_URL}/products/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -139,7 +139,7 @@ function AllProduct() {
 
       // Update the product
       const updateResponse = await fetch(
-        `http://37.187.225.41:3002/api/v1/products/${currentProduct.id}`,
+        `${process.env.REACT_APP_API_BASE_URL}/products/${currentProduct.id}`,
         {
           method: "PUT",
           headers: {

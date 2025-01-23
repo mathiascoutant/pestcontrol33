@@ -20,10 +20,11 @@ import { Link } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import GroupIcon from "@mui/icons-material/Group";
 
 function Dashboard() {
   const [users, setUsers] = useState([]);
-  const [products, setProducts] = useState([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalOrders: 0,
@@ -33,7 +34,7 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    fetch("http://37.187.225.41:3002/api/v1/users")
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users`)
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
@@ -43,10 +44,9 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch("http://37.187.225.41:3002/api/v1/products")
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/products`)
       .then((response) => response.json())
       .then((data) => {
-        setProducts(data);
         setStats((prev) => ({ ...prev, totalProducts: data.length }));
       })
       .catch((error) => console.error("Erreur:", error));
@@ -116,28 +116,54 @@ function Dashboard() {
               </Link>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <StatCard
-                title="Commandes en cours"
-                value={stats.totalOrders}
-                icon={<LoopIcon sx={{ color: "orange" }} />}
-                color="#cfaf69"
-              />
+              <Link style={{ textDecoration: "none" }} to="/ongoingorders">
+                <StatCard
+                  title="Commandes en cours"
+                  value={stats.totalOrders}
+                  icon={<LoopIcon sx={{ color: "orange" }} />}
+                  color="#cfaf69"
+                />
+              </Link>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <StatCard
-                title="Commandes terminées"
-                value={`${stats.totalRevenue}`}
-                icon={<CheckIcon sx={{ color: "#4caf50" }} />}
-                color="#4caf50"
-              />
+              <Link style={{ textDecoration: "none" }} to="/completedorders">
+                <StatCard
+                  title="Commandes terminées"
+                  value={`${stats.totalRevenue}`}
+                  icon={<CheckIcon sx={{ color: "#4caf50" }} />}
+                  color="#4caf50"
+                />
+              </Link>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <StatCard
-                title="Mes factures"
-                value={stats.activeUsers}
-                icon={<LibraryBooksOutlinedIcon sx={{ color: "#f44336" }} />}
-                color="#f44336"
-              />
+              <Link style={{ textDecoration: "none" }} to="/invoices">
+                <StatCard
+                  title="Mes factures"
+                  value={stats.activeUsers}
+                  icon={<LibraryBooksOutlinedIcon sx={{ color: "#f44336" }} />}
+                  color="#f44336"
+                />
+              </Link>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Link style={{ textDecoration: "none" }} to="/reviews">
+                <StatCard
+                  title="Mes avis"
+                  value={stats.activeUsers}
+                  icon={<StarBorderIcon sx={{ color: "#f2fa02" }} />}
+                  color="#f1e447"
+                />
+              </Link>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Link style={{ textDecoration: "none" }} to="/tableusers">
+                <StatCard
+                  title="Les utilisateurs"
+                  value={stats.activeUsers}
+                  icon={<GroupIcon sx={{ color: "purple" }} />}
+                  color="#976ffa"
+                />
+              </Link>
             </Grid>
           </Grid>
           <Paper sx={{ p: 3 }}>

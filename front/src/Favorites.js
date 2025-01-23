@@ -19,7 +19,7 @@ function Favorites() {
 
       try {
         const response = await fetch(
-          "http://37.187.225.41:3002/api/v1/products/likes",
+          `${process.env.REACT_APP_API_BASE_URL}/products/likes`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
