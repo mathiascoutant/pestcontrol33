@@ -11,7 +11,8 @@ function Layout({ children }) {
         location.pathname !== "/register" && <Header />}
       <main>{children}</main>
       {location.pathname !== "/connexion" &&
-        location.pathname !== "/register" && <Footer />}
+        location.pathname !== "/register" &&
+        location.pathname !== "/contact" && <Footer />}
     </div>
   );
 }

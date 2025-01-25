@@ -31,6 +31,7 @@ function Dashboard() {
     totalRevenue: 0,
     activeUsers: 0,
     totalProducts: 0,
+    totalReviews: 0,
   });
 
   useEffect(() => {
@@ -48,6 +49,15 @@ function Dashboard() {
       .then((response) => response.json())
       .then((data) => {
         setStats((prev) => ({ ...prev, totalProducts: data.length }));
+      })
+      .catch((error) => console.error("Erreur:", error));
+  }, []);
+
+  useEffect(() => {
+    fetch(`http://localhost:3002/api/v1/comment/latest`)
+      .then((response) => response.json())
+      .then((data) => {
+        setStats((prev) => ({ ...prev, totalReviews: data.length }));
       })
       .catch((error) => console.error("Erreur:", error));
   }, []);
@@ -148,8 +158,8 @@ function Dashboard() {
             <Grid item xs={12} sm={6} md={3}>
               <Link style={{ textDecoration: "none" }} to="/reviews">
                 <StatCard
-                  title="Mes avis"
-                  value={stats.activeUsers}
+                  title={`Mes avis`}
+                  value={stats.totalReviews}
                   icon={<StarBorderIcon sx={{ color: "#f2fa02" }} />}
                   color="#f1e447"
                 />
@@ -158,8 +168,8 @@ function Dashboard() {
             <Grid item xs={12} sm={6} md={3}>
               <Link style={{ textDecoration: "none" }} to="/tableusers">
                 <StatCard
-                  title="Les utilisateurs"
-                  value={stats.activeUsers}
+                  title={`Les utilisateurs`}
+                  value={stats.totalUsers}
                   icon={<GroupIcon sx={{ color: "purple" }} />}
                   color="#976ffa"
                 />

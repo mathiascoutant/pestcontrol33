@@ -126,18 +126,36 @@ function AllProduct() {
         throw new Error("Aucun produit sélectionné pour la mise à jour.");
       }
 
+      // S'assurer que tous les champs numériques sont bien des nombres
       const simplifiedProduct = {
-        id: currentProduct.id,
-        nom: currentProduct.nom,
-        prix: parseFloat(currentProduct.prix),
-        description: currentProduct.description,
-        stock: parseInt(currentProduct.stock, 10),
-        conseilsUtilisation: currentProduct.conseilsUtilisation || "",
+        nom: currentProduct.nom?.trim(),
+        prix: currentProduct.prix ? Number(currentProduct.prix) : 0,
+        description: currentProduct.description?.trim(),
+        stock: currentProduct.stock ? Number(currentProduct.stock) : 0,
+        conseilsUtilisation: currentProduct.conseilsUtilisation?.trim() || "",
+        newPrice: currentProduct.newPrice
+          ? Number(currentProduct.newPrice)
+          : null,
+        discount: currentProduct.discount
+          ? Number(currentProduct.discount)
+          : null,
+        status: 1, // Ajout du status si nécessaire
       };
+
+      // Vérifier qu'aucune valeur n'est NaN
+      if (
+        isNaN(simplifiedProduct.prix) ||
+        isNaN(simplifiedProduct.stock) ||
+        (simplifiedProduct.newPrice !== null &&
+          isNaN(simplifiedProduct.newPrice)) ||
+        (simplifiedProduct.discount !== null &&
+          isNaN(simplifiedProduct.discount))
+      ) {
+        throw new Error("Les valeurs numériques sont invalides");
+      }
 
       console.log("Données à envoyer :", simplifiedProduct);
 
-      // Update the product
       const updateResponse = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/products/${currentProduct.id}`,
         {
@@ -150,25 +168,30 @@ function AllProduct() {
         }
       );
 
-      const data = await updateResponse.json();
-      console.log("API Response:", data);
-
       if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
         throw new Error(
-          data.message || "Erreur lors de la mise à jour du produit"
+          errorData.message || "Erreur lors de la mise à jour du produit"
         );
       }
 
-      // Update the product list
+      const data = await updateResponse.json();
+      console.log("API Response:", data);
+
+      // Mise à jour de la liste des produits
       setProducts(
         products.map((product) =>
-          product.id === currentProduct.id ? currentProduct : product
+          product.id === currentProduct.id
+            ? { ...product, ...simplifiedProduct }
+            : product
         )
       );
 
       setSnackbarMessage("Produit mis à jour avec succès !");
       setOpenSnackbar(true);
+      handleCloseModal();
 
+      // Navigation après succès
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
@@ -410,6 +433,31 @@ function AllProduct() {
                   setCurrentProduct({
                     ...currentProduct,
                     prix: e.target.value,
+                  })
+                }
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Nouveau Prix"
+                value={currentProduct.newPrice || ""}
+                onChange={(e) =>
+                  setCurrentProduct({
+                    ...currentProduct,
+                    newPrice: e.target.value,
+                  })
+                }
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Réduction (%)"
+                type="number"
+                value={currentProduct.discount || ""}
+                onChange={(e) =>
+                  setCurrentProduct({
+                    ...currentProduct,
+                    discount: e.target.value,
                   })
                 }
                 fullWidth

@@ -8,7 +8,9 @@ import {
   Snackbar,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import fondImage from "../../Assets/landing.jpg";
+
 function RegisterForm() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -22,6 +24,7 @@ function RegisterForm() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -82,105 +85,156 @@ function RegisterForm() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth={false} disableGutters>
       <Box
-        component="form"
-        onSubmit={handleSubmit}
         sx={{
-          mt: 18,
           display: "flex",
-          flexDirection: "column",
+          height: "100vh",
+          width: "100vw",
           alignItems: "center",
-          justifyContent: "center",
-          gap: 2,
+          overflow: "hidden",
         }}
       >
-        <Typography variant="h4" sx={{ textAlign: "center", mb: 4 }}>
-          Inscription
-        </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        <TextField
-          required
-          fullWidth
-          label="Nom"
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
+        {/* Image côté gauche */}
+        <Box
+          sx={{
+            width: "50%",
+            height: "100vh",
+            display: { xs: "none", md: "block" },
+            backgroundImage: `url(${fondImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
         />
 
-        <TextField
-          required
-          fullWidth
-          label="Prénom"
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-        />
-
-        <TextField
-          fullWidth
-          label="Pseudo"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-        />
-
-        <TextField
-          required
-          fullWidth
-          label="Email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-
-        <TextField
-          required
-          fullWidth
-          label="Mot de passe"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-
-        <TextField
-          required
-          fullWidth
-          label="Confirmer le mot de passe"
-          name="confirmPassword"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-        />
-
-        <Button type="submit" variant="contained" size="large" sx={{ mt: 2 }}>
-          S'inscrire
-        </Button>
-      </Box>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          variant="filled"
-          sx={{ width: "100%" }}
+        {/* Formulaire côté droit */}
+        <Box
+          sx={{
+            width: "50%",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            p: 4,
+          }}
         >
-          {successMessage}
-        </Alert>
-      </Snackbar>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              width: "100%",
+              maxWidth: "500px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 2,
+            }}
+          >
+            <Typography variant="h3" sx={{ textAlign: "center", mb: 4 }}>
+              Inscription
+            </Typography>
+
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+
+            <TextField
+              required
+              fullWidth
+              label="Nom"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+
+            <TextField
+              required
+              fullWidth
+              label="Prénom"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+            />
+
+            <TextField
+              fullWidth
+              label="Pseudo"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+            />
+
+            <TextField
+              required
+              fullWidth
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+
+            <TextField
+              required
+              fullWidth
+              label="Mot de passe"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+
+            <TextField
+              required
+              fullWidth
+              label="Confirmer le mot de passe"
+              name="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                gap: 2,
+              }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                sx={{ mt: 2 }}
+              >
+                S'inscrire
+              </Button>
+              <Button component={Link} to="/connexion" variant="contained">
+                Retour
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="success"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {successMessage}
+          </Alert>
+        </Snackbar>
+      </Box>
     </Container>
   );
 }

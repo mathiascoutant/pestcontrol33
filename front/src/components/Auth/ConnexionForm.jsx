@@ -7,9 +7,11 @@ import {
   Snackbar,
   Alert,
   Divider,
+  Container,
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import fondImage from "../../Assets/fond.png";
 
 function ConnexionForm() {
   const navigate = useNavigate();
@@ -50,84 +52,132 @@ function ConnexionForm() {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-      }}
-    >
+    <Container maxWidth={false} disableGutters>
       <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{ maxWidth: 400, mx: "auto", mt: 3 }}
+        sx={{
+          display: "flex",
+          height: "100vh",
+          width: "100vw",
+          alignItems: "center",
+          overflow: "hidden",
+        }}
       >
-        <Typography
-          variant="h4"
-          sx={{ textAlign: "center", mt: 5 }}
-          gutterBottom
+        {/* Formulaire côté gauche */}
+        <Box
+          sx={{
+            width: "50%",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            p: 4,
+          }}
         >
-          Connexion
-        </Typography>
-        <TextField
-          fullWidth
-          label="Email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Mot de passe"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-        <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
-          Se connecter
-        </Button>
-        <Divider sx={{ mt: 3 }} />
-        <Typography variant="body1" sx={{ textAlign: "center", mt: 2 }}>
-          Vous n'avez pas de compte ?
-          <Typography
-            component={Link}
-            to="/register"
-            variant="contained"
-            sx={{ textDecoration: "none", color: "primary.main", ml: 1 }}
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              width: "100%",
+              maxWidth: "500px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 2,
+            }}
           >
-            Inscription
-          </Typography>
-        </Typography>
+            <Typography variant="h3" sx={{ textAlign: "center", mb: 4 }}>
+              Connexion
+            </Typography>
+
+            <TextField
+              fullWidth
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <TextField
+              fullWidth
+              label="Mot de passe"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "100%",
+                gap: 2,
+              }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{ fontSize: "1.2em" }}
+              >
+                Se connecter
+              </Button>
+              <Typography variant="body2">
+                Vous avez oublié votre mot de passe ?
+              </Typography>
+              <Divider sx={{ width: "100%", my: 2 }} />
+              <Typography variant="body1">
+                Vous n'avez pas de compte ?
+                <Typography
+                  component={Link}
+                  to="/register"
+                  variant="contained"
+                  sx={{ textDecoration: "none", color: "primary.main", ml: 1 }}
+                >
+                  Inscription
+                </Typography>
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Image côté droit */}
+        <Box
+          sx={{
+            width: "50%",
+            height: "100vh",
+            display: { xs: "none", md: "block" },
+            backgroundImage: `url(${fondImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000}
+          onClose={() => setOpenSnackbar(false)}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert severity="success" sx={{ width: "100%" }}>
+            Connexion réussie
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={!!error}
+          autoHideDuration={3000}
+          onClose={() => setError("")}
+        >
+          <Alert severity="error" sx={{ width: "100%" }}>
+            {error}
+          </Alert>
+        </Snackbar>
       </Box>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          Connexion réussie
-        </Alert>
-      </Snackbar>
-
-      <Snackbar
-        open={!!error}
-        autoHideDuration={3000}
-        onClose={() => setError("")}
-      >
-        <Alert severity="error" sx={{ width: "100%" }}>
-          {error}
-        </Alert>
-      </Snackbar>
-    </Box>
+    </Container>
   );
 }
 
