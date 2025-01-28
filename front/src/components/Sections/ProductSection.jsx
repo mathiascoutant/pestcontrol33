@@ -5,6 +5,9 @@ import CardProduct from "../Layouts/CardProduct";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const ProductSection = ({ products }) => {
+  // Vérifiez si products est un tableau
+  const displayedProducts = Array.isArray(products) ? products.slice(0, 4) : [];
+
   return (
     <Box sx={{ mt: 4, p: 2, px: 10, py: 5 }}>
       <Typography
@@ -28,7 +31,7 @@ const ProductSection = ({ products }) => {
           gap: 2,
         }}
       >
-        {products.slice(0, 4).map((product) => (
+        {displayedProducts.map((product) => (
           <CardProduct
             key={product.id}
             id={product.id}
