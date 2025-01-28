@@ -26,6 +26,9 @@ function Shop() {
         const response = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/products/`
         );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         if (Array.isArray(data)) {
           setProducts(data);
@@ -35,6 +38,7 @@ function Shop() {
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des produits:", error);
+        setProducts([]);
       }
     };
 

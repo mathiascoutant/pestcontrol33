@@ -26,11 +26,6 @@ function Profil() {
     prenom: "",
     pseudo: "",
     email: "",
-    telephone: "",
-    adresse: "",
-    codePostal: "",
-    ville: "",
-    pays: "",
   });
 
   const [error, setError] = useState(null);
@@ -54,11 +49,6 @@ function Profil() {
             prenom: userData.prenom || "",
             pseudo: userData.pseudo || "",
             email: userData.email || "",
-            telephone: userData.telephone || "",
-            adresse: userData.adresse || "",
-            codePostal: userData.codePostal || "",
-            ville: userData.ville || "",
-            pays: userData.pays || "",
           });
         } else {
           setError("Utilisateur non trouvé");
@@ -171,41 +161,6 @@ function Profil() {
             label="Email"
             name="email"
             value={user.email || ""}
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            label="Téléphone"
-            name="telephone"
-            value={user.telephone || ""}
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            label="Adresse"
-            name="adresse"
-            value={user.adresse || ""}
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            label="Code postal"
-            name="codePostal"
-            value={user.codePostal || ""}
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            label="Ville"
-            name="ville"
-            value={user.ville || ""}
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            label="Pays"
-            name="pays"
-            value={user.pays || ""}
             onChange={handleChange}
             fullWidth
           />

@@ -21,8 +21,9 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
+
 const stripePromise = loadStripe(
-  "pk_test_51QkAjEIWqZbBBAd3rY52zGGPf0g9KM7irR9u0y8blhhLgunDKP8yeB4hZ5vemuUIdk4ItZ1KX1GFMhhgCufRoKWM00JAGsG9HE"
+  "pk_live_51QlSlkBizCqLJgK04f6a2DgzD4HRRQOQGhjKELqBcZSOyUxTzY9zQOuH0m7a7aJ4TqneQQe1sHmsAEetlervbn6200MvoCCXb9"
 );
 
 const PersonalInfoForm = ({
@@ -310,9 +311,6 @@ const PaymentForm = () => {
       setError(err.message || "Une erreur est survenue lors du paiement");
     } finally {
       setIsLoading(false);
-      setTimeout(() => {
-        navigate("/");
-      }, 3000);
     }
   };
 

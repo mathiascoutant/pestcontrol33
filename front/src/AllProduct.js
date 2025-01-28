@@ -370,7 +370,7 @@ function AllProduct() {
         onClose={() => setOpenSnackbar(false)}
         message={snackbarMessage}
       >
-        <Alert severity="success">Produit mis à jour avec succès !</Alert>
+        <Alert severity="success">Produit supprimé avec succès !</Alert>
       </Snackbar>
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box

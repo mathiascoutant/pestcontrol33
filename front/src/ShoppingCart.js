@@ -292,7 +292,7 @@ function ShoppingCart() {
                     <TableRow>
                       <TableCell>Produits</TableCell>
                       <TableCell>Prix</TableCell>
-                      <TableCell>Quantiter</TableCell>
+                      <TableCell>Quantité</TableCell>
                       <TableCell>Sous-Total</TableCell>
                       <TableCell></TableCell>
                     </TableRow>
