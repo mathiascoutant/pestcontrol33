@@ -40,7 +40,7 @@ function Profil() {
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.userId;
 
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/users/${userId}`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}users/${userId}`)
       .then((response) => response.json())
       .then((userData) => {
         if (userData) {
@@ -70,7 +70,7 @@ function Profil() {
     if (token) {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/users/`,
+          `${process.env.REACT_APP_API_BASE_URL}users/`,
           {
             method: "PUT",
             headers: {

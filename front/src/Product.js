@@ -45,7 +45,7 @@ function Product() {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/products/${id}`
+          `${process.env.REACT_APP_API_BASE_URL}products/${id}`
         );
         const data = await response.json();
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -69,7 +69,7 @@ function Product() {
   const fetchSimilarProducts = useCallback(async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/products`
+        `${process.env.REACT_APP_API_BASE_URL}products`
       );
       const data = await response.json();
       setSimilarProducts(data);
@@ -85,7 +85,7 @@ function Product() {
   const fetchReviews = useCallback(async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/comment/${id}`
+        `${process.env.REACT_APP_API_BASE_URL}comment/${id}`
       );
       const data = await response.json();
       setCustomerReviews(data.comments);
@@ -116,7 +116,7 @@ function Product() {
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/shopping/add`,
+        `${process.env.REACT_APP_API_BASE_URL}shopping/add`,
         {
           method: "POST",
           headers: {

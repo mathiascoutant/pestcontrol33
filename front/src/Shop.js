@@ -24,7 +24,7 @@ function Shop() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/products/`
+          `${process.env.REACT_APP_API_BASE_URL}products/`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

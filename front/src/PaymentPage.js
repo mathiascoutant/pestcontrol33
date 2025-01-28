@@ -164,7 +164,7 @@ const PaymentForm = () => {
 
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/shopping/`,
+          `${process.env.REACT_APP_API_BASE_URL}shopping/`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -178,7 +178,7 @@ const PaymentForm = () => {
 
         for (const item of cartItems) {
           const productResponse = await fetch(
-            `${process.env.REACT_APP_API_BASE_URL}/products/${item.productId}`,
+            `${process.env.REACT_APP_API_BASE_URL}products/${item.productId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -278,7 +278,7 @@ const PaymentForm = () => {
       console.log("Données envoyées au serveur:", requestBody);
 
       const createPaymentResponse = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/payments/stripe/add`,
+        `${process.env.REACT_APP_API_BASE_URL}payments/stripe/add`,
         {
           method: "POST",
           headers: {
@@ -305,6 +305,10 @@ const PaymentForm = () => {
       if (paymentData.status === "succeeded") {
         handleNext();
         setOpenSnackbar(true);
+
+        setTimeout(() => {
+          navigate("/");
+        }, 60000);
       }
     } catch (err) {
       console.error("Erreur complète:", err);

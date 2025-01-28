@@ -39,7 +39,7 @@ function AddComment() {
       };
       console.log("Données envoyées:", payload);
       await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/comment/add`,
+        `${process.env.REACT_APP_API_BASE_URL}comment/add`,
         payload,
         {
           headers: {

@@ -19,7 +19,7 @@ function Favorites() {
 
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/products/likes`,
+          `${process.env.REACT_APP_API_BASE_URL}products/likes`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

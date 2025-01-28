@@ -33,7 +33,7 @@ function ConnexionForm() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/auth/login`,
+        `${process.env.REACT_APP_API_BASE_URL}auth/login`,
         formData
       );
 

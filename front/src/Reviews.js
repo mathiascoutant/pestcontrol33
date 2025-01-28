@@ -29,7 +29,7 @@ function Reviews() {
   const fetchReviews = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3002/api/v1/comment/latest"
+        `${process.env.REACT_APP_API_BASE_URL}comment/latest`
       );
       const data = await response.json();
       console.log("Données récupérées :", data);
@@ -41,7 +41,9 @@ function Reviews() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:3002/api/v1/products");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}products`
+      );
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -60,16 +62,19 @@ function Reviews() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3002/api/v1/comment/`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          commentId: id,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}comment/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            commentId: id,
+          }),
+        }
+      );
 
       if (response.ok) {
         const result = await response.json();
