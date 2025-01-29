@@ -18,7 +18,7 @@ function TableUsers() {
   useEffect(() => {
     const fetchUsers = async () => {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}users`
+        `${process.env.REACT_APP_API_BASE_URL}/users`
       );
       const data = await response.json();
       setUsers(data);

@@ -29,7 +29,7 @@ function Reviews() {
   const fetchReviews = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}comment/latest`
+        `${process.env.REACT_APP_API_BASE_URL}/comment/latest`
       );
       const data = await response.json();
       console.log("Données récupérées :", data);
@@ -42,7 +42,7 @@ function Reviews() {
   const fetchProducts = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}products`
+        `${process.env.REACT_APP_API_BASE_URL}/products`
       );
       const data = await response.json();
       setProducts(data);
@@ -63,7 +63,7 @@ function Reviews() {
       }
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}comment/`,
+        `${process.env.REACT_APP_API_BASE_URL}/comment/`,
         {
           method: "DELETE",
           headers: {

@@ -35,7 +35,7 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}users`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users`)
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
@@ -45,7 +45,7 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}products`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/products`)
       .then((response) => response.json())
       .then((data) => {
         setStats((prev) => ({ ...prev, totalProducts: data.length }));
@@ -54,7 +54,7 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}comment/latest`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/comment/latest`)
       .then((response) => response.json())
       .then((data) => {
         setStats((prev) => ({ ...prev, totalReviews: data.length }));

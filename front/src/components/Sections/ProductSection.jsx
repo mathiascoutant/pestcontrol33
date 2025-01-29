@@ -5,7 +5,6 @@ import CardProduct from "../Layouts/CardProduct";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const ProductSection = ({ products }) => {
-  // Vérifiez si products est un tableau
   const displayedProducts = Array.isArray(products) ? products.slice(0, 4) : [];
 
   return (

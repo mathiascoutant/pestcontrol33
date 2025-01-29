@@ -35,7 +35,7 @@ function ShoppingCart() {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}shopping/`,
+        `${process.env.REACT_APP_API_BASE_URL}/shopping/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ function ShoppingCart() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}products/${productId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/products/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -112,7 +112,7 @@ function ShoppingCart() {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}shopping/`,
+        `${process.env.REACT_APP_API_BASE_URL}/shopping/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -153,7 +153,7 @@ function ShoppingCart() {
 
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_BASE_URL}shopping/`,
+        `${process.env.REACT_APP_API_BASE_URL}/shopping/`,
         {
           data: {
             productId,
