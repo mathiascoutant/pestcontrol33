@@ -8,11 +8,13 @@ function Layout({ children }) {
   return (
     <div>
       {location.pathname !== "/connexion" &&
-        location.pathname !== "/register" && <Header />}
+        location.pathname !== "/register" &&
+        location.pathname !== "/updatepassword" && <Header />}
       <main>{children}</main>
       {location.pathname !== "/connexion" &&
         location.pathname !== "/register" &&
-        location.pathname !== "/contact" && <Footer />}
+        location.pathname !== "/contact" &&
+        location.pathname !== "/updatepassword" && <Footer />}
     </div>
   );
 }

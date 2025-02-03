@@ -21,6 +21,9 @@ import Invoices from "./Invoices";
 import Reviews from "./Reviews";
 import TableUsers from "./TableUsers";
 import PaymentPage from "./PaymentPage";
+import UpdatePassword from "./UpdatePassword";
+import AddDiscount from "./AddDiscount";
+
 function App() {
   return (
     <Router>
@@ -39,11 +42,13 @@ function App() {
           <Route path="/profil" element={<Profil />} />
           <Route path="/commande" element={<Commande />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/updatepassword" element={<UpdatePassword />} />
           <Route path="/connexion" element={<Connexion />} />
           <Route path="/product/:id" element={<Product />} />
           <Route path="/ongoingorders" element={<OngoingOrders />} />
           <Route path="/completedorders" element={<CompletedOrders />} />
           <Route path="/invoices" element={<Invoices />} />
+          <Route path="/adddiscount" element={<AddDiscount />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/tableusers" element={<TableUsers />} />
           <Route path="/payment" element={<PaymentPage />} />

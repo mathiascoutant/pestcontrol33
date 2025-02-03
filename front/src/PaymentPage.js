@@ -39,6 +39,8 @@ const PersonalInfoForm = ({
   setCity,
   postalCode,
   setPostalCode,
+  phone,
+  setPhone,
 }) => (
   <Box sx={{ p: 2 }}>
     <Typography variant="h6" sx={{ mb: 4, fontWeight: 500 }}>
@@ -68,6 +70,21 @@ const PersonalInfoForm = ({
           required
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
+          variant="outlined"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "#fff",
+            },
+          }}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          label="Numéro de téléphone"
+          fullWidth
+          required
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
           variant="outlined"
           sx={{
             "& .MuiOutlinedInput-root": {
@@ -154,6 +171,7 @@ const PaymentForm = () => {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
+  const [phone, setPhone] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
@@ -220,7 +238,8 @@ const PaymentForm = () => {
         !email ||
         !address ||
         !city ||
-        !postalCode
+        !postalCode ||
+        !phone
       ) {
         setError("Veuillez remplir tous les champs obligatoires");
         return;
@@ -405,6 +424,8 @@ const PaymentForm = () => {
                 setCity={setCity}
                 postalCode={postalCode}
                 setPostalCode={setPostalCode}
+                phone={phone}
+                setPhone={setPhone}
               />
             </Grid>
             <Grid item xs={12} md={5}>

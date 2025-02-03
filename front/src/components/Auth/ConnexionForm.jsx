@@ -125,7 +125,12 @@ function ConnexionForm() {
               >
                 Se connecter
               </Button>
-              <Typography variant="body2">
+              <Typography
+                component={Link}
+                to="/updatepassword"
+                sx={{ textDecoration: "none", color: "inherit" }}
+                variant="body2"
+              >
                 Vous avez oublié votre mot de passe ?
               </Typography>
               <Divider sx={{ width: "100%", my: 2 }} />

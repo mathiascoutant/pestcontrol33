@@ -32,10 +32,29 @@ function Contact() {
     setSnackbar({ ...snackbar, open: false });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(formData);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/contact/add`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            to: "technique@pestcontrol33.com",
+            subject: formData.type,
+            text: formData.message,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'envoi du message");
+      }
+
       setSnackbar({
         open: true,
         message: "Message envoyé avec succès !",
@@ -178,9 +197,6 @@ function Contact() {
             fontSize: "1rem",
             fontWeight: "bold",
             textTransform: "none",
-            "&:hover": {
-              backgroundColor: "#1e3c30",
-            },
             boxShadow: "0 2px 8px rgb(44 85 69 / 0.3)",
           }}
         >

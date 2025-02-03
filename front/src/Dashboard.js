@@ -32,6 +32,7 @@ function Dashboard() {
     activeUsers: 0,
     totalProducts: 0,
     totalReviews: 0,
+    totalDiscounts: 0,
   });
 
   useEffect(() => {
@@ -58,6 +59,21 @@ function Dashboard() {
       .then((response) => response.json())
       .then((data) => {
         setStats((prev) => ({ ...prev, totalReviews: data.length }));
+      })
+      .catch((error) => console.error("Erreur:", error));
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/discountShopping`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setStats((prev) => ({ ...prev, totalDiscounts: data.length }));
       })
       .catch((error) => console.error("Erreur:", error));
   }, []);
@@ -152,6 +168,18 @@ function Dashboard() {
                   value={stats.activeUsers}
                   icon={<LibraryBooksOutlinedIcon sx={{ color: "#f44336" }} />}
                   color="#f44336"
+                />
+              </Link>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Link style={{ textDecoration: "none" }} to="/adddiscount">
+                <StatCard
+                  title="Code promo"
+                  value={stats.totalDiscounts}
+                  icon={
+                    <NotificationsNoneOutlinedIcon sx={{ color: "#2196f3" }} />
+                  }
+                  color="#2196f3"
                 />
               </Link>
             </Grid>
