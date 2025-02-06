@@ -10,6 +10,7 @@ import {
   Alert,
 } from "@mui/material";
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function UpdatePassword() {
   const [step, setStep] = useState(0);
@@ -20,6 +21,8 @@ function UpdatePassword() {
   const [error, setError] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [resetId, setResetId] = useState(null);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const navigate = useNavigate("");
 
   const handleEmailSubmit = async () => {
     try {
@@ -43,6 +46,8 @@ function UpdatePassword() {
       setResetId(data.forgetpassword.id);
       setStep(1);
       setError(null);
+      setSnackbarMessage("Code envoyé avec succès !");
+      setOpenSnackbar(true);
     } catch (err) {
       setError(err.message);
     }
@@ -78,6 +83,8 @@ function UpdatePassword() {
 
       setStep(2);
       setError(null);
+      setSnackbarMessage("Code vérifié avec succès !");
+      setOpenSnackbar(true);
     } catch (err) {
       setError(err.message);
     }
@@ -107,8 +114,11 @@ function UpdatePassword() {
         );
       }
 
+      setSnackbarMessage("Mot de passe réinitialisé avec succès !");
       setOpenSnackbar(true);
-      setError(null);
+      setTimeout(() => {
+        navigate("/connexion");
+      }, 3000);
     } catch (err) {
       setError(err.message);
     }
@@ -128,7 +138,7 @@ function UpdatePassword() {
         backgroundColor: "#f5f5f5",
       }}
     >
-      <Typography variant="h4" sx={{ textAlign: "center", my: 5 }}>
+      <Typography variant="h4" sx={{ textAlign: "center", mb: 8 }}>
         Récupération de mot de passe
       </Typography>
       <Stepper activeStep={step} sx={{ mb: 4 }}>
@@ -152,15 +162,25 @@ function UpdatePassword() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             fullWidth
-            sx={{ my: 5 }} // Marge en bas
+            sx={{ my: 10 }} // Marge en bas
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleEmailSubmit}
-          >
-            Envoyer le code
-          </Button>
+          <Box sx={{ display: "flex", gap: 1.5 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              component={Link}
+              to="/connexion"
+            >
+              Retour
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEmailSubmit}
+            >
+              Envoyer le code
+            </Button>
+          </Box>
         </Box>
       )}
       {step === 1 && (
@@ -176,15 +196,25 @@ function UpdatePassword() {
             value={code}
             onChange={(e) => setCode(e.target.value)}
             fullWidth
-            sx={{ mb: 2 }} // Marge en bas
+            sx={{ my: 10 }} // Marge en bas
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCodeSubmit}
-          >
-            Vérifier le code
-          </Button>
+          <Box sx={{ display: "flex", gap: 1.5 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              component={Link}
+              to="/connexion"
+            >
+              Retour
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCodeSubmit}
+            >
+              Vérifier le code
+            </Button>
+          </Box>
         </Box>
       )}
       {step === 2 && (
@@ -201,7 +231,7 @@ function UpdatePassword() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
-            sx={{ mb: 2 }} // Marge en bas
+            sx={{ mt: 10 }} // Marge en bas
           />
           <TextField
             label="Confirmer le mot de passe"
@@ -209,15 +239,25 @@ function UpdatePassword() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             fullWidth
-            sx={{ mb: 2 }} // Marge en bas
+            sx={{ my: 2 }} // Marge en bas
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handlePasswordReset}
-          >
-            Réinitialiser le mot de passe
-          </Button>
+          <Box sx={{ display: "flex", gap: 1.5 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              component={Link}
+              to="/connexion"
+            >
+              Retour
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handlePasswordReset}
+            >
+              Réinitialiser le mot de passe
+            </Button>
+          </Box>
         </Box>
       )}
 
@@ -234,7 +274,7 @@ function UpdatePassword() {
         onClose={() => setOpenSnackbar(false)}
       >
         <Alert severity="success" sx={{ width: "100%" }}>
-          Mot de passe réinitialisé avec succès !
+          {snackbarMessage}
         </Alert>
       </Snackbar>
     </Box>

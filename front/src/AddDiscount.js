@@ -14,6 +14,7 @@ import {
   Modal,
   TextField,
   Button,
+  MenuItem,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -48,7 +49,7 @@ function AddDiscount() {
         const data = await response.json();
         setDiscountCodes(data.discountCodes || []);
       } catch (err) {
-        console.Error(err.message);
+        console.error(err.message);
       }
     };
 
@@ -91,12 +92,29 @@ function AddDiscount() {
         return;
       }
 
+      // Vérification des champs requis
+      if (
+        !currentCode.id ||
+        !currentCode.code ||
+        !currentCode.discount ||
+        !currentCode.startDate ||
+        !currentCode.endDate
+      ) {
+        setSnackbarMessage("Tous les champs sont obligatoires.");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+        return;
+      }
+
       const body = {
         id: currentCode.id,
         code: currentCode.code,
         discount: currentCode.discount,
         startDate: currentCode.startDate,
         endDate: currentCode.endDate,
+        fonction: currentCode.fonction, // Ajoutez d'autres champs si nécessaire
+        multiUsage: currentCode.multiUsage,
+        nbrAutorisationUsage: currentCode.nbrAutorisationUsage,
       };
 
       const response = await fetch(
@@ -260,7 +278,9 @@ function AddDiscount() {
               discountCodes.map((code) => (
                 <TableRow key={code.id}>
                   <TableCell align="center">{code.code}</TableCell>
-                  <TableCell align="center">{code.discount}</TableCell>
+                  <TableCell align="center">
+                    {code.discount} {code.fonction}
+                  </TableCell>
                   <TableCell align="center">
                     {new Date(code.startDate).toLocaleDateString()}
                   </TableCell>
@@ -324,6 +344,21 @@ function AddDiscount() {
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
               />
+
+              <TextField
+                label="Fonction"
+                select
+                value={currentCode.fonction || ""}
+                onChange={(e) =>
+                  setCurrentCode({ ...currentCode, fonction: e.target.value })
+                }
+                fullWidth
+                margin="normal"
+                InputLabelProps={{ shrink: true }}
+              >
+                <MenuItem value="%">%</MenuItem>
+                <MenuItem value="€">€</MenuItem>
+              </TextField>
               <TextField
                 label="Date de début"
                 type="datetime-local"
@@ -348,9 +383,27 @@ function AddDiscount() {
               />
               <TextField
                 label="Statut"
+                select
                 value={currentCode.status || ""}
                 onChange={(e) =>
                   setCurrentCode({ ...currentCode, status: e.target.value })
+                }
+                fullWidth
+                margin="normal"
+                InputLabelProps={{ shrink: true }}
+              >
+                <MenuItem value="Actif">Actif</MenuItem>
+                <MenuItem value="Expiré">Expiré</MenuItem>
+              </TextField>
+              <TextField
+                label="Nombre d'utilisations autorisées"
+                type="number"
+                value={currentCode.nbrAutorisationUsage || ""}
+                onChange={(e) =>
+                  setCurrentCode({
+                    ...currentCode,
+                    nbrAutorisationUsage: Number(e.target.value),
+                  })
                 }
                 fullWidth
                 margin="normal"
