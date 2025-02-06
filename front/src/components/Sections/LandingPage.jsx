@@ -1,68 +1,42 @@
 import React from "react";
-import { Box, Card, Typography, Button } from "@mui/material";
-import { Link } from "react-router-dom";
-import backgroundImage from "../../Assets/landing.jpg";
+import { Box, Typography } from "@mui/material";
+import backgroundImage from "../../Assets/landing.png";
+import backgroundPhone from "../../Assets/landingPhone.png";
 
 function LandingPage() {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        minHeight: "60vh",
         width: "100%",
-        margin: 0,
-        padding: 0,
         position: "relative",
         overflow: "hidden",
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "bottom",
+        backgroundImage: {
+          xs: `url(${backgroundPhone})`,
+          sm: `url(${backgroundImage})`,
+        },
+        backgroundSize: "contain",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
         display: "flex",
-        justifyContent: "flex-end",
+        justifyContent: "center",
         alignItems: "center",
+        mt: 7,
+        mb: { xs: 12, sm: 2 },
       }}
     >
-      <Card
+      <Typography
+        variant="h4"
         sx={{
-          maxWidth: 500,
-          padding: 4,
-          marginRight: 8,
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
-          borderRadius: 2,
+          color: "black",
+          textAlign: "center",
+          fontSize: { xs: "2rem", sm: "3rem", md: "3rem" },
+          borderBottom: 1.5,
+          pb: 0.5,
         }}
       >
-        <Typography variant="h6" gutterBottom>
-          Bienvenue chez
-        </Typography>
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          color="primary"
-          sx={{ fontWeight: "bold" }}
-        >
-          PestControl33
-        </Typography>
-        <Typography variant="body1" paragraph sx={{ mb: 4 }}>
-          Experts en désinsectisation, nous vous accompagnons dans la lutte
-          contre les nuisibles. Nos produits sont de haute qualité et
-          garantissent une efficacité maximale.
-        </Typography>
-        <Button
-          component={Link}
-          to="/shop"
-          variant="contained"
-          color="primary"
-          size="large"
-          sx={{
-            textTransform: "none",
-            borderRadius: 2,
-            padding: "10px 30px",
-            color: "#FFF",
-          }}
-        >
-          Découvrir nos produits
-        </Button>
-      </Card>
+        PestControl33
+      </Typography>
     </Box>
   );
 }

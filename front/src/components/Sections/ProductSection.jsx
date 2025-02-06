@@ -8,7 +8,7 @@ const ProductSection = ({ products }) => {
   const displayedProducts = Array.isArray(products) ? products.slice(0, 4) : [];
 
   return (
-    <Box sx={{ mt: 4, p: 2, px: 10, py: 5 }}>
+    <Box sx={{ p: 2, px: 10, py: 2 }}>
       <Typography
         variant="h6"
         sx={{

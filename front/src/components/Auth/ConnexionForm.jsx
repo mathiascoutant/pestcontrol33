@@ -128,12 +128,16 @@ function ConnexionForm() {
               <Typography
                 component={Link}
                 to="/updatepassword"
-                sx={{ textDecoration: "none", color: "inherit" }}
-                variant="body2"
+                variant="contained"
+                sx={{
+                  textDecoration: "none",
+                  color: "black",
+                  "&:hover": { color: "primary.main" },
+                }}
               >
                 Vous avez oublié votre mot de passe ?
               </Typography>
-              <Divider sx={{ width: "100%", my: 2 }} />
+              <Divider sx={{ width: "100%", my: 1 }} />
               <Typography variant="body1">
                 Vous n'avez pas de compte ?
                 <Typography
