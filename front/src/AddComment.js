@@ -98,7 +98,7 @@ function AddComment() {
             >
               <ArrowBackIcon />
             </IconButton>
-            Ajouter un Commentaire
+            Ajouter un Avis
           </Typography>
           <form
             ref={formRef}
@@ -111,13 +111,20 @@ function AddComment() {
               margin: "auto",
             }}
           >
-            <TextField
-              label="Notation"
-              value={notation}
-              onChange={(e) => setNotation(e.target.value)}
-              required
-              sx={{ width: "100%" }}
-            />
+            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <IconButton
+                  key={star}
+                  onClick={() => setNotation(star)}
+                  sx={{
+                    color: notation >= star ? "#f5e969" : "default",
+                    fontSize: 30,
+                  }}
+                >
+                  ★
+                </IconButton>
+              ))}
+            </Box>
             <TextField
               label="Commentaire"
               value={comment}
@@ -128,7 +135,7 @@ function AddComment() {
               sx={{ width: "100%", mb: 2 }}
             />
             <Button type="submit" variant="contained" color="primary">
-              Ajouter un avis
+              Soumettre
             </Button>
           </form>
         </CardContent>

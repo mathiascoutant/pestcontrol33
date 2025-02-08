@@ -36,6 +36,8 @@ function Product() {
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
   const reviewsRef = useRef(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -146,11 +148,54 @@ function Product() {
           cart.push({ productId, quantity }); // Ajouter le produit avec la quantité
         }
         localStorage.setItem("cart", JSON.stringify(cart));
+
+        setSnackbarMessage("Le produit a été ajouté au panier !");
       } else {
         console.error("Erreur lors de l'ajout au panier :", data);
       }
     } catch (error) {
       console.error("Erreur lors de l'ajout au panier :", error);
+    }
+  };
+
+  const addToFavorites = async (productId) => {
+    const token = localStorage.getItem("token");
+    const url = isFavorite
+      ? `${process.env.REACT_APP_API_BASE_URL}/products/unlike`
+      : `${process.env.REACT_APP_API_BASE_URL}/products/like`;
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ productId }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setIsFavorite(!isFavorite);
+        setOpenSnackbar(true);
+
+        setSnackbarMessage(
+          isFavorite
+            ? "Produit retiré des favoris !"
+            : "Produit ajouté aux favoris !"
+        );
+
+        console.log(
+          isFavorite
+            ? "Produit retiré des favoris :"
+            : "Produit ajouté aux favoris :",
+          data
+        );
+      } else {
+        console.error("Erreur lors de l'ajout/retrait aux favoris :", data);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'ajout/retrait aux favoris :", error);
     }
   };
 
@@ -422,8 +467,14 @@ function Product() {
             >
               Ajouter au panier
             </Button>
-            <IconButton sx={{ border: "1px solid red" }}>
-              <FavoriteBorderIcon fontSize="small" color="error" />
+            <IconButton
+              sx={{ border: "1px solid red" }}
+              onClick={() => addToFavorites(product.id)}
+            >
+              <FavoriteBorderIcon
+                fontSize="small"
+                color={isFavorite ? "error" : "disabled"}
+              />
             </IconButton>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
@@ -497,6 +548,7 @@ function Product() {
       <Snackbar
         open={openSnackbar}
         autoHideDuration={2000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         onClose={handleCloseSnackbar}
       >
         <Alert
@@ -504,7 +556,7 @@ function Product() {
           severity="success"
           sx={{ width: "100%" }}
         >
-          Le produit a bien été ajouté au panier !
+          {snackbarMessage}
         </Alert>
       </Snackbar>
     </Box>

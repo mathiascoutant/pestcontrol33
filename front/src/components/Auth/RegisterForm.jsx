@@ -10,6 +10,7 @@ import {
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import fondImage from "../../Assets/landing.jpg";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -24,6 +25,7 @@ function RegisterForm() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  const [captchaToken, setCaptchaToken] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -32,12 +34,21 @@ function RegisterForm() {
     });
   };
 
+  const handleCaptchaChange = (token) => {
+    setCaptchaToken(token);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Vérification des mots de passe
     if (formData.password !== formData.confirmPassword) {
       setError("Les mots de passe ne correspondent pas");
+      return;
+    }
+
+    if (!captchaToken) {
+      setError("Veuillez compléter le CAPTCHA");
       return;
     }
 
@@ -55,6 +66,7 @@ function RegisterForm() {
             pseudo: formData.username,
             nom: formData.lastName,
             prenom: formData.firstName,
+            captcha: captchaToken,
           }),
         }
       );
@@ -196,6 +208,12 @@ function RegisterForm() {
               value={formData.confirmPassword}
               onChange={handleChange}
             />
+
+            <ReCAPTCHA
+              sitekey="VOTRE_CLE_SITE"
+              onChange={handleCaptchaChange}
+            />
+
             <Box
               sx={{
                 display: "flex",
