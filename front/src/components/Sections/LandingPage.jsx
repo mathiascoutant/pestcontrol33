@@ -7,7 +7,7 @@ function LandingPage() {
   return (
     <Box
       sx={{
-        minHeight: "60vh",
+        minHeight: { xs: "80vh", sm: "60vh" },
         width: "100%",
         position: "relative",
         overflow: "hidden",
