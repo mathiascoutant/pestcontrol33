@@ -13,12 +13,13 @@ function Footer() {
       }}
     >
       <Container maxWidth="sm">
-        <Box
-          component="img"
-          src={require("../../Assets/Pesttransparent.png")}
-          alt="Logo"
-          sx={{ height: 80 }}
-        />
+        <Box />
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: "bold", my: 1, fontSize: { xs: "1rem" } }}
+        >
+          PestControl33
+        </Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
           Votre solution professionnelle pour un environnement sans termites.
         </Typography>

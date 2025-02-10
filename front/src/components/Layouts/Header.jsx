@@ -13,6 +13,7 @@ import {
   Container,
   Snackbar,
   Alert,
+  Drawer,
 } from "@mui/material";
 import {
   Person as PersonIcon,
@@ -20,6 +21,7 @@ import {
   ShoppingCart as ShoppingCartIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
+  Menu as MenuIcon,
 } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import UpdateIcon from "@mui/icons-material/Update";
@@ -36,6 +38,7 @@ function Header() {
     severity: "success",
   });
   const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -97,16 +100,42 @@ function Header() {
     handleClose();
   };
 
+  const toggleDrawer = (open) => () => {
+    setDrawerOpen(open);
+  };
+
   return (
     <AppBar color="default">
       <Container maxWidth="xl">
         <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              PestControl33
-            </Typography>
-          </Link>
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <IconButton
+            color="inherit"
+            onClick={toggleDrawer(true)}
+            sx={{ display: { xs: "block", md: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Box sx={{ flexGrow: 1, display: "flex" }}>
+            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  display: { xs: "none", md: "block" },
+                }}
+              >
+                PestControl33
+              </Typography>
+            </Link>
+          </Box>
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              gap: 1,
+              justifyContent: "center",
+              flexGrow: 15,
+            }}
+          >
             <Button
               component={Link}
               to="/"
@@ -297,6 +326,64 @@ function Header() {
           </Box>
         </Toolbar>
       </Container>
+      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <Box
+          sx={{ width: 250 }}
+          role="presentation"
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
+        >
+          <Typography variant="h6" sx={{ padding: 2, textAlign: "center" }}>
+            Menu
+          </Typography>
+          <Divider />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 1.5,
+              ml: 2,
+              mt: 2,
+            }}
+          >
+            <Typography
+              component={Link}
+              to="/"
+              fullWidth
+              sx={{ color: "black", textDecoration: "none" }}
+            >
+              Accueil
+            </Typography>
+            <Typography
+              component={Link}
+              to="/about"
+              color="inherit"
+              fullWidth
+              sx={{ color: "black", textDecoration: "none" }}
+            >
+              À propos
+            </Typography>
+            <Typography
+              component={Link}
+              to="/shop"
+              color="inherit"
+              fullWidth
+              sx={{ color: "black", textDecoration: "none" }}
+            >
+              Nos produits
+            </Typography>
+            <Typography
+              component={Link}
+              to="/contact"
+              color="inherit"
+              fullWidth
+              sx={{ color: "black", textDecoration: "none" }}
+            >
+              Contact
+            </Typography>
+          </Box>
+        </Box>
+      </Drawer>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

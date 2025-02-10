@@ -210,7 +210,7 @@ function RegisterForm() {
             />
 
             <ReCAPTCHA
-              sitekey="VOTRE_CLE_SITE"
+              sitekey="6LdLC8gqAAAAACsAj4AJq9kSgny3tz1Nv4uoMN-R"
               onChange={handleCaptchaChange}
             />
 
