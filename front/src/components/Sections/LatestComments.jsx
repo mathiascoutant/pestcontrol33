@@ -66,7 +66,7 @@ const LatestComments = () => {
           fontSize: { xs: "1.5rem", sm: "2rem", md: "1.7rem" },
         }}
       >
-        Nos derniers avis
+        NOS DERNIERS AVIS
       </Typography>
 
       <Slider {...settings}>

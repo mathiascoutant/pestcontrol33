@@ -1,5 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function BannierePub() {
   const [product, setProduct] = useState(null);
@@ -68,9 +69,10 @@ function BannierePub() {
           </Typography>
         )}
         <Button
+          component={Link}
+          to={`/product/${product.id}`}
           variant="contained"
           color="primary"
-          href={`/product/${product.id}`}
           sx={{
             mt: 2,
             backgroundColor: "#00AAB7",
@@ -84,17 +86,20 @@ function BannierePub() {
       <Box
         sx={{
           flex: 1,
-          width: "100%",
+          width: { xs: "70%" },
           mt: { xs: 3, md: 0 },
+          display: "flex",
+          justifyContent: { xs: "center" },
+          marginLeft: { md: "auto" },
         }}
       >
         <img
           src={product.medias.imageUrls[0]}
           alt={product.nom}
           style={{
-            width: "100%",
-            maxHeight: { xs: "200px", md: "300px" },
+            width: "70%",
             objectFit: "contain",
+            maxHeight: { xs: "auto", md: "400px" },
           }}
         />
       </Box>

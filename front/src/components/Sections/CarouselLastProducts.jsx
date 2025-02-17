@@ -71,7 +71,7 @@ const CarouselLastProducts = () => {
           fontWeight: "bold",
         }}
       >
-        Produits populaires
+        PRODUITS POPULAIRES
         <IconButton component={Link} to="/shop" sx={{ ml: 1 }}>
           <ArrowForwardIcon />
         </IconButton>

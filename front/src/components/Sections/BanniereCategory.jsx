@@ -3,6 +3,9 @@ import axios from "axios";
 import { Box, Avatar, Typography, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const CircularAvatar = styled(Avatar)(({ theme }) => ({
   width: 120,
@@ -56,16 +59,54 @@ function BanniereCategory() {
     navigate(`/category/${categoryId}`);
   };
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    centerMode: false,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    responsive: [
+      {
+        breakpoint: 992,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          arrows: false,
+          centerMode: false,
+        },
+      },
+    ],
+  };
+
   return (
     <Box
       sx={{
         mt: { xs: 8, sm: 10, md: 10 },
         px: { xs: 1, sm: 2 },
+        maxWidth: "100%",
+        overflow: "hidden",
       }}
     >
-      <Grid container spacing={{ xs: 1, sm: 2 }} justifyContent="center">
+      <Slider {...settings}>
         {categories.map((category) => (
-          <Grid item key={category.id} xs={4} sm={4} md={3} lg={2}>
+          <Box key={category.id} sx={{ px: 1 }}>
             <CategoryItem onClick={() => handleCategoryClick(category.id)}>
               <CircularAvatar
                 src={category.picture}
@@ -88,9 +129,9 @@ function BanniereCategory() {
                 {category.name}
               </Typography>
             </CategoryItem>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Slider>
     </Box>
   );
 }

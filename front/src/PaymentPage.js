@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
+import { jwtDecode } from "jwt-decode";
 
 const stripePromise = loadStripe(
   "pk_live_51QlSlkBizCqLJgK04f6a2DgzD4HRRQOQGhjKELqBcZSOyUxTzY9zQOuH0m7a7aJ4TqneQQe1sHmsAEetlervbn6200MvoCCXb9"
@@ -175,10 +176,16 @@ const PaymentForm = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchCartTotal = async () => {
       const token = localStorage.getItem("token");
+
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken.userId);
+      }
 
       try {
         const response = await fetch(
@@ -268,62 +275,60 @@ const PaymentForm = () => {
     setIsLoading(true);
     setError(null);
 
-    const cardElement = elements.getElement(CardElement);
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      setError("Vous devez être connecté pour effectuer un paiement");
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      const { error: stripeError, token: cardToken } = await stripe.createToken(
-        cardElement
-      );
-
-      if (stripeError) {
-        throw new Error(stripeError.message);
-      }
-
-      console.log("Card Token créé:", cardToken);
-
-      const requestBody = {
-        amount: Math.round(cartTotal * 100),
-        currency: "eur",
-        source: cardToken.id,
-      };
-
-      console.log("Données envoyées au serveur:", requestBody);
-
-      const createPaymentResponse = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/payments/stripe/add`,
+      // 1. Créer une intention de paiement côté serveur
+      const createIntentResponse = await fetch(
+        "https://pestcontrol33.com/api/v1/payments/stripe/clientSecret",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify({
+            amount: Math.round(cartTotal * 100),
+            currency: "eur",
+          }),
         }
       );
 
-      console.log("Status de la réponse:", createPaymentResponse.status);
-      const responseText = await createPaymentResponse.text();
-      console.log("Réponse complète:", responseText);
+      const intentData = await createIntentResponse.json();
 
-      if (!createPaymentResponse.ok) {
+      if (!intentData.client_secret) {
         throw new Error(
-          `Erreur lors de la création du paiement: ${responseText}`
+          "La réponse du serveur ne contient pas de client_secret"
         );
       }
 
-      const paymentData = JSON.parse(responseText);
-      console.log("Paiement créé:", paymentData);
+      // 2. Confirmer le paiement avec l'authentification du client
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
+        intentData.client_secret,
+        {
+          payment_method: {
+            card: elements.getElement(CardElement),
+            billing_details: {
+              name: `${firstName} ${lastName}`,
+              email: email,
+              address: {
+                line1: address,
+                city: city,
+                postal_code: postalCode,
+              },
+            },
+          },
+        }
+      );
 
-      if (paymentData.status === "succeeded") {
-        handleNext();
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (paymentIntent.status === "succeeded") {
+        // Paiement réussi
+        setActiveStep((prevStep) => prevStep + 1);
         setOpenSnackbar(true);
+        localStorage.removeItem("cart");
+        setCartItems([]);
 
         setTimeout(() => {
           navigate("/");
