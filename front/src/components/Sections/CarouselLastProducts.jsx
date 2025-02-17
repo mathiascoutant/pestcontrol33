@@ -68,9 +68,10 @@ const CarouselLastProducts = () => {
           mb: 5,
           textAlign: "center",
           fontSize: { xs: "1.5rem", sm: "2rem", md: "1.7rem" },
+          fontWeight: "bold",
         }}
       >
-        Nos produits
+        Produits populaires
         <IconButton component={Link} to="/shop" sx={{ ml: 1 }}>
           <ArrowForwardIcon />
         </IconButton>

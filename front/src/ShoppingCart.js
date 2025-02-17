@@ -277,7 +277,7 @@ function ShoppingCart() {
             >
               <Link
                 to="/shop"
-                style={{ textDecoration: "none", color: "#fff" }}
+                style={{ textDecoration: "none", color: "black" }}
               >
                 Continuer mes achats
               </Link>

@@ -13,8 +13,8 @@ const Banner = () => {
     <Box
       sx={{
         mt: 5,
-        p: isMobile ? 4 : 6, // Réduit le padding sur mobile
-        bgcolor: "#F9F1E7",
+        p: isMobile ? 4 : 6,
+        my: 5,
         textAlign: "center",
       }}
     >

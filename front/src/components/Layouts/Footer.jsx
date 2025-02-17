@@ -8,7 +8,7 @@ function Footer() {
       sx={{
         py: 3,
         mt: "auto",
-        backgroundColor: "white",
+        backgroundColor: "#B6DEDD",
         textAlign: "center",
       }}
     >

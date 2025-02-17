@@ -99,7 +99,7 @@ function Contact() {
           variant="h4"
           sx={{
             textAlign: "center",
-            color: "#ba9b73",
+            color: "black",
             fontWeight: "bold",
             mb: 3,
           }}

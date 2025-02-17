@@ -7,7 +7,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 const defaultTheme = createTheme({
   palette: {
     primary: {
-      main: "#ba9b73",
+      main: "#B6DEDD",
     },
     secondary: {
       main: "#FF0000",
@@ -19,7 +19,7 @@ const defaultTheme = createTheme({
         root: {
           borderRadius: 5,
           textTransform: "capitalize",
-          color: "white",
+          color: "black",
         },
       },
     },

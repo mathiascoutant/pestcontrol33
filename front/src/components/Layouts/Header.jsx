@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -13,7 +13,6 @@ import {
   Container,
   Snackbar,
   Alert,
-  Drawer,
 } from "@mui/material";
 import {
   Person as PersonIcon,
@@ -21,7 +20,6 @@ import {
   ShoppingCart as ShoppingCartIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
-  Menu as MenuIcon,
 } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import UpdateIcon from "@mui/icons-material/Update";
@@ -39,6 +37,7 @@ function Header() {
   });
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -105,27 +104,22 @@ function Header() {
   };
 
   return (
-    <AppBar color="default">
+    <AppBar
+      color="default"
+      sx={{
+        bgcolor: "#B6DEDD",
+        boxShadow: location.pathname === "/" ? "none" : undefined,
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar sx={{ justifyContent: "space-between" }}>
-          <IconButton
-            color="inherit"
-            onClick={toggleDrawer(true)}
-            sx={{ display: { xs: "block", md: "none" } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Box sx={{ flexGrow: 1, display: "flex" }}>
+          <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: "bold",
-                  display: { xs: "none", md: "block" },
-                }}
-              >
-                PestControl33
-              </Typography>
+              <img
+                src="/logo.png"
+                alt="PestControl33 Logo"
+                style={{ height: "50px" }}
+              />
             </Link>
           </Box>
           <Box
@@ -326,64 +320,6 @@ function Header() {
           </Box>
         </Toolbar>
       </Container>
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-          onClick={toggleDrawer(false)}
-          onKeyDown={toggleDrawer(false)}
-        >
-          <Typography variant="h6" sx={{ padding: 2, textAlign: "center" }}>
-            Menu
-          </Typography>
-          <Divider />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 1.5,
-              ml: 2,
-              mt: 2,
-            }}
-          >
-            <Typography
-              component={Link}
-              to="/"
-              fullWidth
-              sx={{ color: "black", textDecoration: "none" }}
-            >
-              Accueil
-            </Typography>
-            <Typography
-              component={Link}
-              to="/about"
-              color="inherit"
-              fullWidth
-              sx={{ color: "black", textDecoration: "none" }}
-            >
-              À propos
-            </Typography>
-            <Typography
-              component={Link}
-              to="/shop"
-              color="inherit"
-              fullWidth
-              sx={{ color: "black", textDecoration: "none" }}
-            >
-              Nos produits
-            </Typography>
-            <Typography
-              component={Link}
-              to="/contact"
-              color="inherit"
-              fullWidth
-              sx={{ color: "black", textDecoration: "none" }}
-            >
-              Contact
-            </Typography>
-          </Box>
-        </Box>
-      </Drawer>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

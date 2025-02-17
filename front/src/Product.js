@@ -261,7 +261,6 @@ function Product() {
           justifyContent: "space-between",
           mb: 4,
           alignItems: "center",
-          bgcolor: "#F9F1E7",
           borderRadius: "10px",
           p: 2,
           width: "100%",

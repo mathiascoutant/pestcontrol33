@@ -121,7 +121,7 @@ function Dashboard() {
             <span
               style={{
                 fontWeight: "bold",
-                color: "#f0e2d1",
+                color: "#B6DEDD",
                 fontSize: "1.5rem",
               }}
             >
