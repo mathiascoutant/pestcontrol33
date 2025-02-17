@@ -288,6 +288,8 @@ const PaymentForm = () => {
           body: JSON.stringify({
             amount: Math.round(cartTotal * 100),
             currency: "eur",
+            payment_method_types: ["card"],
+            setup_future_usage: "off_session",
           }),
         }
       );
@@ -301,9 +303,8 @@ const PaymentForm = () => {
       }
 
       // 2. Confirmer le paiement avec l'authentification du client
-      const { error, paymentIntent } = await stripe.confirmCardPayment(
-        intentData.client_secret,
-        {
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmCardPayment(intentData.client_secret, {
           payment_method: {
             card: elements.getElement(CardElement),
             billing_details: {
@@ -314,13 +315,38 @@ const PaymentForm = () => {
                 city: city,
                 postal_code: postalCode,
               },
+              phone: phone,
             },
           },
-        }
-      );
+          return_url: `${window.location.origin}/payment-confirmation`,
+        });
 
-      if (error) {
-        throw new Error(error.message);
+      if (confirmError) {
+        // Gérer les erreurs spécifiques à 3D Secure
+        if (
+          confirmError.type === "card_error" ||
+          confirmError.type === "validation_error"
+        ) {
+          setError(confirmError.message);
+        } else {
+          setError("Une erreur inattendue s'est produite.");
+        }
+        return;
+      }
+
+      // 3. Vérifier le statut du paiement
+      if (paymentIntent.status === "requires_action") {
+        // L'authentification 3D Secure est requise
+        const { error: actionError } = await stripe.handleCardAction(
+          paymentIntent.client_secret
+        );
+
+        if (actionError) {
+          setError(
+            "L'authentification 3D Secure a échoué. Veuillez réessayer."
+          );
+          return;
+        }
       }
 
       if (paymentIntent.status === "succeeded") {

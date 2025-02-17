@@ -71,7 +71,7 @@ function SearchBar() {
         alignItems: "center",
         width: "100%",
         backgroundColor: "#00AAB7",
-        mt: { xs: 7, sm: 8 },
+        mt: { xs: 10, sm: 11 },
         padding: "12px",
         position: "relative",
       }}
@@ -116,9 +116,10 @@ function SearchBar() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{
-            width: { xs: "80%", sm: "300px" },
+            width: { xs: "80%", sm: "500px" },
             "& .MuiOutlinedInput-root": {
               backgroundColor: "white",
+              height: "40px",
               "& fieldset": {
                 borderColor: "white",
               },
@@ -127,6 +128,9 @@ function SearchBar() {
               },
               "&.Mui-focused fieldset": {
                 borderColor: "white",
+              },
+              "& input": {
+                padding: "8px 14px",
               },
             },
           }}

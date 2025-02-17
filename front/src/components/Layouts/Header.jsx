@@ -109,6 +109,7 @@ function Header() {
       sx={{
         bgcolor: "#B6DEDD",
         boxShadow: location.pathname === "/" ? "none" : undefined,
+        py: 1.5,
       }}
     >
       <Container maxWidth="xl">
