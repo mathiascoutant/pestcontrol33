@@ -78,15 +78,15 @@ function Contact() {
   ];
 
   return (
-    <Box sx={{ backgroundColor: "#f5f5f5", py: 15 }}>
+    <Box sx={{ backgroundColor: "#f5f5f5", py: { xs: 5, md: 15 } }}>
       <Box
         component="form"
         onSubmit={handleSubmit}
         sx={{
-          maxWidth: 600,
-          mx: "auto",
-          mt: 8,
-          p: 4,
+          maxWidth: { xs: "95%", md: 600 },
+          mt: { xs: 12, md: 8 },
+          p: { xs: 2, md: 4 },
+          mx: { xs: 1, md: "auto" },
           backgroundColor: "white",
           borderRadius: 2,
           boxShadow: "0 3px 10px rgb(0 0 0 / 0.2)",
@@ -102,6 +102,7 @@ function Contact() {
             color: "black",
             fontWeight: "bold",
             mb: 3,
+            fontSize: { xs: "1.75rem", md: "2.125rem" },
           }}
           gutterBottom
         >
@@ -193,8 +194,8 @@ function Contact() {
           color="primary"
           sx={{
             mt: 2,
-            py: 1,
-            fontSize: "1rem",
+            py: { xs: 1.5, md: 1 },
+            fontSize: { xs: "0.9rem", md: "1rem" },
             fontWeight: "bold",
             textTransform: "none",
             boxShadow: "0 2px 8px rgb(44 85 69 / 0.3)",
@@ -208,7 +209,13 @@ function Contact() {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+          sx: {
+            width: { xs: "90%", md: "auto" },
+          },
+        }}
       >
         <Alert
           onClose={handleClose}

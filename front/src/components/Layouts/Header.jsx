@@ -108,7 +108,14 @@ function Header() {
       color="default"
       sx={{
         bgcolor: "#B6DEDD",
-        boxShadow: location.pathname === "/" ? "none" : undefined,
+        boxShadow:
+          location.pathname === "/" ||
+          location.pathname === "/favorites" ||
+          location.pathname === "/shop" ||
+          location.pathname === "/shopping" ||
+          location.pathname === "/about"
+            ? "none"
+            : undefined,
         py: 1.5,
       }}
     >

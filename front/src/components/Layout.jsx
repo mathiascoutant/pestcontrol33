@@ -14,7 +14,8 @@ function Layout({ children }) {
       {location.pathname !== "/connexion" &&
         location.pathname !== "/register" &&
         location.pathname !== "/contact" &&
-        location.pathname !== "/updatepassword" && <Footer />}
+        location.pathname !== "/updatepassword" &&
+        location.pathname !== "/favorites" && <Footer />}
     </div>
   );
 }

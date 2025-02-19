@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Header from "./components/Layouts/Header";
 import CardProduct from "./components/Layouts/CardProduct";
 import fondImage from "../src/Assets/fond.png";
+import Footer from "./components/Layouts/Footer";
 
 function Favorites() {
   const [favorites, setFavorites] = useState([]);
@@ -56,20 +57,25 @@ function Favorites() {
   }, []);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <Header />
       <Box
         sx={{
           backgroundImage: `url(${fondImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "300px",
+          height: { xs: "200px", sm: "250px", md: "300px" },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          mb: 5,
-          mt: 8,
+          mt: { xs: 7, sm: 8 },
         }}
       >
         <Typography
@@ -78,6 +84,9 @@ function Favorites() {
             color: "#000",
             mb: 2,
             fontWeight: "bold",
+            fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+            textAlign: "center",
+            px: 2,
           }}
         >
           Mes favoris
@@ -92,7 +101,7 @@ function Favorites() {
           <Typography sx={{ color: "#000" }}>Mes favoris</Typography>
         </Box>
       </Box>
-      <Box sx={{ flexGrow: 1, py: 3, mt: 10 }}>
+      <Box sx={{ flexGrow: 1, py: { xs: 4, sm: 6, md: 10 } }}>
         <Container maxWidth="lg">
           {loading ? (
             <Typography variant="body1" sx={{ textAlign: "center" }}>
@@ -103,9 +112,13 @@ function Favorites() {
               Vous n'avez pas encore de favoris
             </Typography>
           ) : (
-            <Grid container spacing={3} justifyContent="center">
+            <Grid
+              container
+              spacing={{ xs: 2, sm: 2, md: 3 }}
+              justifyContent="center"
+            >
               {favorites.map((product) => (
-                <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+                <Grid item key={product.id} xs={8} sm={6} md={4} lg={3}>
                   <CardProduct
                     {...(product.discount
                       ? { promotion: `-${product.discount} €` }
@@ -126,6 +139,7 @@ function Favorites() {
           )}
         </Container>
       </Box>
+      <Footer />
     </Box>
   );
 }

@@ -18,11 +18,10 @@ import {
 } from "@mui/material";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import CardProduct from "./components/Layouts/CardProduct";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import StarIcon from "@mui/icons-material/Star";
 import ReviewCard from "./components/UI/ReviewCard";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import CarouselLastProducts from "./components/Sections/CarouselLastProducts";
 
 function Product() {
   const [product, setProduct] = useState(null);
@@ -38,10 +37,20 @@ function Product() {
   const reviewsRef = useRef(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 600);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -254,17 +263,17 @@ function Product() {
   };
 
   return (
-    <Box sx={{ mt: 8 }}>
+    <Box sx={{ mt: { xs: 2, sm: 4, md: 8 } }}>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          mb: 4,
+          mb: { xs: 2, sm: 3, md: 4 },
           alignItems: "center",
           borderRadius: "10px",
-          p: 2,
+          p: { xs: 1, sm: 2 },
           width: "100%",
-          height: "100px",
+          height: { xs: "auto", sm: "100px" },
         }}
       >
         <Breadcrumbs aria-label="breadcrumb">
@@ -291,17 +300,23 @@ function Product() {
           </Typography>
         </Breadcrumbs>
       </Box>
-      <Box sx={{ display: "flex", gap: 2, p: 4 }}>
-        {/* Colonne des petites images */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: 2,
+          p: { xs: 1, sm: 2, md: 4 },
+        }}
+      >
         <Box
           sx={{
-            display: "flex",
+            display: { xs: "none", md: "flex" },
             flexDirection: "column",
             gap: 1,
             height: "270px",
             overflowY: "auto",
             mt: 2,
-            width: "10%",
+            width: { md: "10%" },
             alignItems: "center",
           }}
         >
@@ -341,20 +356,24 @@ function Product() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            p: 2,
+            p: { xs: 1, sm: 2 },
+            width: { xs: "100%", md: "auto" },
           }}
         >
           <img
             src={images[currentImageIndex]}
             alt={product.nom}
             style={{
+              width: "100%",
               maxWidth: "500px",
-              height: "420px",
+              height: "auto",
+              maxHeight: "420px",
               borderRadius: "10px",
+              objectFit: "contain",
             }}
           />
         </Box>
-        <Box sx={{ width: "60%" }}>
+        <Box sx={{ width: { xs: "100%", md: "60%" }, ml: { xs: 2, md: 0 } }}>
           <Typography variant="h5" sx={{ mb: 4 }} gutterBottom>
             {product.nom.charAt(0).toUpperCase() + product.nom.slice(1)}
           </Typography>
@@ -436,13 +455,13 @@ function Product() {
             variant="body2"
             sx={{
               mt: 2,
-              mb: 15,
+              mb: { xs: 4, sm: 8, md: 15 },
               overflow: "hidden",
               textOverflow: "ellipsis",
               display: "-webkit-box",
               WebkitLineClamp: 3,
               WebkitBoxOrient: "vertical",
-              maxWidth: "400px",
+              maxWidth: { xs: "100%", md: "400px" },
             }}
             color="text.secondary"
           >
@@ -485,7 +504,20 @@ function Product() {
       </Box>
       <Divider sx={{ width: "100%", mt: 2 }} />
       <Box sx={{ mt: 4 }}>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            "& .MuiTabs-root": {
+              maxWidth: "100%",
+              "& .MuiTab-root": {
+                fontSize: { xs: "0.8rem", sm: "1rem" },
+                minWidth: { xs: "auto", sm: "160px" },
+                px: { xs: 1, sm: 2 },
+              },
+            },
+          }}
+        >
           <Tabs value={tabValue} onChange={handleTabChange}>
             <Tab label="Description" />
             <Tab label="Conseils d'utilisation" />
@@ -495,10 +527,10 @@ function Product() {
         <Box
           sx={{
             mt: 2,
-            p: 2,
-            px: 10,
-            py: 5,
-            letterSpacing: "1em",
+            p: { xs: 1, sm: 2 },
+            px: { xs: 2, sm: 5, md: 10 },
+            py: { xs: 2, sm: 3, md: 5 },
+            letterSpacing: { xs: "0.5em", sm: "1em" },
             lineHeight: "1.5",
             whiteSpace: "pre-line",
             textAlign: "justify",
@@ -507,47 +539,22 @@ function Product() {
           {renderTabPanel(tabValue)}
         </Box>
       </Box>
-      <Box sx={{ mt: 4, p: 2, px: 10, py: 5 }}>
-        <Typography
-          variant="h6"
-          sx={{
-            mb: 2,
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          Nos produits
-          <IconButton component={Link} to="/shop" sx={{ ml: 1 }}>
-            <ArrowForwardIcon />
-          </IconButton>
-        </Typography>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: { xs: "repeat(2, 1fr)", md: "repeat(4, 1fr)" },
-            gap: 2,
-          }}
-        >
-          {similarProducts.slice(0, 4).map((product) => (
-            <CardProduct
-              key={product.id}
-              id={product.id}
-              name={product.nom}
-              price={product.newPrice || product.prix}
-              reduction={product.discount ? `-${product.discount}%` : null}
-              status={product.stock > 0 ? "En stock" : "Rupture de stock"}
-              image={product.medias?.imageUrls?.[0]}
-              promotion={product.promotion}
-            />
-          ))}
-        </Box>
+      <Box
+        sx={{
+          mt: 4,
+          width: "100%",
+        }}
+      >
+        <CarouselLastProducts />
       </Box>
 
       <Snackbar
         open={openSnackbar}
         autoHideDuration={2000}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{
+          vertical: isMobile ? "bottom" : "top",
+          horizontal: "right",
+        }}
         onClose={handleCloseSnackbar}
       >
         <Alert

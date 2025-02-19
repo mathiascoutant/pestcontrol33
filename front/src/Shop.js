@@ -7,18 +7,48 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
+  IconButton,
+  Drawer,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import Header from "./components/Layouts/Header";
 import CardProduct from "./components/Layouts/CardProduct";
 import fondImage from "./Assets/fond.png";
 import { Link } from "react-router-dom";
 import Banner from "./components/UI/Banner";
+import FilterListIcon from "@mui/icons-material/FilterList";
 
 function Shop() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/subCategories`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setCategories(data.subCategories);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des catégories:", error);
+        setCategories([]);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,9 +82,104 @@ function Shop() {
 
     const matchesPrice = price >= min && price <= max;
     const matchesAvailability = onlyAvailable ? product.stock > 0 : true;
+    const matchesCategory = selectedCategory
+      ? product.subCategoryId === selectedCategory
+      : true;
 
-    return matchesPrice && matchesAvailability;
+    return matchesPrice && matchesAvailability && matchesCategory;
   });
+
+  const FilterSidebar = () => (
+    <Box
+      sx={{
+        width: isMobile ? "100%" : 220,
+        flexShrink: 0,
+        borderRight: isMobile ? "none" : "1px solid #ddd",
+        pr: 1,
+        height: "100%",
+        ml: { xs: 0, sm: 0, md: 0, lg: -10 },
+        p: 2,
+      }}
+    >
+      <Typography variant="body1" sx={{ mb: 1, fontWeight: "bold" }}>
+        Catégories
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 0.5,
+        }}
+      >
+        {categories.map((category) => (
+          <Box
+            key={category.id}
+            onClick={() => {
+              setSelectedCategory(
+                selectedCategory === category.id ? null : category.id
+              );
+              if (isMobile) setDrawerOpen(false);
+            }}
+            sx={{
+              cursor: "pointer",
+              padding: "10px 12px",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              backgroundColor:
+                selectedCategory === category.id ? "#1976d2" : "transparent",
+              color: selectedCategory === category.id ? "white" : "inherit",
+              fontSize: "0.9rem",
+              "&:hover": {
+                backgroundColor:
+                  selectedCategory === category.id ? "#1976d2" : "#f5f5f5",
+              },
+            }}
+          >
+            {category.name}
+          </Box>
+        ))}
+      </Box>
+
+      <Typography variant="body1" sx={{ mb: 1, mt: 3, fontWeight: "bold" }}>
+        Filtres
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        <TextField
+          label="Prix min"
+          variant="outlined"
+          size="small"
+          type="number"
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Prix max"
+          variant="outlined"
+          size="small"
+          type="number"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
+          fullWidth
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={onlyAvailable}
+              onChange={(e) => setOnlyAvailable(e.target.checked)}
+            />
+          }
+          label="En stock uniquement"
+        />
+      </Box>
+    </Box>
+  );
 
   return (
     <Box>
@@ -92,70 +217,76 @@ function Shop() {
           <Typography sx={{ color: "#000" }}>Nos produits</Typography>
         </Box>
       </Box>
-      <Box sx={{ py: 5 }}>
-        <Typography
-          variant="body1"
-          sx={{ mb: 2, fontWeight: "bold", textAlign: "center" }}
-        >
-          Filtrer les produits
-        </Typography>
+      <Container
+        maxWidth="lg"
+        sx={{ pl: { xs: 2, sm: 2 }, pr: { xs: 2, sm: 2 } }}
+      >
+        {isMobile && (
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <IconButton
+              onClick={() => setDrawerOpen(true)}
+              sx={{
+                backgroundColor: "#f5f5f5",
+                "&:hover": { backgroundColor: "#e0e0e0" },
+              }}
+            >
+              <FilterListIcon />
+            </IconButton>
+          </Box>
+        )}
+
         <Box
           sx={{
             display: "flex",
-            flexWrap: "wrap",
             gap: 2,
-            justifyContent: "center",
-            alignItems: "center",
+            py: 5,
+            ml: isMobile ? 0 : "-8px",
           }}
         >
-          <TextField
-            label="Prix min"
-            variant="outlined"
-            size="small"
-            type="number"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            sx={{ width: "150px" }}
-          />
-          <TextField
-            label="Prix max"
-            variant="outlined"
-            size="small"
-            type="number"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            sx={{ width: "150px" }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={onlyAvailable}
-                onChange={(e) => setOnlyAvailable(e.target.checked)}
-              />
-            }
-            label="En stock uniquement"
-          />
-        </Box>
-      </Box>
-      <Container maxWidth="lg">
-        <Grid container spacing={4} justifyContent="center">
-          {filteredProducts.map((product) => (
-            <Grid item xs={12} sm={6} md={3} key={product.id}>
-              <CardProduct
-                id={product.id}
-                image={
-                  product.medias?.imageUrls?.[0] || "default-image-url.jpg"
-                }
-                promotion={product.discount ? `-${product.discount}%` : null}
-                name={product.nom}
-                status={product.stock > 0 ? "En stock" : "Rupture de stock"}
-                price={`${product.prix}€`}
-                reduction={product.newPrice ? `${product.newPrice}€` : null}
-              />
+          {!isMobile && <FilterSidebar />}
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid
+              container
+              spacing={2}
+              justifyContent={{ xs: "center", sm: "flex-start" }}
+              sx={{
+                width: "100%",
+                margin: "0 auto",
+              }}
+            >
+              {filteredProducts.map((product) => (
+                <Grid item xs={10} sm={6} md={4} lg={4} key={product.id}>
+                  <CardProduct
+                    id={product.id}
+                    image={
+                      product.medias?.imageUrls?.[0] || "default-image-url.jpg"
+                    }
+                    promotion={
+                      product.discount ? `-${product.discount}%` : null
+                    }
+                    name={product.nom}
+                    status={product.stock > 0 ? "En stock" : "Rupture de stock"}
+                    price={`${product.prix}€`}
+                    reduction={product.newPrice ? `${product.newPrice}€` : null}
+                  />
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
+          </Box>
+        </Box>
       </Container>
+
+      {/* Drawer pour mobile */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        <Box sx={{ width: 280, p: 2 }}>
+          <FilterSidebar />
+        </Box>
+      </Drawer>
+
       <Banner />
     </Box>
   );

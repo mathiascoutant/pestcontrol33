@@ -10,10 +10,10 @@ function About() {
     <Box>
       <Box
         sx={{
-          backgroundImage: `url(${fondImage})`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${fondImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "300px",
+          height: "400px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -21,17 +21,52 @@ function About() {
           mt: 8,
           color: "white",
           textAlign: "center",
+          position: "relative",
         }}
       >
         <Typography
           variant="h4"
-          sx={{ fontWeight: "bold", fontSize: "2rem", color: "black" }}
+          sx={{
+            fontWeight: "bold",
+            fontSize: "3rem",
+            color: "white",
+            textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+            mb: 2,
+          }}
         >
           Qui sommes-nous ?
         </Typography>
+        <Typography
+          variant="h6"
+          sx={{
+            maxWidth: "600px",
+            color: "white",
+            textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
+          }}
+        >
+          Découvrez notre engagement pour un avenir durable et innovant
+        </Typography>
       </Box>
-      <Box sx={{ my: 8, textAlign: "center" }}>
-        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+      <Box sx={{ my: 8, textAlign: "center", px: 4 }}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: "bold",
+            mb: 2,
+            position: "relative",
+            display: "inline-block",
+            "&::after": {
+              content: '""',
+              position: "absolute",
+              bottom: "-10px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "60px",
+              height: "3px",
+              backgroundColor: "#72cc77",
+            },
+          }}
+        >
           À Propos de Nous
         </Typography>
         <Typography variant="body1" sx={{ color: "gray", mb: 4 }}>
@@ -49,11 +84,12 @@ function About() {
             sx={{
               maxWidth: 300,
               m: 2,
-              boxShadow: 3,
-              borderRadius: 2,
-              transition: "transform 0.3s",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+              borderRadius: 4,
+              transition: "all 0.3s ease",
               "&:hover": {
-                transform: "scale(1.05)",
+                transform: "translateY(-10px)",
+                boxShadow: "0 16px 40px rgba(0,0,0,0.2)",
               },
             }}
           >
@@ -74,11 +110,12 @@ function About() {
             sx={{
               maxWidth: 300,
               m: 2,
-              boxShadow: 3,
-              borderRadius: 2,
-              transition: "transform 0.3s",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+              borderRadius: 4,
+              transition: "all 0.3s ease",
               "&:hover": {
-                transform: "scale(1.05)",
+                transform: "translateY(-10px)",
+                boxShadow: "0 16px 40px rgba(0,0,0,0.2)",
               },
             }}
           >
@@ -98,11 +135,12 @@ function About() {
             sx={{
               maxWidth: 300,
               m: 2,
-              boxShadow: 3,
-              borderRadius: 2,
-              transition: "transform 0.3s",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+              borderRadius: 4,
+              transition: "all 0.3s ease",
               "&:hover": {
-                transform: "scale(1.05)",
+                transform: "translateY(-10px)",
+                boxShadow: "0 16px 40px rgba(0,0,0,0.2)",
               },
             }}
           >

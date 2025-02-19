@@ -29,6 +29,8 @@ function ShoppingCart() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Pour gérer la couleur de la Snackbar
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [discountError, setDiscountError] = useState("");
 
   const fetchCartItems = useCallback(async () => {
     const token = localStorage.getItem("token");
@@ -46,8 +48,8 @@ function ShoppingCart() {
 
       // Vérifiez si le panier est vide
       if (cartItems.length === 0) {
-        setCartItems([]); // Assurez-vous de définir un tableau vide si aucun produit
-        setTotal(0); // Réinitialisez le total
+        setCartItems([]);
+        setTotal(0);
         return;
       }
 
@@ -59,6 +61,7 @@ function ShoppingCart() {
             ...item,
             price: productDetails ? productDetails.prix : 0,
             name: productDetails ? productDetails.nom : "Produit non trouvé",
+            medias: productDetails ? productDetails.medias : null, // Ajout des médias
           };
         })
       );
@@ -85,7 +88,11 @@ function ShoppingCart() {
           },
         }
       );
-      return response.data;
+      // Prendre le premier élément car l'API renvoie un tableau
+      const product = Array.isArray(response.data)
+        ? response.data[0]
+        : response.data;
+      return product;
     } catch (error) {
       console.error(
         "Erreur lors de la récupération des détails du produit :",
@@ -215,6 +222,98 @@ function ShoppingCart() {
     setSnackbarOpen(false);
   };
 
+  const applyDiscount = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!couponCode.trim()) {
+      setSnackbarMessage("Veuillez entrer un code promo");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+
+    try {
+      // Récupérer la liste des codes promos
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE_URL}/discountShopping`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Vérifier si le code existe dans la liste
+      const validCode = response.data.discountCodes.find(
+        (code) => code.code === couponCode.toUpperCase()
+      );
+
+      if (validCode) {
+        // Vérifier si le code est actif (pas expiré ni à venir)
+        const now = new Date();
+        const startDate = new Date(validCode.startDate);
+        const endDate = new Date(validCode.endDate);
+
+        if (now < startDate) {
+          setDiscountError("Ce code promo n'est pas encore actif");
+          setSnackbarMessage("Ce code promo n'est pas encore actif");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+          return;
+        }
+
+        if (now > endDate) {
+          setDiscountError("Ce code promo a expiré");
+          setSnackbarMessage("Ce code promo a expiré");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+          return;
+        }
+
+        // Vérifier si le code peut encore être utilisé
+        if (
+          !validCode.multiUsage &&
+          validCode.nbrUsed >= validCode.nbrAutorisationUsage
+        ) {
+          setDiscountError("Ce code promo a atteint sa limite d'utilisation");
+          setSnackbarMessage("Ce code promo a atteint sa limite d'utilisation");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+          return;
+        }
+
+        // Appliquer la réduction
+        const discount = parseFloat(validCode.discount);
+        setDiscountAmount(discount);
+
+        // Calculer le nouveau total avec la réduction
+        const discountedTotal = total * (1 - discount / 100);
+        setTotal(discountedTotal);
+
+        setSnackbarMessage(
+          `Code promo appliqué ! -${discount}% sur votre commande`
+        );
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+
+        // Stockage du code promo pour le paiement
+        localStorage.setItem("promoCode", couponCode.toUpperCase());
+        localStorage.setItem("promoDiscount", discount.toString());
+      } else {
+        setDiscountError("Code promo invalide");
+        setSnackbarMessage("Code promo invalide");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la vérification du code promo:", error);
+      setDiscountError("Erreur lors de la vérification du code promo");
+      setSnackbarMessage("Erreur lors de la vérification du code promo");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -284,17 +383,38 @@ function ShoppingCart() {
             </Button>
           </Box>
         ) : (
-          <Box sx={{ display: "flex", gap: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 4,
+              flexDirection: { xs: "column", md: "row" }, // Empile en colonnes sur mobile, en ligne sur desktop
+            }}
+          >
             <Box sx={{ flex: 1 }}>
-              <TableContainer component={Paper} sx={{ bgcolor: "#FAF4F4" }}>
-                <Table>
+              <TableContainer
+                component={Paper}
+                sx={{
+                  bgcolor: "#FAF4F4",
+                  overflow: "auto", // Permet le défilement horizontal sur mobile
+                }}
+              >
+                <Table
+                  sx={{
+                    // Ajuste la table pour mobile
+                    "& .MuiTableCell-root": {
+                      px: { xs: 1, sm: 2 }, // Padding réduit sur mobile
+                      py: { xs: 1, sm: 2 },
+                      whiteSpace: "nowrap",
+                    },
+                  }}
+                >
                   <TableHead>
                     <TableRow>
                       <TableCell>Produits</TableCell>
-                      <TableCell>Prix</TableCell>
-                      <TableCell>Quantité</TableCell>
-                      <TableCell>Sous-Total</TableCell>
-                      <TableCell></TableCell>
+                      <TableCell align="center">Prix</TableCell>
+                      <TableCell align="center">Quantité</TableCell>
+                      <TableCell align="center">Sous-Total</TableCell>
+                      <TableCell align="center">Action</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -305,13 +425,13 @@ function ShoppingCart() {
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              gap: 2,
+                              gap: { xs: 1, sm: 2 },
                             }}
                           >
                             <Box
                               sx={{
-                                width: "80px",
-                                height: "80px",
+                                width: { xs: "60px", sm: "80px" },
+                                height: { xs: "60px", sm: "80px" },
                                 borderRadius: 1,
                                 overflow: "hidden",
                                 bgcolor: "#fff",
@@ -332,11 +452,17 @@ function ShoppingCart() {
                                 }}
                               />
                             </Box>
-                            <Typography>{item.name}</Typography>
+                            <Typography
+                              sx={{
+                                fontSize: { xs: "0.875rem", sm: "1rem" },
+                              }}
+                            >
+                              {item.name}
+                            </Typography>
                           </Box>
                         </TableCell>
-                        <TableCell>{item.price}</TableCell>
-                        <TableCell>
+                        <TableCell align="center">{item.price}</TableCell>
+                        <TableCell align="center">
                           <TextField
                             type="number"
                             value={item.quantity}
@@ -351,7 +477,7 @@ function ShoppingCart() {
                             sx={{ width: "70px" }}
                           />
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="center">
                           {(
                             parseFloat(
                               item.price.replace
@@ -361,7 +487,7 @@ function ShoppingCart() {
                           ).toFixed(2)}
                           €
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="center">
                           <IconButton
                             onClick={() => removeItem(item.id)}
                             color="error"
@@ -376,7 +502,14 @@ function ShoppingCart() {
               </TableContainer>
             </Box>
 
-            <Box sx={{ width: 300, bgcolor: "#FAF4F4", p: 3, borderRadius: 1 }}>
+            <Box
+              sx={{
+                width: { xs: "100%", md: 300 }, // Pleine largeur sur mobile
+                bgcolor: "#FAF4F4",
+                p: 3,
+                borderRadius: 1,
+              }}
+            >
               <Typography variant="h5" sx={{ mb: 3 }}>
                 Total panier
               </Typography>
@@ -386,6 +519,18 @@ function ShoppingCart() {
                 <Typography>Sous-total</Typography>
                 <Typography>{total.toFixed(2)}€</Typography>
               </Box>
+              {discountAmount > 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 2,
+                  }}
+                >
+                  <Typography>Réduction</Typography>
+                  <Typography color="error">-{discountAmount}%</Typography>
+                </Box>
+              )}
               <Box
                 sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}
               >
@@ -394,13 +539,28 @@ function ShoppingCart() {
                   {total.toFixed(2)}€
                 </Typography>
               </Box>
-              <TextField
-                fullWidth
-                placeholder="Coupon Code"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-                sx={{ mb: 2, bgcolor: "#fff" }}
-              />
+              <Box sx={{ mb: 2 }}>
+                <TextField
+                  fullWidth
+                  placeholder="Code promo"
+                  value={couponCode}
+                  onChange={(e) => {
+                    setCouponCode(e.target.value);
+                    setDiscountError("");
+                  }}
+                  error={!!discountError}
+                  helperText={discountError}
+                  sx={{ mb: 1, bgcolor: "#fff" }}
+                />
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={applyDiscount}
+                  sx={{ mb: 2 }}
+                >
+                  Appliquer le code
+                </Button>
+              </Box>
               <Button
                 variant="contained"
                 component={Link}

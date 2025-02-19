@@ -209,18 +209,23 @@ function AllProduct() {
           backgroundImage: `url(${fondImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "300px",
+          height: { xs: "200px", sm: "250px", md: "300px" },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          mb: 5,
-          mt: 8,
+          mb: { xs: 2, sm: 3, md: 5 },
+          mt: { xs: 6, sm: 7, md: 8 },
         }}
       >
         <Typography
           variant="h4"
-          sx={{ mb: 2, fontWeight: "semibold", mt: 0.5 }}
+          sx={{
+            mb: 2,
+            fontWeight: "semibold",
+            mt: 0.5,
+            fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+          }}
         >
           Les produits
         </Typography>
@@ -241,9 +246,11 @@ function AllProduct() {
         sx={{
           display: "flex",
           alignItems: "center",
-          flexDirection: "row",
+          flexDirection: { xs: "column", sm: "row" },
           width: "100%",
           justifyContent: "space-between",
+          gap: { xs: 2, sm: 0 },
+          px: { xs: 2, sm: 5, md: 10 },
         }}
       >
         <TextField
@@ -251,7 +258,10 @@ function AllProduct() {
           placeholder="Rechercher un produit..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ width: "300px", marginLeft: 10 }}
+          sx={{
+            width: { xs: "100%", sm: "250px", md: "300px" },
+            marginLeft: { xs: 0, sm: 0, md: 0 },
+          }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -264,91 +274,66 @@ function AllProduct() {
           component={Link}
           to="/addproduct"
           variant="contained"
-          sx={{ alignSelf: "flex-end", mt: 2, mr: 10 }}
+          sx={{
+            alignSelf: { xs: "center", sm: "flex-end" },
+            mt: { xs: 0, sm: 2 },
+            mr: { xs: 0, sm: 0 },
+          }}
         >
           Ajouter un Produit
         </Button>
       </Box>
       <TableContainer
         component={Paper}
-        sx={{ maxWidth: "95%", mt: 2, ml: 4.5 }}
+        sx={{
+          maxWidth: { xs: "95%", sm: "95%", md: "95%" },
+          mt: 2,
+          mx: "auto",
+          overflow: "auto",
+          my: 2,
+        }}
       >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Image
-              </TableCell>
-              <TableCell align="left" sx={{ fontWeight: "bold" }}>
-                Nom du Produit
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Prix (€)
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Avis
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Stock
-              </TableCell>
-              <TableCell align="left" sx={{ fontWeight: "bold" }}>
-                Description
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Actions
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {products
-              .filter((product) =>
-                product.nom.toLowerCase().includes(searchTerm.toLowerCase())
-              )
-              .map((product) => {
-                return (
+        {/* Vue mobile */}
+        <Box sx={{ display: { xs: "block", sm: "none" } }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Image
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Prix (€)
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Stock
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Actions
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {products
+                .filter((product) =>
+                  product.nom.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((product) => (
                   <TableRow key={product.id}>
                     <TableCell align="center">
                       <img
                         src={product.medias?.imageUrls?.[0]}
                         alt={product.nom}
                         style={{
-                          width: "90px",
-                          height: "90px",
+                          width: "60px",
+                          height: "60px",
                           borderRadius: 5,
                         }}
                       />
                     </TableCell>
-                    <TableCell
-                      align="left"
-                      sx={{
-                        lineHeight: "1.5",
-                        textAlign: "justify",
-                        maxWidth: "200px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {product.nom}
-                    </TableCell>
                     <TableCell align="center" sx={{ fontWeight: "bold" }}>
                       {product.prix} €
                     </TableCell>
-                    <TableCell align="center">{product.reviewCount}</TableCell>
                     <TableCell align="center">{product.stock}</TableCell>
-                    <TableCell
-                      align="left"
-                      sx={{
-                        lineHeight: "1.5",
-                        textAlign: "justify",
-                        maxWidth: "200px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {product.description}
-                    </TableCell>
                     <TableCell align="center">
                       <IconButton onClick={() => handleOpenModal(product)}>
                         <EditIcon />
@@ -358,10 +343,115 @@ function AllProduct() {
                       </IconButton>
                     </TableCell>
                   </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
+                ))}
+            </TableBody>
+          </Table>
+        </Box>
+
+        {/* Vue desktop (existante) */}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Image
+                </TableCell>
+                <TableCell align="left" sx={{ fontWeight: "bold" }}>
+                  Nom du Produit
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Prix (€)
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Avis
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Stock
+                </TableCell>
+                <TableCell align="left" sx={{ fontWeight: "bold" }}>
+                  Description
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Actions
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {products
+                .filter((product) =>
+                  product.nom.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((product) => {
+                  return (
+                    <TableRow key={product.id}>
+                      <TableCell
+                        align="center"
+                        sx={{
+                          display: { xs: "none", sm: "table-cell" },
+                        }}
+                      >
+                        <img
+                          src={product.medias?.imageUrls?.[0]}
+                          alt={product.nom}
+                          style={{
+                            width: "90px",
+                            height: "90px",
+                            borderRadius: 5,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        sx={{
+                          lineHeight: "1.5",
+                          textAlign: "justify",
+                          maxWidth: { xs: "100px", sm: "150px", md: "200px" },
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {product.nom}
+                      </TableCell>
+                      <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                        {product.prix} €
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{
+                          display: { xs: "none", md: "table-cell" },
+                        }}
+                      >
+                        {product.reviewCount}
+                      </TableCell>
+                      <TableCell align="center">{product.stock}</TableCell>
+                      <TableCell
+                        align="left"
+                        sx={{
+                          lineHeight: "1.5",
+                          textAlign: "justify",
+                          maxWidth: { xs: "100px", sm: "150px", md: "200px" },
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {product.description}
+                      </TableCell>
+                      <TableCell align="center">
+                        <IconButton onClick={() => handleOpenModal(product)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDelete(product.id)}>
+                          <DeleteIcon sx={{ color: "#B88E2F" }} />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </Box>
       </TableContainer>
       <Snackbar
         open={openSnackbar}
@@ -379,10 +469,12 @@ function AllProduct() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: { xs: "90%", sm: "70%", md: 400 },
+            maxHeight: { xs: "90vh", sm: "80vh" },
+            overflow: "auto",
             bgcolor: "background.paper",
             boxShadow: 24,
-            p: 4,
+            p: { xs: 2, sm: 3, md: 4 },
             borderRadius: 2,
           }}
         >
