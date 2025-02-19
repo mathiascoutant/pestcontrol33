@@ -22,6 +22,8 @@ import StarIcon from "@mui/icons-material/Star";
 import ReviewCard from "./components/UI/ReviewCard";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CarouselLastProducts from "./components/Sections/CarouselLastProducts";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 function Product() {
   const [product, setProduct] = useState(null);
@@ -241,20 +243,78 @@ function Product() {
       case 2:
         return (
           <Box ref={reviewsRef}>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                justifyContent: "space-between",
+                alignItems: { xs: "stretch", sm: "center" },
+                gap: 2,
+                mb: 3,
+              }}
+            >
               <Typography variant="h6">Avis des clients :</Typography>
-              <Button variant="contained" onClick={handleAddComment}>
+              <Button
+                variant="contained"
+                onClick={handleAddComment}
+                sx={{ width: { xs: "100%", sm: "auto" } }}
+              >
                 Ajouter un avis
               </Button>
             </Box>
-            <Grid container spacing={2}>
-              {Array.isArray(customerReviews) &&
-                customerReviews.map((review) => (
-                  <Grid item xs={12} sm={6} md={3} key={review.id}>
-                    <ReviewCard review={review} />
-                  </Grid>
+            {Array.isArray(customerReviews) && customerReviews.length > 0 && (
+              <Carousel
+                responsive={{
+                  superLargeDesktop: {
+                    breakpoint: { max: 4000, min: 1536 },
+                    items: 4,
+                  },
+                  desktop: {
+                    breakpoint: { max: 1536, min: 1024 },
+                    items: 3,
+                  },
+                  tablet: {
+                    breakpoint: { max: 1024, min: 600 },
+                    items: 2,
+                  },
+                  mobile: {
+                    breakpoint: { max: 600, min: 0 },
+                    items: 1,
+                  },
+                }}
+                infinite={true}
+                autoPlay={true}
+                autoPlaySpeed={3000}
+                keyBoardControl={true}
+                customTransition="transform 300ms ease-in-out"
+                transitionDuration={300}
+                containerClass="carousel-container"
+                removeArrowOnDeviceType={["tablet", "mobile"]}
+                dotListClass="custom-dot-list-style"
+                itemClass="carousel-item-padding-40-px"
+                centerMode={false}
+              >
+                {customerReviews.map((review) => (
+                  <Box
+                    key={review.id}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      p: 1,
+                    }}
+                  >
+                    <ReviewCard
+                      review={review}
+                      sx={{
+                        width: "100%",
+                        maxWidth: "350px",
+                        height: "100%",
+                      }}
+                    />
+                  </Box>
                 ))}
-            </Grid>
+              </Carousel>
+            )}
           </Box>
         );
       default:

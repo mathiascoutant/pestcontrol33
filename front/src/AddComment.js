@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import fondImage from "./Assets/landing.jpg";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 function AddComment() {
@@ -73,22 +72,32 @@ function AddComment() {
   return (
     <Box
       sx={{
-        mt: 8,
+        mt: 4,
         display: "flex",
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
-        height: "100vh",
-        backgroundImage: `url(${fondImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "bottom",
+        minHeight: "100vh",
+        padding: { xs: 2, sm: 4 },
+        backgroundColor: "#f5f5f5",
       }}
     >
-      <Card sx={{ width: "100%", maxWidth: 600, p: 2, borderRadius: 2 }}>
+      <Card
+        sx={{
+          width: "100%",
+          maxWidth: { xs: "100%", sm: 500, md: 600 },
+          p: { xs: 1, sm: 2 },
+          borderRadius: 2,
+        }}
+      >
         <CardContent>
           <Typography
             variant="h5"
-            sx={{ textAlign: "center", mb: 4 }}
+            sx={{
+              textAlign: "center",
+              mb: 4,
+              fontSize: { xs: "1.2rem", sm: "1.5rem" },
+            }}
             gutterBottom
           >
             <IconButton
@@ -132,7 +141,13 @@ function AddComment() {
               required
               multiline
               rows={4}
-              sx={{ width: "100%", mb: 2 }}
+              sx={{
+                width: "100%",
+                mb: 2,
+                "& .MuiInputBase-root": {
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
+                },
+              }}
             />
             <Button type="submit" variant="contained" color="primary">
               Soumettre

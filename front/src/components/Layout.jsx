@@ -15,7 +15,9 @@ function Layout({ children }) {
         location.pathname !== "/register" &&
         location.pathname !== "/contact" &&
         location.pathname !== "/updatepassword" &&
-        location.pathname !== "/favorites" && <Footer />}
+        location.pathname !== "/favorites" &&
+        location.pathname !== "/profil" &&
+        !location.pathname.startsWith("/addcomment/") && <Footer />}
     </div>
   );
 }

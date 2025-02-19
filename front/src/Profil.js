@@ -43,6 +43,7 @@ function Profil() {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/users/${userId}`)
       .then((response) => response.json())
       .then((userData) => {
+        console.log("Données reçues de l'API:", userData);
         if (userData) {
           setUser({
             nom: userData.nom || "",
@@ -108,18 +109,35 @@ function Profil() {
   }
 
   return (
-    <Box sx={{ mt: 10 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        minHeight: "80vh",
+        width: "100%",
+        mt: { xs: 12, sm: 4, md: 16 },
+        px: { xs: 2, sm: 3, md: 4 },
+      }}
+    >
       <Header />
       {error && <Typography color="error">{error}</Typography>}
       <Box
         sx={{
-          my: 22,
-          Width: "100vh",
+          width: "100%",
+          maxWidth: { xs: "95%", sm: "80%", md: "600px" },
+          my: { xs: 4, sm: 6, md: 8 },
+          mx: "auto",
         }}
       >
         <Typography
           variant="h4"
-          sx={{ mb: 5, textAlign: "center", fontSize: 30 }}
+          sx={{
+            mb: { xs: 3, sm: 4 },
+            textAlign: "center",
+            fontSize: { xs: "1.5rem", sm: "1.75rem", md: "2rem" },
+            fontWeight: "bold",
+          }}
         >
           Bienvenue sur votre profil
         </Typography>
@@ -127,10 +145,9 @@ function Profil() {
           sx={{
             display: "flex",
             flexDirection: "column",
-            gap: 2,
-            maxWidth: 600,
-            margin: "0 auto",
-            p: 3,
+            gap: 2.5,
+            width: "100%",
+            p: { xs: 2, sm: 3, md: 4 },
             boxShadow: 3,
             borderRadius: 2,
             backgroundColor: "#fff",
@@ -168,27 +185,31 @@ function Profil() {
             variant="contained"
             color="primary"
             onClick={handleUpdate}
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 3,
+              py: 1.5,
+              fontSize: { xs: "0.9rem", sm: "1rem" },
+            }}
           >
             Modifier
           </Button>
         </Box>
-
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={3000}
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        >
-          <Alert
-            onClose={() => setSnackbar({ ...snackbar, open: false })}
-            severity={snackbar.severity}
-            sx={{ width: "100%" }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
       </Box>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
