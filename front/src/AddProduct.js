@@ -6,6 +6,10 @@ import {
   Button,
   Snackbar,
   IconButton,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import axios from "axios";
 import { Link, useParams, useNavigate } from "react-router-dom";
@@ -25,6 +29,8 @@ function AddProduct() {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const [categoryId, setCategoryId] = useState("");
+  const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -52,62 +58,96 @@ function AddProduct() {
     }
   }, [id, token]);
 
+  useEffect(() => {
+    const fetchSubCategories = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/subCategories`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSubCategories(response.data.subCategories);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des sous-catégories:",
+          error
+        );
+        setSnackbarMessage(
+          "Erreur lors de la récupération des sous-catégories"
+        );
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      }
+    };
+
+    fetchSubCategories();
+  }, [token]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("nom", productName);
-    formData.append("stock", stock);
-    formData.append("prix", price);
-    formData.append("status", status);
-    formData.append("description", description);
-    formData.append("conseilsUtilisation", usageAdvice);
 
-    // Add images to FormData
-    for (let i = 0; i < images.length; i++) {
-      formData.append("mediaUrls.imageUrls", images[i]);
+    // Validation des champs requis
+    if (!productName || !price || !stock || !description || !categoryId) {
+      setSnackbarMessage(
+        "Veuillez remplir tous les champs obligatoires (nom, prix, stock, description et catégorie)"
+      );
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    // Formatage et ajout des données au FormData
+    formData.append("nom", productName.trim());
+    formData.append("description", description.trim());
+    formData.append("prix", parseFloat(price));
+    formData.append("stock", parseInt(stock));
+    formData.append("status", parseInt(status) || 1);
+    formData.append("conseilsUtilisation", usageAdvice.trim());
+    formData.append("subCategoryId", categoryId);
+
+    // Vérification et ajout des images
+    if (images && images.length > 0) {
+      Array.from(images).forEach((image) => {
+        formData.append("images", image);
+      });
     }
 
     try {
-      if (id) {
-        // Update product
-        const response = await axios.put(
-          `${process.env.REACT_APP_API_BASE_URL}/products/${id}`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        setSnackbarMessage(response.data.message);
-        setSnackbarSeverity("success");
-      } else {
-        // Add new product
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/products/add`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        setSnackbarMessage(response.data.message);
-        setSnackbarSeverity("success");
-        setTimeout(() => {
-          navigate("/allproduct");
-        }, 1000);
-      }
-      setOpenSnackbar(true);
-    } catch (error) {
-      console.error(
-        "Erreur lors de l'ajout ou de la mise à jour du produit:",
-        error
-      );
+      const url = id
+        ? `${process.env.REACT_APP_API_BASE_URL}/products/${id}`
+        : `${process.env.REACT_APP_API_BASE_URL}/products/add`;
+
+      const method = id ? "put" : "post";
+
+      const response = await axios({
+        method,
+        url,
+        data: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       setSnackbarMessage(
-        "Erreur lors de l'ajout ou de la mise à jour du produit."
+        id ? "Produit modifié avec succès" : "Produit ajouté avec succès"
+      );
+      setSnackbarSeverity("success");
+      setOpenSnackbar(true);
+
+      // Redirection après succès
+      setTimeout(() => {
+        navigate("/allproduct");
+      }, 2000);
+    } catch (error) {
+      console.error("Erreur détaillée:", error.response?.data || error.message);
+      setSnackbarMessage(
+        error.response?.data?.message ||
+          "Erreur lors de l'ajout ou de la mise à jour du produit. Vérifiez les champs saisis."
       );
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
@@ -180,6 +220,23 @@ function AddProduct() {
             rows={4}
             sx={{ width: "100%" }}
           />
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id="subcategory-label">Sous-catégorie</InputLabel>
+            <Select
+              labelId="subcategory-label"
+              id="subcategory-select"
+              value={categoryId}
+              label="Sous-catégorie"
+              onChange={(e) => setCategoryId(e.target.value)}
+              required
+            >
+              {subCategories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TextField
             type="file"
             inputProps={{ multiple: true }}

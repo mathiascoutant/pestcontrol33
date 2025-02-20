@@ -33,6 +33,7 @@ function Dashboard() {
     totalProducts: 0,
     totalReviews: 0,
     totalDiscounts: 0,
+    totalCategories: 0,
   });
 
   useEffect(() => {
@@ -73,7 +74,27 @@ function Dashboard() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setStats((prev) => ({ ...prev, totalDiscounts: data.length }));
+        console.log("Discount data received:", data);
+        console.log("Total discounts:", data.stats.total);
+        setStats((prev) => {
+          const newStats = {
+            ...prev,
+            totalDiscounts: Number(data.stats.total),
+          };
+          console.log("Updated stats:", newStats);
+          return newStats;
+        });
+      })
+      .catch((error) => console.error("Erreur:", error));
+  }, []);
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/subCategories`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Categories data:", data);
+        setStats((prev) => ({ ...prev, totalCategories: data.count }));
+        console.log("Updated stats:", stats);
       })
       .catch((error) => console.error("Erreur:", error));
   }, []);
@@ -130,6 +151,16 @@ function Dashboard() {
           </Typography>
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} sm={6} md={3}>
+              <Link style={{ textDecoration: "none" }} to="/allcategory">
+                <StatCard
+                  title={`Les catégories`}
+                  value={stats.totalCategories}
+                  icon={<GroupIcon sx={{ color: "purple" }} />}
+                  color="#976ffa"
+                />
+              </Link>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
               <Link style={{ textDecoration: "none" }} to="/allproduct">
                 <StatCard
                   title="Produits"
@@ -142,36 +173,6 @@ function Dashboard() {
               </Link>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Link style={{ textDecoration: "none" }} to="/ongoingorders">
-                <StatCard
-                  title="Commandes en cours"
-                  value={stats.totalOrders}
-                  icon={<LoopIcon sx={{ color: "orange" }} />}
-                  color="#cfaf69"
-                />
-              </Link>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Link style={{ textDecoration: "none" }} to="/completedorders">
-                <StatCard
-                  title="Commandes terminées"
-                  value={`${stats.totalRevenue}`}
-                  icon={<CheckIcon sx={{ color: "#4caf50" }} />}
-                  color="#4caf50"
-                />
-              </Link>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Link style={{ textDecoration: "none" }} to="/invoices">
-                <StatCard
-                  title="Mes factures"
-                  value={stats.activeUsers}
-                  icon={<LibraryBooksOutlinedIcon sx={{ color: "#f44336" }} />}
-                  color="#f44336"
-                />
-              </Link>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
               <Link style={{ textDecoration: "none" }} to="/adddiscount">
                 <StatCard
                   title="Code promo"
@@ -180,6 +181,16 @@ function Dashboard() {
                     <NotificationsNoneOutlinedIcon sx={{ color: "#2196f3" }} />
                   }
                   color="#2196f3"
+                />
+              </Link>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Link style={{ textDecoration: "none" }} to="/completedorders">
+                <StatCard
+                  title="Les commandes"
+                  value={`${stats.totalRevenue}`}
+                  icon={<LibraryBooksOutlinedIcon sx={{ color: "#f44336" }} />}
+                  color="#4caf50"
                 />
               </Link>
             </Grid>

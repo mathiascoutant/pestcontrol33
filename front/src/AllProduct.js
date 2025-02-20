@@ -44,17 +44,30 @@ function AllProduct() {
         // Récupérer le nombre d'avis pour chaque produit
         const productsWithReviews = await Promise.all(
           data.map(async (product) => {
-            const reviewResponse = await fetch(
-              `${process.env.REACT_APP_API_BASE_URL}/comment/${product.id}`
-            );
-            const reviewData = await reviewResponse.json();
-            return { ...product, reviewCount: reviewData.commentCount || 0 };
+            try {
+              const reviewResponse = await fetch(
+                `${process.env.REACT_APP_API_BASE_URL}/comment/${product.id}`
+              );
+              if (!reviewResponse.ok) {
+                return { ...product, reviewCount: 0 };
+              }
+              const reviewData = await reviewResponse.json();
+              return { ...product, reviewCount: reviewData.commentCount || 0 };
+            } catch (error) {
+              console.warn(
+                `Impossible de récupérer les avis pour le produit ${product.id}:`,
+                error
+              );
+              return { ...product, reviewCount: 0 };
+            }
           })
         );
 
         setProducts(productsWithReviews);
       } catch (error) {
         console.error("Erreur lors de la récupération des produits :", error);
+        setSnackbarMessage("Erreur lors de la récupération des produits");
+        setOpenSnackbar(true);
       }
     };
 
@@ -129,32 +142,17 @@ function AllProduct() {
       // S'assurer que tous les champs numériques sont bien des nombres
       const simplifiedProduct = {
         nom: currentProduct.nom?.trim(),
-        prix: currentProduct.prix ? Number(currentProduct.prix) : 0,
+        prix: parseFloat(currentProduct.prix) || 0,
         description: currentProduct.description?.trim(),
-        stock: currentProduct.stock ? Number(currentProduct.stock) : 0,
+        stock: parseInt(currentProduct.stock) || 0,
         conseilsUtilisation: currentProduct.conseilsUtilisation?.trim() || "",
-        newPrice: currentProduct.newPrice
-          ? Number(currentProduct.newPrice)
-          : null,
-        discount: currentProduct.discount
-          ? Number(currentProduct.discount)
-          : null,
-        status: 1, // Ajout du status si nécessaire
+        status: currentProduct.status || 1,
       };
 
-      // Vérifier qu'aucune valeur n'est NaN
-      if (
-        isNaN(simplifiedProduct.prix) ||
-        isNaN(simplifiedProduct.stock) ||
-        (simplifiedProduct.newPrice !== null &&
-          isNaN(simplifiedProduct.newPrice)) ||
-        (simplifiedProduct.discount !== null &&
-          isNaN(simplifiedProduct.discount))
-      ) {
+      // Vérification des valeurs numériques
+      if (isNaN(simplifiedProduct.prix) || isNaN(simplifiedProduct.stock)) {
         throw new Error("Les valeurs numériques sont invalides");
       }
-
-      console.log("Données à envoyer :", simplifiedProduct);
 
       const updateResponse = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/products/${currentProduct.id}`,
@@ -171,18 +169,18 @@ function AllProduct() {
       if (!updateResponse.ok) {
         const errorData = await updateResponse.json();
         throw new Error(
-          errorData.message || "Erreur lors de la mise à jour du produit"
+          errorData.message ||
+            "Erreur serveur lors de la mise à jour du produit"
         );
       }
 
-      const data = await updateResponse.json();
-      console.log("API Response:", data);
+      const updatedProduct = await updateResponse.json();
 
       // Mise à jour de la liste des produits
       setProducts(
         products.map((product) =>
           product.id === currentProduct.id
-            ? { ...product, ...simplifiedProduct }
+            ? { ...product, ...updatedProduct }
             : product
         )
       );
@@ -197,7 +195,7 @@ function AllProduct() {
       }, 2000);
     } catch (error) {
       console.error("Erreur de mise à jour du produit :", error);
-      setSnackbarMessage("Erreur lors de la mise à jour : " + error.message);
+      setSnackbarMessage(error.message);
       setOpenSnackbar(true);
     }
   };
@@ -460,7 +458,7 @@ function AllProduct() {
         onClose={() => setOpenSnackbar(false)}
         message={snackbarMessage}
       >
-        <Alert severity="success">Produit supprimé avec succès !</Alert>
+        <Alert severity="success">{snackbarMessage}</Alert>
       </Snackbar>
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box
@@ -525,31 +523,6 @@ function AllProduct() {
                   setCurrentProduct({
                     ...currentProduct,
                     prix: e.target.value,
-                  })
-                }
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Nouveau Prix"
-                value={currentProduct.newPrice || ""}
-                onChange={(e) =>
-                  setCurrentProduct({
-                    ...currentProduct,
-                    newPrice: e.target.value,
-                  })
-                }
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Réduction (%)"
-                type="number"
-                value={currentProduct.discount || ""}
-                onChange={(e) =>
-                  setCurrentProduct({
-                    ...currentProduct,
-                    discount: e.target.value,
                   })
                 }
                 fullWidth

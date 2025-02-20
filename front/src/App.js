@@ -15,14 +15,14 @@ import Commande from "./Commande";
 import AddProduct from "./AddProduct";
 import AllProduct from "./AllProduct";
 import AddComment from "./AddComment";
-import OngoingOrders from "./OngoingOrders";
 import CompletedOrders from "./CompletedOrders";
-import Invoices from "./Invoices";
 import Reviews from "./Reviews";
 import TableUsers from "./TableUsers";
 import PaymentPage from "./PaymentPage";
 import UpdatePassword from "./UpdatePassword";
 import AddDiscount from "./AddDiscount";
+import AllCategory from "./AllCategory";
+import AddCategory from "./AddCategory";
 
 function App() {
   return (
@@ -45,13 +45,13 @@ function App() {
           <Route path="/updatepassword" element={<UpdatePassword />} />
           <Route path="/connexion" element={<Connexion />} />
           <Route path="/product/:id" element={<Product />} />
-          <Route path="/ongoingorders" element={<OngoingOrders />} />
           <Route path="/completedorders" element={<CompletedOrders />} />
-          <Route path="/invoices" element={<Invoices />} />
           <Route path="/adddiscount" element={<AddDiscount />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/tableusers" element={<TableUsers />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/allcategory" element={<AllCategory />} />
+          <Route path="/addcategory" element={<AddCategory />} />
         </Routes>
       </Layout>
     </Router>
