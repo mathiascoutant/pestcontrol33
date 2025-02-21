@@ -56,6 +56,7 @@ function ConnexionForm() {
       <Box
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", md: "row" },
           height: "100vh",
           width: "100vw",
           alignItems: "center",
@@ -65,12 +66,13 @@ function ConnexionForm() {
         {/* Formulaire côté gauche */}
         <Box
           sx={{
-            width: "50%",
+            width: { xs: "100%", md: "50%" },
             height: "100vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             p: 4,
+            backgroundColor: "white", // Ajout d'un fond blanc sur mobile pour plus de lisibilité
           }}
         >
           <Box
@@ -86,7 +88,7 @@ function ConnexionForm() {
               gap: 2,
             }}
           >
-            <Typography variant="h3" sx={{ textAlign: "center", mb: 4 }}>
+            <Typography variant="h4" sx={{ textAlign: "center", mb: 4 }}>
               Connexion
             </Typography>
 
@@ -121,14 +123,17 @@ function ConnexionForm() {
                 type="submit"
                 variant="contained"
                 fullWidth
-                sx={{ fontSize: "1.2em" }}
+                sx={{
+                  fontSize: "1.2em",
+                  padding: "12px",
+                }}
               >
                 Se connecter
               </Button>
               <Typography
                 component={Link}
                 to="/updatepassword"
-                variant="contained"
+                variant="body2"
                 sx={{
                   textDecoration: "none",
                   color: "black",
@@ -143,8 +148,12 @@ function ConnexionForm() {
                 <Typography
                   component={Link}
                   to="/register"
-                  variant="contained"
-                  sx={{ textDecoration: "none", color: "primary.main", ml: 1 }}
+                  variant="body2"
+                  sx={{
+                    textDecoration: "none",
+                    color: "primary.main",
+                    ml: 1,
+                  }}
                 >
                   Inscription
                 </Typography>
@@ -156,9 +165,9 @@ function ConnexionForm() {
         {/* Image côté droit */}
         <Box
           sx={{
+            display: { xs: "none", md: "block" },
             width: "50%",
             height: "100vh",
-            display: { xs: "none", md: "block" },
             backgroundImage: `url(${fondImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",

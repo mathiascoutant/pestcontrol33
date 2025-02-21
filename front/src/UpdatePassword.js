@@ -129,19 +129,32 @@ function UpdatePassword() {
   return (
     <Box
       sx={{
-        mt: 8,
-        mx: 10,
-        my: 12,
-        p: 8,
+        mt: 4,
+        mx: { xs: 2, sm: 5, md: 10 },
+        my: { xs: 6, sm: 8, md: 12 },
+        p: { xs: 3, sm: 5, md: 8 },
         borderRadius: 2,
         boxShadow: 3,
         backgroundColor: "#f5f5f5",
       }}
     >
-      <Typography variant="h4" sx={{ textAlign: "center", mb: 8 }}>
+      <Typography
+        variant="h4"
+        sx={{ textAlign: "center", mb: { xs: 4, md: 8 } }}
+      >
         Récupération de mot de passe
       </Typography>
-      <Stepper activeStep={step} sx={{ mb: 4 }}>
+      <Stepper
+        activeStep={step}
+        sx={{
+          mb: { xs: 2, md: 4 },
+          mt: { xs: 2, md: 4 },
+          gap: { xs: 1, md: 2 },
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: { xs: "column", md: "row" },
+        }}
+      >
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel sx={{ color: "#1976d2" }}>{label}</StepLabel>
@@ -223,6 +236,7 @@ function UpdatePassword() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            mb: { xs: 2, md: 4 },
           }}
         >
           <TextField
@@ -241,12 +255,13 @@ function UpdatePassword() {
             fullWidth
             sx={{ my: 2 }} // Marge en bas
           />
-          <Box sx={{ display: "flex", gap: 1.5 }}>
+          <Box sx={{ display: "flex", gap: 1.5, mt: { xs: 2, md: 4 } }}>
             <Button
               variant="contained"
               color="primary"
               component={Link}
               to="/connexion"
+              sx={{ mb: { xs: 2, md: 4 } }}
             >
               Retour
             </Button>
@@ -254,6 +269,7 @@ function UpdatePassword() {
               variant="contained"
               color="primary"
               onClick={handlePasswordReset}
+              sx={{ mb: { xs: 2, md: 4 } }}
             >
               Réinitialiser le mot de passe
             </Button>

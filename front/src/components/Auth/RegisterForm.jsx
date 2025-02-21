@@ -1,3 +1,5 @@
+/* global grecaptcha */ // Déclare grecaptcha en tant que variable globale
+
 import {
   Box,
   Typography,
@@ -47,12 +49,29 @@ function RegisterForm() {
       return;
     }
 
+    // Si le captcha n'est pas rempli
     if (!captchaToken) {
       setError("Veuillez compléter le CAPTCHA");
       return;
     }
 
     try {
+      // Exécution de reCAPTCHA pour obtenir le token
+      const token = await grecaptcha.enterprise.execute(
+        "6LdLC8gqAAAAACsAj4AJq9kSgny3tz1Nv4uoMN-R",
+        { action: "register" }
+      );
+
+      // Création des données du formulaire
+      const data = {
+        email: formData.email,
+        password: formData.password,
+        pseudo: formData.username,
+        nom: formData.lastName,
+        prenom: formData.firstName,
+        captchaToken: token, // Inclus le token reCAPTCHA ici
+      };
+
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/auth/register`,
         {
@@ -60,14 +79,7 @@ function RegisterForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-            pseudo: formData.username,
-            nom: formData.lastName,
-            prenom: formData.firstName,
-            captcha: captchaToken,
-          }),
+          body: JSON.stringify(data),
         }
       );
 
@@ -104,13 +116,14 @@ function RegisterForm() {
           height: "100vh",
           width: "100vw",
           alignItems: "center",
-          overflow: "hidden",
+          justifyContent: "center",
+          flexDirection: { xs: "column", md: "row" },
         }}
       >
         {/* Image côté gauche */}
         <Box
           sx={{
-            width: "50%",
+            width: { xs: "0", md: "50%" }, // Masque l'image sur mobile
             height: "100vh",
             display: { xs: "none", md: "block" },
             backgroundImage: `url(${fondImage})`,
@@ -122,7 +135,7 @@ function RegisterForm() {
         {/* Formulaire côté droit */}
         <Box
           sx={{
-            width: "50%",
+            width: { xs: "100%", md: "50%" },
             height: "100vh",
             display: "flex",
             justifyContent: "center",
@@ -135,15 +148,16 @@ function RegisterForm() {
             onSubmit={handleSubmit}
             sx={{
               width: "100%",
-              maxWidth: "500px",
+              maxWidth: { xs: "100%", sm: "400px", md: "500px" },
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
               gap: 2,
+              mt: { xs: 14, md: 0 },
             }}
           >
-            <Typography variant="h3" sx={{ textAlign: "center", mb: 4 }}>
+            <Typography variant="h4" sx={{ textAlign: "center", mb: 2 }}>
               Inscription
             </Typography>
 
@@ -209,6 +223,7 @@ function RegisterForm() {
               onChange={handleChange}
             />
 
+            {/* reCAPTCHA intégré */}
             <ReCAPTCHA
               sitekey="6LdLC8gqAAAAACsAj4AJq9kSgny3tz1Nv4uoMN-R"
               onChange={handleCaptchaChange}
@@ -218,8 +233,8 @@ function RegisterForm() {
               sx={{
                 display: "flex",
                 justifyContent: "center",
-                flexDirection: "column",
                 gap: 2,
+                mb: { xs: 10, md: 0 },
               }}
             >
               <Button
@@ -230,7 +245,12 @@ function RegisterForm() {
               >
                 S'inscrire
               </Button>
-              <Button component={Link} to="/connexion" variant="contained">
+              <Button
+                component={Link}
+                to="/connexion"
+                variant="contained"
+                sx={{ mt: 2 }}
+              >
                 Retour
               </Button>
             </Box>
