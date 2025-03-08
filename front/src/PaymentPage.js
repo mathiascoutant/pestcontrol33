@@ -24,7 +24,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { jwtDecode } from "jwt-decode";
 
 const stripePromise = loadStripe(
-  "pk_test_51QlSltB3Wls447R5cDklYX7cNoB2lX86UmHGlmSKIUysLgeU4GujbQGnRRRDHrUaXQRkAaSE152DyZkiQLzGe7aD00gThgaxGp"
+  //"pk_test_51QlSltB3Wls447R5cDklYX7cNoB2lX86UmHGlmSKIUysLgeU4GujbQGnRRRDHrUaXQRkAaSE152DyZkiQLzGe7aD00gThgaxGp"
+  "pk_live_51QlSlkBizCqLJgK04f6a2DgzD4HRRQOQGhjKELqBcZSOyUxTzY9zQOuH0m7a7aJ4TqneQQe1sHmsAEetlervbn6200MvoCCXb9"
 );
 
 const PersonalInfoForm = ({
@@ -276,9 +277,41 @@ const PaymentForm = () => {
     setError(null);
 
     try {
-      // 1. Créer une intention de paiement côté serveur
+      const cardElement = elements.getElement(CardElement);
+
+      if (!cardElement) {
+        setError("Erreur: Impossible de récupérer l'élément de carte.");
+        setIsLoading(false);
+        return;
+      }
+
+      const { paymentMethod, error: pmError } =
+        await stripe.createPaymentMethod({
+          type: "card",
+          card: cardElement,
+          billing_details: {
+            name: `${firstName} ${lastName}`,
+            email,
+            address: {
+              line1: address,
+              city,
+              postal_code: postalCode,
+            },
+            phone,
+          },
+        });
+
+      if (pmError) {
+        setError(
+          pmError.message || "Erreur lors de la création du moyen de paiement."
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      // Maintenant, tu peux utiliser paymentMethod.id
       const createIntentResponse = await fetch(
-        "https://pestcontrol33.com/api/v1/payments/stripe/clientSecret",
+        `${process.env.REACT_APP_API_BASE_URL}/payments/stripe/clientSecret`,
         {
           method: "POST",
           headers: {
@@ -286,83 +319,101 @@ const PaymentForm = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
-            amount: Math.round(cartTotal * 100),
             currency: "eur",
-            payment_method_types: ["card"],
-            setup_future_usage: "off_session",
+            paymentMethodId: paymentMethod.id, // Maintenant défini !
+            products: cartItems.map((item) => ({
+              productId: item.product.id,
+              quantity: item.quantity,
+            })),
           }),
         }
       );
-
       const intentData = await createIntentResponse.json();
+      console.log("Données de création de l'intent :", intentData);
 
       if (!intentData.client_secret) {
         throw new Error(
-          "La réponse du serveur ne contient pas de client_secret"
+          "Erreur: La réponse du serveur ne contient pas de client_secret"
         );
       }
 
-      // 2. Confirmer le paiement avec l'authentification du client
+      const clientSecret = intentData.client_secret;
+
+      // 2. Confirmation du paiement avec Stripe
       const { error: confirmError, paymentIntent } =
-        await stripe.confirmCardPayment(intentData.client_secret, {
+        await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
             card: elements.getElement(CardElement),
             billing_details: {
               name: `${firstName} ${lastName}`,
-              email: email,
+              email,
               address: {
                 line1: address,
-                city: city,
+                city,
                 postal_code: postalCode,
               },
-              phone: phone,
+              phone,
             },
           },
-          return_url: `${window.location.origin}/payment-confirmation`,
         });
 
       if (confirmError) {
-        // Gérer les erreurs spécifiques à 3D Secure
-        if (
-          confirmError.type === "card_error" ||
-          confirmError.type === "validation_error"
-        ) {
-          setError(confirmError.message);
-        } else {
-          setError("Une erreur inattendue s'est produite.");
-        }
+        setError(
+          confirmError.message || "Une erreur est survenue lors du paiement."
+        );
         return;
       }
 
-      // 3. Vérifier le statut du paiement
-      if (paymentIntent.status === "requires_action") {
-        // L'authentification 3D Secure est requise
-        const { error: actionError } = await stripe.handleCardAction(
-          paymentIntent.client_secret
+      if (paymentIntent.status === "succeeded") {
+        // 3. Enregistrer le paiement dans l'API
+        const paymentData = {
+          currency: "eur",
+          paymentMethodId: paymentIntent.payment_method, // Utilise une méthode de paiement valide
+          userId,
+          email,
+          products: cartItems.map((item) => ({
+            productId: item.product.id,
+            quantity: item.quantity,
+          })),
+        };
+
+        const paymentResponse = await fetch(
+          "https://pestcontrol33.com/api/v1/payments/stripe/add",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(paymentData),
+          }
         );
 
-        if (actionError) {
+        const paymentResult = await paymentResponse.json();
+        console.log("Réponse API d'enregistrement du paiement:", paymentResult);
+
+        if (paymentResult.success) {
+          setActiveStep(2);
+          setOpenSnackbar(true);
+          localStorage.removeItem("cart");
+          setCartItems([]);
+          setTimeout(() => {
+            navigate("/");
+          }, 60000);
+        } else {
+          // Ajout d'un message d'erreur détaillé
           setError(
-            "L'authentification 3D Secure a échoué. Veuillez réessayer."
+            paymentResult.message ||
+              "Erreur lors de l'enregistrement du paiement."
           );
-          return;
         }
-      }
-
-      if (paymentIntent.status === "succeeded") {
-        // Paiement réussi
-        setActiveStep((prevStep) => prevStep + 1);
-        setOpenSnackbar(true);
-        localStorage.removeItem("cart");
-        setCartItems([]);
-
-        setTimeout(() => {
-          navigate("/");
-        }, 60000);
+      } else {
+        // Gestion du cas où le paiement échoue
+        setError("Le paiement n'a pas pu être effectué. Veuillez réessayer.");
       }
     } catch (err) {
       console.error("Erreur complète:", err);
-      setError(err.message || "Une erreur est survenue lors du paiement");
+      setError(err.message || "Une erreur est survenue lors du paiement.");
     } finally {
       setIsLoading(false);
     }

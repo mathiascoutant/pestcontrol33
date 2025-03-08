@@ -21,7 +21,11 @@ const CarouselLastProducts = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setProducts(data.slice(0, 5));
+        const uniqueProducts = Array.from(
+          new Set(data.map((product) => product.id))
+        ).map((id) => data.find((product) => product.id === id));
+
+        setProducts(uniqueProducts.slice(0, 5));
       } catch (error) {
         console.error("Erreur lors de la récupération des produits :", error);
         setProducts([]);
@@ -34,19 +38,19 @@ const CarouselLastProducts = () => {
 
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: Math.min(products.length, 3),
     slidesToScroll: 1,
     centerMode: true,
-    centerPadding: "60px",
+    centerPadding: "0px",
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: Math.min(products.length, 2),
           slidesToScroll: 1,
-          centerPadding: "40px",
+          centerPadding: "0px",
         },
       },
       {
@@ -54,14 +58,17 @@ const CarouselLastProducts = () => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          centerPadding: "20px",
+          centerMode: false, // Désactive le mode centré sur mobile
+          centerPadding: "0px",
         },
       },
     ],
   };
 
   return (
-    <Box sx={{ mx: 4, mb: 10, mt: 10 }}>
+    <Box
+      sx={{ mx: "auto", mb: 10, mt: 10, maxWidth: "90vw", textAlign: "center" }}
+    >
       <Typography
         variant="h6"
         sx={{
@@ -84,7 +91,12 @@ const CarouselLastProducts = () => {
           {products.map((product) => (
             <Box
               key={product.id}
-              sx={{ display: "flex", justifyContent: "center", p: 2 }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                p: 2,
+              }}
             >
               <CardProduct
                 id={product.id}

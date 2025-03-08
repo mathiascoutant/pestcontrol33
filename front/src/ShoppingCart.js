@@ -232,63 +232,51 @@ function ShoppingCart() {
       return;
     }
 
+    // Récupérer les codes promos déjà utilisés depuis le localStorage
+    const usedCoupons = JSON.parse(localStorage.getItem("usedCoupons")) || [];
+
+    if (usedCoupons.includes(couponCode.toUpperCase())) {
+      setSnackbarMessage("Vous avez déjà utilisé ce code promo !");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
-      // Récupérer la liste des codes promos
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}/discountShopping`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Vérifier si le code existe dans la liste
       const validCode = response.data.discountCodes.find(
         (code) => code.code === couponCode.toUpperCase()
       );
 
       if (validCode) {
-        // Vérifier si le code est actif (pas expiré ni à venir)
         const now = new Date();
         const startDate = new Date(validCode.startDate);
         const endDate = new Date(validCode.endDate);
 
-        if (now < startDate) {
-          setDiscountError("Ce code promo n'est pas encore actif");
-          setSnackbarMessage("Ce code promo n'est pas encore actif");
+        if (now < startDate || now > endDate) {
+          setSnackbarMessage("Ce code promo n'est pas valide");
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
           return;
         }
 
-        if (now > endDate) {
-          setDiscountError("Ce code promo a expiré");
-          setSnackbarMessage("Ce code promo a expiré");
-          setSnackbarSeverity("error");
-          setSnackbarOpen(true);
-          return;
-        }
-
-        // Vérifier si le code peut encore être utilisé
         if (
           !validCode.multiUsage &&
           validCode.nbrUsed >= validCode.nbrAutorisationUsage
         ) {
-          setDiscountError("Ce code promo a atteint sa limite d'utilisation");
           setSnackbarMessage("Ce code promo a atteint sa limite d'utilisation");
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
           return;
         }
 
-        // Appliquer la réduction
         const discount = parseFloat(validCode.discount);
         setDiscountAmount(discount);
-
-        // Calculer le nouveau total avec la réduction
-        const discountedTotal = total * (1 - discount / 100);
-        setTotal(discountedTotal);
+        setTotal(total * (1 - discount / 100));
 
         setSnackbarMessage(
           `Code promo appliqué ! -${discount}% sur votre commande`
@@ -296,18 +284,16 @@ function ShoppingCart() {
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
 
-        // Stockage du code promo pour le paiement
-        localStorage.setItem("promoCode", couponCode.toUpperCase());
-        localStorage.setItem("promoDiscount", discount.toString());
+        // Ajouter le code promo à la liste des codes utilisés
+        usedCoupons.push(couponCode.toUpperCase());
+        localStorage.setItem("usedCoupons", JSON.stringify(usedCoupons));
       } else {
-        setDiscountError("Code promo invalide");
         setSnackbarMessage("Code promo invalide");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
       }
     } catch (error) {
       console.error("Erreur lors de la vérification du code promo:", error);
-      setDiscountError("Erreur lors de la vérification du code promo");
       setSnackbarMessage("Erreur lors de la vérification du code promo");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
