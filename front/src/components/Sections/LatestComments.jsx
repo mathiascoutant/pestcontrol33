@@ -111,7 +111,7 @@ const LatestComments = () => {
                       variant="body1"
                       sx={{ fontWeight: "bold", mb: 0.5 }}
                     >
-                      {review.user.pseudo}
+                      {review.user?.pseudo || "Utilisateur inconnu"}{" "}
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 1, color: "#555" }}>
                       {review.comment}

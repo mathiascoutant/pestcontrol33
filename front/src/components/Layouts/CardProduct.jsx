@@ -82,7 +82,16 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      showSnackbar("Veuillez vous connecter pour ajouter au panier", "error");
+      // Utilisateur non connecté
+      // Sauvegarder le produit dans le localStorage pour les utilisateurs non connectés
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const cartItem = { productId: id, quantity: 1 };
+
+      const newCart = [...cart, cartItem];
+      localStorage.setItem("cart", JSON.stringify(newCart));
+
+      setIsInCart(true); // Marquer comme ajouté au panier
+      showSnackbar("Produit ajouté au panier (en tant qu'invité)", "success");
       return;
     }
 
@@ -109,16 +118,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
       const data = await response.json();
 
       if (data.message === "Article ajouté avec succès") {
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        const newCart = [
-          ...cart,
-          {
-            productId: id,
-            quantity: 1,
-          },
-        ];
-        localStorage.setItem("cart", JSON.stringify(newCart));
-        setIsInCart(true);
+        setIsInCart(true); // Marquer comme ajouté au panier
         showSnackbar("Produit ajouté au panier", "success");
       } else if (data.message === "Quantité mise à jour avec succès") {
         showSnackbar("Quantité mise à jour avec succès", "success");

@@ -14,11 +14,13 @@ import {
   TableHead,
   TableRow,
   Chip,
+  IconButton,
 } from "@mui/material";
 import LoopIcon from "@mui/icons-material/Loop";
 import { Link } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
 import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import GroupIcon from "@mui/icons-material/Group";
@@ -63,6 +65,31 @@ function Dashboard() {
       })
       .catch((error) => console.error("Erreur:", error));
   }, []);
+
+  const handleDeleteUser = (userId) => {
+    const token = localStorage.getItem("token");
+
+    // Appel à l'API de suppression avec le token
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users/${userId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`, // Ajout du token dans l'en-tête
+      },
+    })
+      .then((response) => response.json()) // On récupère la réponse sous forme JSON
+      .then((data) => {
+        if (data.message === "Utilisateur supprimé avec succès") {
+          // Si la suppression a réussi, on met à jour la liste des utilisateurs
+          setUsers(users.filter((user) => user.id !== userId));
+        } else {
+          console.error(
+            "Erreur lors de la suppression de l'utilisateur :",
+            data.message
+          );
+        }
+      })
+      .catch((error) => console.error("Erreur lors de la suppression:", error));
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -204,18 +231,8 @@ function Dashboard() {
                 />
               </Link>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Link style={{ textDecoration: "none" }} to="/tableusers">
-                <StatCard
-                  title={`Les utilisateurs`}
-                  value={stats.totalUsers}
-                  icon={<GroupIcon sx={{ color: "purple" }} />}
-                  color="#976ffa"
-                />
-              </Link>
-            </Grid>
           </Grid>
-          <Paper sx={{ p: 3 }}>
+          <Paper sx={{ p: 3, display: { xs: "none", md: "block" } }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Utilisateurs Récents
             </Typography>
@@ -228,6 +245,7 @@ function Dashboard() {
                     <TableCell>Pseudo</TableCell>
                     <TableCell>Statut</TableCell>
                     <TableCell>Date d'inscription</TableCell>
+                    <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -245,6 +263,14 @@ function Dashboard() {
                       </TableCell>
                       <TableCell>
                         {new Date(user.createdAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDeleteUser(user.id)} // Appel à la fonction de suppression
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}
