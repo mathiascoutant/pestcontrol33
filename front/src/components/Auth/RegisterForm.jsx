@@ -12,7 +12,7 @@ import {
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import fondImage from "../../Assets/landing.jpg";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha"; // Commenté pour le moment
 
 function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -36,9 +36,9 @@ function RegisterForm() {
     });
   };
 
-  const handleCaptchaChange = (token) => {
-    setCaptchaToken(token);
-  };
+  // const handleCaptchaChange = (token) => { // Commenté pour le moment
+  //   setCaptchaToken(token);
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,17 +50,17 @@ function RegisterForm() {
     }
 
     // Si le captcha n'est pas rempli
-    if (!captchaToken) {
-      setError("Veuillez compléter le CAPTCHA");
-      return;
-    }
+    //if (!captchaToken) {
+      //setError("Veuillez compléter le CAPTCHA");
+      //return;
+    //}
 
     try {
       // Exécution de reCAPTCHA pour obtenir le token
-      const token = await grecaptcha.enterprise.execute(
-        "6LdLC8gqAAAAACsAj4AJq9kSgny3tz1Nv4uoMN-R",
-        { action: "register" }
-      );
+      // const token = await grecaptcha.enterprise.execute( // Commenté pour le moment
+      //   "6LdLC8gqAAAAACsAj4AJq9kSgny3tz1Nv4uoMN-R",
+      //   { action: "register" }
+      // );
 
       // Création des données du formulaire
       const data = {
@@ -69,7 +69,7 @@ function RegisterForm() {
         pseudo: formData.username,
         nom: formData.lastName,
         prenom: formData.firstName,
-        captchaToken: token, // Inclus le token reCAPTCHA ici
+        // captchaToken: captchaToken, // Inclus le token reCAPTCHA ici (même s'il est vide pour le moment)
       };
 
       const response = await fetch(
@@ -224,10 +224,10 @@ function RegisterForm() {
             />
 
             {/* reCAPTCHA intégré */}
-            <ReCAPTCHA
+            {/* <ReCAPTCHA
               sitekey="6LdLC8gqAAAAACsAj4AJq9kSgny3tz1Nv4uoMN-R"
               onChange={handleCaptchaChange}
-            />
+            /> */}
 
             <Box
               sx={{
