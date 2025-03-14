@@ -23,6 +23,7 @@ import UpdatePassword from "./UpdatePassword";
 import AddDiscount from "./AddDiscount";
 import AllCategory from "./AllCategory";
 import AddCategory from "./AddCategory";
+import CategoryPage from "./CategoryPage";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/allcategory" element={<AllCategory />} />
           <Route path="/addcategory" element={<AddCategory />} />
+          <Route path="/category/:categoryId" element={<CategoryPage />} />
         </Routes>
       </Layout>
     </Router>
