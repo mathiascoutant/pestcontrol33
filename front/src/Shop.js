@@ -18,6 +18,7 @@ import fondImage from "./Assets/fond.png";
 import { Link } from "react-router-dom";
 import Banner from "./components/UI/Banner";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import CardProductMobile from "./components/UI/CardProductMobile";
 
 function Shop() {
   const theme = useTheme();
@@ -239,7 +240,7 @@ function Shop() {
           sx={{
             display: "flex",
             gap: 2,
-            py: 5,
+            py: 2,
             ml: isMobile ? 0 : "-8px",
           }}
         >
@@ -248,27 +249,62 @@ function Shop() {
             <Grid
               container
               spacing={2}
-              justifyContent={{ xs: "center", sm: "flex-start" }}
+              justifyContent={{ xs: "flex-start", sm: "flex-start" }}
               sx={{
                 width: "100%",
-                margin: "0 auto",
               }}
             >
               {filteredProducts.map((product) => (
-                <Grid item xs={10} sm={6} md={4} lg={4} key={product.id}>
-                  <CardProduct
-                    id={product.id}
-                    image={
-                      product.medias?.imageUrls?.[0] || "default-image-url.jpg"
-                    }
-                    promotion={
-                      product.discount ? `-${product.discount}%` : null
-                    }
-                    name={product.nom}
-                    status={product.stock > 0 ? "En stock" : "Rupture de stock"}
-                    price={`${product.prix}€`}
-                    reduction={product.newPrice ? `${product.newPrice}€` : null}
-                  />
+                <Grid
+                  item
+                  xs={12} // S'assurer que chaque produit prend toute la largeur sur mobile
+                  sm={6}
+                  md={4}
+                  lg={4}
+                  key={product.id}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    "& > div": {
+                      width: { xs: "100%", sm: "80%" },
+                      height: { xs: "150px", sm: "auto" },
+                    },
+                  }}
+                >
+                  {/* Affichage du composant en fonction de la taille de l'écran */}
+                  {isMobile ? (
+                    <CardProductMobile
+                      id={product.id}
+                      image={
+                        product.medias?.imageUrls?.[0] ||
+                        "default-image-url.jpg"
+                      }
+                      name={product.nom}
+                      status={
+                        product.stock > 0 ? "En stock" : "Rupture de stock"
+                      }
+                      price={`${product.prix}€`}
+                    />
+                  ) : (
+                    <CardProduct
+                      id={product.id}
+                      image={
+                        product.medias?.imageUrls?.[0] ||
+                        "default-image-url.jpg"
+                      }
+                      promotion={
+                        product.discount ? `-${product.discount}%` : null
+                      }
+                      name={product.nom}
+                      status={
+                        product.stock > 0 ? "En stock" : "Rupture de stock"
+                      }
+                      price={`${product.prix}€`}
+                      reduction={
+                        product.newPrice ? `${product.newPrice}€` : null
+                      }
+                    />
+                  )}
                 </Grid>
               ))}
             </Grid>

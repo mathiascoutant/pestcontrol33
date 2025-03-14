@@ -42,23 +42,24 @@ const CarouselLastProducts = () => {
     speed: 500,
     slidesToShow: Math.min(products.length, 3),
     slidesToScroll: 1,
-    centerMode: true,
-    centerPadding: "0px",
+    centerMode: false, // Active centerMode sur grand écran
+    centerPadding: products.length > 2 ? "20px" : "0px",
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 1024, // Pour tablettes et petits écrans
         settings: {
           slidesToShow: Math.min(products.length, 2),
           slidesToScroll: 1,
-          centerPadding: "0px",
+          centerMode: false, // Désactive le centerMode en dessous de 1024px
+          centerPadding: "20px",
         },
       },
       {
-        breakpoint: 600,
+        breakpoint: 600, // Pour mobiles
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          centerMode: false, // Désactive le mode centré sur mobile
+          centerMode: true,
           centerPadding: "0px",
         },
       },

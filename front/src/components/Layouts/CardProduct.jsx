@@ -271,9 +271,8 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
               left: 0,
               width: "100%",
               height: "100%",
-              objectFit: "contain",
+              objectFit: "cover",
               borderRadius: 5,
-              padding: "10px",
             }}
           />
         )}
@@ -289,6 +288,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
           whiteSpace: "nowrap",
           textAlign: "left",
           textTransform: "capitalize",
+          pb: { xs: 5, md: 5 },
         }}
       >
         {name}

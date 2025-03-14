@@ -60,7 +60,6 @@ function CategoryPage() {
 
   return (
     <Box sx={{ textAlign: "center", px: 3, py: 18 }}>
-      {/* TITRE */}
       <Typography
         variant="h3"
         gutterBottom
@@ -87,7 +86,7 @@ function CategoryPage() {
       ) : (
         <Grid container spacing={3} justifyContent="center">
           {products.map((product) => (
-            <Grid item xs={12} sm={6} md={3} key={product.id}>
+            <Grid item xs={9} sm={6} md={3} key={product.id}>
               <CardProduct
                 id={product.id}
                 image={
