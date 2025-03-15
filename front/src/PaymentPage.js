@@ -44,7 +44,7 @@ const PersonalInfoForm = ({
   phone,
   setPhone,
 }) => (
-  <Box sx={{ p: 2 }}>
+  <Box sx={{ p: { xs: 1, sm: 2 } }}>
     <Typography variant="h6" sx={{ mb: 4, fontWeight: 500 }}>
       Informations personnelles
     </Typography>
@@ -61,6 +61,10 @@ const PersonalInfoForm = ({
           sx={{
             "& .MuiOutlinedInput-root": {
               backgroundColor: "#fff",
+              borderRadius: 1,
+            },
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "0.9rem", sm: "1rem" },
             },
           }}
         />
@@ -76,6 +80,10 @@ const PersonalInfoForm = ({
           sx={{
             "& .MuiOutlinedInput-root": {
               backgroundColor: "#fff",
+              borderRadius: 1,
+            },
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "0.9rem", sm: "1rem" },
             },
           }}
         />
@@ -91,6 +99,10 @@ const PersonalInfoForm = ({
           sx={{
             "& .MuiOutlinedInput-root": {
               backgroundColor: "#fff",
+              borderRadius: 1,
+            },
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "0.9rem", sm: "1rem" },
             },
           }}
         />
@@ -107,6 +119,10 @@ const PersonalInfoForm = ({
           sx={{
             "& .MuiOutlinedInput-root": {
               backgroundColor: "#fff",
+              borderRadius: 1,
+            },
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "0.9rem", sm: "1rem" },
             },
           }}
         />
@@ -122,6 +138,10 @@ const PersonalInfoForm = ({
           sx={{
             "& .MuiOutlinedInput-root": {
               backgroundColor: "#fff",
+              borderRadius: 1,
+            },
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "0.9rem", sm: "1rem" },
             },
           }}
         />
@@ -137,6 +157,10 @@ const PersonalInfoForm = ({
           sx={{
             "& .MuiOutlinedInput-root": {
               backgroundColor: "#fff",
+              borderRadius: 1,
+            },
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "0.9rem", sm: "1rem" },
             },
           }}
         />
@@ -152,6 +176,10 @@ const PersonalInfoForm = ({
           sx={{
             "& .MuiOutlinedInput-root": {
               backgroundColor: "#fff",
+              borderRadius: 1,
+            },
+            "& .MuiInputLabel-root": {
+              fontSize: { xs: "0.9rem", sm: "1rem" },
             },
           }}
         />
@@ -178,10 +206,22 @@ const PaymentForm = () => {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [originalTotal, setOriginalTotal] = useState(0);
 
   useEffect(() => {
     const fetchCartTotal = async () => {
       const token = localStorage.getItem("token");
+
+      // Récupérer les informations de réduction du localStorage
+      const coupon = localStorage.getItem("appliedCoupon") || "";
+      const discount = parseFloat(
+        localStorage.getItem("discountAmount") || "0"
+      );
+
+      setAppliedCoupon(coupon);
+      setDiscountAmount(discount);
 
       if (token) {
         const decodedToken = jwtDecode(token);
@@ -225,7 +265,15 @@ const PaymentForm = () => {
           (sum, item) => sum + item.totalPrice,
           0
         );
-        setCartTotal(total);
+        setOriginalTotal(total);
+
+        // Appliquer la réduction si un code promo est présent
+        if (discount > 0) {
+          setCartTotal(total * (1 - discount / 100));
+        } else {
+          setCartTotal(total);
+        }
+
         setCartItems(itemsWithProducts);
       } catch (error) {
         console.error("Erreur lors de la récupération du total:", error);
@@ -320,11 +368,13 @@ const PaymentForm = () => {
           },
           body: JSON.stringify({
             currency: "eur",
-            paymentMethodId: paymentMethod.id, // Maintenant défini !
+            paymentMethodId: paymentMethod.id,
             products: cartItems.map((item) => ({
               productId: item.product.id,
               quantity: item.quantity,
             })),
+            couponCode: appliedCoupon,
+            discountAmount: discountAmount,
           }),
         }
       );
@@ -368,13 +418,15 @@ const PaymentForm = () => {
         // 3. Enregistrer le paiement dans l'API
         const paymentData = {
           currency: "eur",
-          paymentMethodId: paymentIntent.payment_method, // Utilise une méthode de paiement valide
+          paymentMethodId: paymentIntent.payment_method,
           userId,
           email,
           products: cartItems.map((item) => ({
             productId: item.product.id,
             quantity: item.quantity,
           })),
+          couponCode: appliedCoupon,
+          discountAmount: discountAmount,
         };
 
         const paymentResponse = await fetch(
@@ -393,6 +445,10 @@ const PaymentForm = () => {
         console.log("Réponse API d'enregistrement du paiement:", paymentResult);
 
         if (paymentResult.success) {
+          // Nettoyons aussi les informations de réduction du localStorage
+          localStorage.removeItem("appliedCoupon");
+          localStorage.removeItem("discountAmount");
+          localStorage.removeItem("discountedTotal");
           setActiveStep(2);
           setOpenSnackbar(true);
           localStorage.removeItem("cart");
@@ -473,16 +529,41 @@ const PaymentForm = () => {
           mt: 4,
           pt: 1,
           display: "flex",
-          justifyContent: "space-between",
-          fontWeight: "bold",
+          flexDirection: "column",
+          gap: 1,
         }}
       >
-        <Typography variant="h6" sx={{ fontWeight: "bold", mt: 1 }}>
-          Total:
-        </Typography>
-        <Typography variant="h6" sx={{ mt: 1 }}>
-          {cartTotal.toFixed(2)}€
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography>Sous-total:</Typography>
+          <Typography>{originalTotal.toFixed(2)}€</Typography>
+        </Box>
+
+        {discountAmount > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              color: "error.main",
+            }}
+          >
+            <Typography>Réduction ({appliedCoupon}):</Typography>
+            <Typography>-{discountAmount}%</Typography>
+          </Box>
+        )}
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            fontWeight: "bold",
+            mt: 1,
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+            Total:
+          </Typography>
+          <Typography variant="h6">{cartTotal.toFixed(2)}€</Typography>
+        </Box>
       </Box>
     </Box>
   );
@@ -556,6 +637,12 @@ const PaymentForm = () => {
                   border: "1px solid",
                   borderColor: "divider",
                   borderRadius: 2,
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                  transition: "all 0.2s ease",
+                  "&:focus-within": {
+                    borderColor: "primary.main",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                  },
                 }}
               >
                 <Typography
@@ -574,9 +661,12 @@ const PaymentForm = () => {
                           color: "#aab7c4",
                         },
                         backgroundColor: "#fff",
+                        fontFamily:
+                          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
                       },
                       invalid: {
                         color: "#9e2146",
+                        iconColor: "#9e2146",
                       },
                     },
                   }}
@@ -635,14 +725,49 @@ const PaymentForm = () => {
   };
 
   return (
-    <Paper sx={{ maxWidth: 800, mx: "auto", mt: 8, p: 4, my: 12 }}>
-      <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+    <Paper
+      sx={{
+        maxWidth: { xs: "95%", sm: 800 },
+        mx: "auto",
+        mt: { xs: 12, sm: 8 },
+        p: { xs: 2, sm: 4 },
+        my: { xs: 6, sm: 12 },
+        borderRadius: 2,
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+      }}
+    >
+      <Stepper
+        activeStep={activeStep}
+        sx={{
+          mb: 4,
+          display: { xs: "none", sm: "flex" },
+        }}
+      >
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
+
+      {/* Version mobile du stepper avec plus d'espace */}
+      <Typography
+        variant="h6"
+        sx={{
+          mb: 4,
+          mt: 2,
+          pt: 1,
+          display: { xs: "block", sm: "none" },
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: "1.2rem",
+          backgroundColor: "#f8f8f8",
+          borderRadius: 1,
+          padding: 1.5,
+        }}
+      >
+        {steps[activeStep]}
+      </Typography>
 
       {getStepContent(activeStep)}
 

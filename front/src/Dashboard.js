@@ -15,10 +15,10 @@ import {
   TableRow,
   Chip,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
-import LoopIcon from "@mui/icons-material/Loop";
 import { Link } from "react-router-dom";
-import CheckIcon from "@mui/icons-material/Check";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
@@ -36,6 +36,11 @@ function Dashboard() {
     totalReviews: 0,
     totalDiscounts: 0,
     totalCategories: 0,
+  });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
   });
 
   useEffect(() => {
@@ -66,29 +71,83 @@ function Dashboard() {
       .catch((error) => console.error("Erreur:", error));
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    // Récupérer le nombre total de commandes
+    fetch(`https://pestcontrol33.com/api/v1/payments/getall`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.paiements) {
+          setStats((prev) => ({
+            ...prev,
+            totalOrders: data.paiements.length,
+          }));
+        }
+      })
+      .catch((error) =>
+        console.error("Erreur lors de la récupération des commandes:", error)
+      );
+  }, []);
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   const handleDeleteUser = (userId) => {
     const token = localStorage.getItem("token");
 
+    console.log("Tentative de suppression utilisateur ID:", userId);
+
     // Appel à l'API de suppression avec le token
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/users/${userId}`, {
+    fetch(`https://pestcontrol33.com/api/v1/users/delete`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`, // Ajout du token dans l'en-tête
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        userId: userId,
+      }),
     })
-      .then((response) => response.json()) // On récupère la réponse sous forme JSON
+      .then((response) => {
+        console.log("Statut de la réponse:", response.status);
+        return response.json();
+      })
       .then((data) => {
-        if (data.message === "Utilisateur supprimé avec succès") {
+        console.log("Réponse de suppression:", data);
+        // Vérification basée sur le message exact que vous recevez
+        if (data.message === "Utilisateur supprimé avec succès.") {
           // Si la suppression a réussi, on met à jour la liste des utilisateurs
           setUsers(users.filter((user) => user.id !== userId));
+          setSnackbar({
+            open: true,
+            message: "Utilisateur supprimé avec succès",
+            severity: "success",
+          });
         } else {
           console.error(
             "Erreur lors de la suppression de l'utilisateur :",
             data.message
           );
+          setSnackbar({
+            open: true,
+            message: `Erreur: ${data.message || "Échec de suppression"}`,
+            severity: "error",
+          });
         }
       })
-      .catch((error) => console.error("Erreur lors de la suppression:", error));
+      .catch((error) => {
+        console.error("Erreur lors de la suppression:", error);
+        setSnackbar({
+          open: true,
+          message: "Erreur lors de la suppression",
+          severity: "error",
+        });
+      });
   };
 
   useEffect(() => {
@@ -215,7 +274,7 @@ function Dashboard() {
               <Link style={{ textDecoration: "none" }} to="/completedorders">
                 <StatCard
                   title="Les commandes"
-                  value={`${stats.totalRevenue}`}
+                  value={stats.totalOrders || 0}
                   icon={<LibraryBooksOutlinedIcon sx={{ color: "#f44336" }} />}
                   color="#4caf50"
                 />
@@ -279,6 +338,20 @@ function Dashboard() {
             </TableContainer>
           </Paper>
         </Container>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );

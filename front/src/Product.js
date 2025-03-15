@@ -294,25 +294,27 @@ function Product() {
                 itemClass="carousel-item-padding-40-px"
                 centerMode={false}
               >
-                {customerReviews.map((review) => (
-                  <Box
-                    key={review.id}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      p: 1,
-                    }}
-                  >
-                    <ReviewCard
-                      review={review}
+                {customerReviews
+                  .filter((review) => review.user !== null)
+                  .map((review) => (
+                    <Box
+                      key={review.id}
                       sx={{
-                        width: "100%",
-                        maxWidth: "350px",
-                        height: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        p: 1,
                       }}
-                    />
-                  </Box>
-                ))}
+                    >
+                      <ReviewCard
+                        review={review}
+                        sx={{
+                          width: "100%",
+                          maxWidth: "350px",
+                          height: "100%",
+                        }}
+                      />
+                    </Box>
+                  ))}
               </Carousel>
             )}
           </Box>
@@ -432,9 +434,54 @@ function Product() {
               objectFit: "contain",
             }}
           />
+
+          <Box
+            sx={{
+              display: { xs: "flex", md: "none" },
+              justifyContent: "center",
+              gap: 1,
+              mt: 2,
+              width: "100%",
+              overflowX: "auto",
+              pb: 1,
+            }}
+          >
+            {images.map((image, index) => (
+              <Card
+                key={index}
+                sx={{
+                  cursor: "pointer",
+                  minWidth: "60px",
+                  height: "60px",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  border:
+                    currentImageIndex === index ? "2px solid #1976d2" : "none",
+                }}
+                onClick={() => setCurrentImageIndex(index)}
+              >
+                <CardMedia
+                  component="img"
+                  image={image}
+                  alt={`Produit ${index}`}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              </Card>
+            ))}
+          </Box>
         </Box>
-        <Box sx={{ width: { xs: "100%", md: "60%" }, ml: { xs: 2, md: 0 } }}>
-          <Typography variant="h5" sx={{ mb: 4 }} gutterBottom>
+        <Box
+          sx={{
+            width: { xs: "100%", md: "60%" },
+            ml: { xs: 0, md: 0 },
+            px: { xs: 2, md: 0 },
+          }}
+        >
+          <Typography variant="h5" sx={{ mb: 2 }} gutterBottom>
             {product.nom.charAt(0).toUpperCase() + product.nom.slice(1)}
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
@@ -515,13 +562,14 @@ function Product() {
             variant="body2"
             sx={{
               mt: 2,
-              mb: { xs: 4, sm: 8, md: 15 },
+              mb: { xs: 2, sm: 4, md: 10 },
               overflow: "hidden",
               textOverflow: "ellipsis",
               display: "-webkit-box",
-              WebkitLineClamp: 3,
+              WebkitLineClamp: { xs: 1, sm: 1 },
               WebkitBoxOrient: "vertical",
-              maxWidth: { xs: "100%", md: "400px" },
+              maxWidth: "100%",
+              borderRadius: { xs: "4px", md: 0 },
             }}
             color="text.secondary"
           >
@@ -529,19 +577,28 @@ function Product() {
               product.description.slice(1)}
           </Typography>
 
-          <Box sx={{ display: "flex", gap: 2, my: 3 }}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+              my: { xs: 2, md: 3 },
+              flexWrap: { xs: "wrap", sm: "nowrap" },
+            }}
+          >
             <TextField
               type="number"
               defaultValue={1}
               InputProps={{ inputProps: { min: 1, max: product.stock } }}
               size="small"
               onChange={(e) => setQuantity(e.target.value)}
+              sx={{ width: { xs: "80px", sm: "auto" } }}
             />
             <Button
               variant="contained"
               color="primary"
               disabled={product.stock === 0}
               onClick={() => addToCart(product.id, quantity)}
+              sx={{ flexGrow: { xs: 1, sm: 0 } }}
             >
               Ajouter au panier
             </Button>

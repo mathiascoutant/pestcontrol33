@@ -1,13 +1,27 @@
 import React from "react";
-import { Box, Typography, Card, CardContent } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import fondImage from "./Assets/fond.png";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import StarBorderPurple500OutlinedIcon from "@mui/icons-material/StarBorderPurple500Outlined";
+import SearchBar from "./components/UI/SearchBar";
 
 function About() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
     <Box>
+      {/* SearchBar affiché uniquement sur mobile */}
+      {isMobile && <SearchBar />}
+
       <Box
         sx={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${fondImage})`,
@@ -18,7 +32,7 @@ function About() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          mt: 8,
+          mt: isMobile ? 0 : 8,
           color: "white",
           textAlign: "center",
           position: "relative",

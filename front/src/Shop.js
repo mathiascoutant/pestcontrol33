@@ -13,6 +13,7 @@ import {
   useTheme,
 } from "@mui/material";
 import Header from "./components/Layouts/Header";
+import SearchBar from "./components/UI/SearchBar";
 import CardProduct from "./components/Layouts/CardProduct";
 import fondImage from "./Assets/fond.png";
 import { Link } from "react-router-dom";
@@ -185,6 +186,8 @@ function Shop() {
   return (
     <Box>
       <Header />
+      {isMobile && <SearchBar />}
+
       <Box
         sx={{
           backgroundImage: `url(${fondImage})`,
@@ -195,7 +198,7 @@ function Shop() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          mt: 8,
+          mt: isMobile ? -1 : 8,
         }}
       >
         <Typography

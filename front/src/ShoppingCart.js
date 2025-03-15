@@ -276,7 +276,13 @@ function ShoppingCart() {
 
         const discount = parseFloat(validCode.discount);
         setDiscountAmount(discount);
-        setTotal(total * (1 - discount / 100));
+        const discountedTotal = total * (1 - discount / 100);
+        setTotal(discountedTotal);
+
+        // Stocker les informations de réduction dans localStorage pour la page de paiement
+        localStorage.setItem("appliedCoupon", couponCode.toUpperCase());
+        localStorage.setItem("discountAmount", discount.toString());
+        localStorage.setItem("discountedTotal", discountedTotal.toString());
 
         setSnackbarMessage(
           `Code promo appliqué ! -${discount}% sur votre commande`
@@ -381,7 +387,12 @@ function ShoppingCart() {
                 component={Paper}
                 sx={{
                   bgcolor: "#FAF4F4",
-                  overflow: "auto", // Permet le défilement horizontal sur mobile
+                  overflow: "auto",
+                  borderRadius: 2,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  "& .MuiTable-root": {
+                    minWidth: { xs: 500, sm: 650 }, // Assure une meilleure expérience sur mobile
+                  },
                 }}
               >
                 <Table
@@ -555,6 +566,9 @@ function ShoppingCart() {
                 sx={{
                   bgcolor: "#000",
                   color: "#fff",
+                  py: { xs: 1.5, sm: 2 }, // Hauteur plus grande sur mobile pour faciliter le toucher
+                  fontSize: { xs: "1rem", sm: "1.1rem" },
+                  fontWeight: "bold",
                   "&:hover": {
                     bgcolor: "#333",
                   },
