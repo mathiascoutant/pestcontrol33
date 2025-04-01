@@ -1,5 +1,3 @@
-/* global grecaptcha */ // Déclare grecaptcha en tant que variable globale
-
 import {
   Box,
   Typography,
@@ -12,7 +10,6 @@ import {
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import fondImage from "../../Assets/landing.jpg";
-// import ReCAPTCHA from "react-google-recaptcha"; // Commenté pour le moment
 
 function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -27,7 +24,6 @@ function RegisterForm() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
-  const [captchaToken, setCaptchaToken] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -35,10 +31,6 @@ function RegisterForm() {
       [e.target.name]: e.target.value,
     });
   };
-
-  // const handleCaptchaChange = (token) => { // Commenté pour le moment
-  //   setCaptchaToken(token);
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,19 +41,7 @@ function RegisterForm() {
       return;
     }
 
-    // Si le captcha n'est pas rempli
-    //if (!captchaToken) {
-      //setError("Veuillez compléter le CAPTCHA");
-      //return;
-    //}
-
     try {
-      // Exécution de reCAPTCHA pour obtenir le token
-      // const token = await grecaptcha.enterprise.execute( // Commenté pour le moment
-      //   "6LdLC8gqAAAAACsAj4AJq9kSgny3tz1Nv4uoMN-R",
-      //   { action: "register" }
-      // );
-
       // Création des données du formulaire
       const data = {
         email: formData.email,
@@ -69,7 +49,7 @@ function RegisterForm() {
         pseudo: formData.username,
         nom: formData.lastName,
         prenom: formData.firstName,
-        // captchaToken: captchaToken, // Inclus le token reCAPTCHA ici (même s'il est vide pour le moment)
+        recaptchaDisabled: true,
       };
 
       const response = await fetch(
@@ -222,12 +202,6 @@ function RegisterForm() {
               value={formData.confirmPassword}
               onChange={handleChange}
             />
-
-            {/* reCAPTCHA intégré */}
-            {/* <ReCAPTCHA
-              sitekey="6LdLC8gqAAAAACsAj4AJq9kSgny3tz1Nv4uoMN-R"
-              onChange={handleCaptchaChange}
-            /> */}
 
             <Box
               sx={{
