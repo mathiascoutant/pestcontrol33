@@ -14,8 +14,60 @@
     "logout": "Déconnexion",
     "dashboard": "Dashboard"
   },
-  "home": {
-    "viewMore": "Voir plus"
+  "bannierePub": {
+    "title": "Bienvenue dans notre boutique",
+    "description": "Découvrez nos produits",
+    "buy": "Acheter maintenant"
+  },
+  "carouselLastProducts": {
+    "title": "Derniers produits"
+  },
+  "latestComments": {
+    "title": "Derniers commentaires"
+  },
+  "banner": {
+    "quality": "Haute qualité",
+    "satisfaction": "Satisfaction garantie",
+    "fastDelivery": "Livraison rapide",
+    "support": "Support 24/7"
+  },
+  "CardProduct": {
+    "promotion": "Promotion",
+    "inStock": "En stock",
+    "outOfStock": "Rupture de stock",
+    "addToCart": "Ajouter au panier",
+    "addToFavorites": "Ajouter aux favoris",
+    "description": "Description",
+    "price": "Prix",
+    "quantity": "Quantité",
+    "reviews": "Avis",
+    "relatedProducts": "Produits associés"
+  },
+  "about": {
+    "title": "À propos de nous",
+    "description": "Découvrez notre engagement pour un avenir durable et innovant",
+    "vision": "Notre vision",
+    "visionDescription": "Créer un avenir où chaque espace est respectueux de l'environnement.",
+    "mission": "Notre mission",
+    "missionDescription": "Offrir des solutions efficaces et durables pour tous.",
+    "values": "Nos valeurs",
+    "valuesDescription": "Intégrité, Innovation, et Engagement envers nos clients."
+  },
+  "shop": {
+    "categories": "Catégories",
+    "filters": "Filtres",
+    "minPrice": "Prix min",
+    "maxPrice": "Prix max",
+    "onlyAvailable": "En stock uniquement",
+    "products": "Nos produits",
+    "home": "Accueil"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "email": "Email",
+    "type": "Type de demande",
+    "message": "Message",
+    "send": "Envoyer"
   },
   "product": {
     "addToCart": "Ajouter au panier",
@@ -26,7 +78,14 @@
     "reviews": "Avis",
     "relatedProducts": "Produits associés",
     "outOfStock": "Rupture de stock",
-    "inStock": "En stock"
+    "inStock": "En stock",
+    "stock": "Stock",
+    "addComment": "Ajouter un avis",
+    "noComments": "Pas d'avis pour le moment.",
+    "discount": " de réduction",
+    "avis": "Avis",
+    "conseilsUtilisation": "Conseils d'utilisation",
+    "submit": "Soumettre"
   },
   "cart": {
     "yourCart": "Votre panier",
@@ -57,15 +116,6 @@
     "logoutSuccess": "Vous avez été déconnecté",
     "loading": "Chargement..."
   },
-  "contact": {
-    "getInTouch": "Contactez-nous",
-    "name": "Nom",
-    "email": "Email",
-    "message": "Message",
-    "send": "Envoyer",
-    "address": "Adresse",
-    "phone": "Téléphone"
-  },
   "auth": {
     "login": "Connexion",
     "register": "Inscription",
@@ -91,5 +141,10 @@
     "fr": "Français",
     "es": "Espagnol",
     "selectLanguage": "Choisir la langue"
+  },
+  "promotions": {
+    "new": "Nouveau",
+    "sale": "Soldes",
+    "hot": "Populaire"
   }
 }

@@ -4,9 +4,11 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import StarIcon from "@mui/icons-material/Star";
+import { useTranslation } from "react-i18next";
 
 const LatestComments = () => {
   const [comments, setComments] = useState([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -66,7 +68,7 @@ const LatestComments = () => {
           fontSize: { xs: "1.5rem", sm: "2rem", md: "1.7rem" },
         }}
       >
-        NOS DERNIERS AVIS
+        {t("latestComments.title")}
       </Typography>
 
       <Slider {...settings}>

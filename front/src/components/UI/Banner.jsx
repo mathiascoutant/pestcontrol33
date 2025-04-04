@@ -4,11 +4,12 @@ import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import { useTranslation } from "react-i18next";
 
 const Banner = () => {
   // Vérifie si l'écran est de type mobile (taille xs)
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-
+  const { t } = useTranslation();
   return (
     <Box
       sx={{
@@ -28,25 +29,25 @@ const Banner = () => {
             fontSize="large"
             sx={{ fontSize: "40px", mb: 1 }}
           />
-          <Typography variant="body2">Haute qualité</Typography>
+          <Typography variant="body2">{t("banner.quality")}</Typography>
         </Grid>
         <Grid item xs={6} sm={3}>
           <VerifiedOutlinedIcon
             fontSize="large"
             sx={{ fontSize: "40px", mb: 1 }}
           />
-          <Typography variant="body2">Satisfaction garantie</Typography>
+          <Typography variant="body2">{t("banner.satisfaction")}</Typography>
         </Grid>
         <Grid item xs={6} sm={3}>
           <LocalShippingOutlinedIcon
             fontSize="large"
             sx={{ fontSize: "40px", mb: 1 }}
           />
-          <Typography variant="body2">Livraison rapide</Typography>
+          <Typography variant="body2">{t("banner.fastDelivery")}</Typography>
         </Grid>
         <Grid item xs={6} sm={3}>
           <SupportAgentIcon fontSize="large" sx={{ fontSize: "40px", mb: 1 }} />
-          <Typography variant="body2">Support 24/7</Typography>
+          <Typography variant="body2">{t("banner.support")}</Typography>
         </Grid>
       </Grid>
     </Box>

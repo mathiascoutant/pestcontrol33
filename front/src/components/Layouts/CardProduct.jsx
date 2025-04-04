@@ -8,9 +8,11 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function CardProduct({ promotion, name, status, price, reduction, id, image }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [isInCart, setIsInCart] = React.useState(() => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -229,7 +231,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
             zIndex: 2,
           }}
         >
-          {promotion}
+          {t(promotion)}
         </Box>
       )}
 
@@ -296,7 +298,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
       <Typography
         level="body-sm"
         sx={{
-          bgcolor: status === "En stock" ? "#2EC1AC" : "#E97171",
+          bgcolor: status === t("product.inStock") ? "#2EC1AC" : "#E97171",
           color: "white",
           width: "fit-content",
           px: 1.5,
@@ -306,7 +308,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
           fontSize: "12px",
         }}
       >
-        {status}
+        {status === "En stock" ? t("product.inStock") : t("product.outOfStock")}
       </Typography>
 
       <Box

@@ -56,6 +56,35 @@
     "wasp": "Avispa",
     "cockroach": "Cucaracha"
   },
+  "bannierePub": {
+    "title": "Bienvenido a nuestra tienda",
+    "description": "Descubre nuestros productos",
+    "buy": "Comprar ahora"
+  },
+  "carouselLastProducts": {
+    "title": "Últimos productos"
+  },
+  "latestComments": {
+    "title": "Últimos comentarios"
+  },
+  "banner": {
+    "quality": "Alta calidad",
+    "satisfaction": "Satisfacción garantizada",
+    "fastDelivery": "Envío rápido",
+    "support": "Soporte 24/7"
+  },
+  "CardProduct": {
+    "promotion": "Promoción",
+    "inStock": "En stock",
+    "outOfStock": "Agotado",
+    "addToCart": "Añadir al carrito",
+    "addToFavorites": "Añadir a favoritos",
+    "description": "Descripción",
+    "price": "Precio",
+    "quantity": "Cantidad",
+    "reviews": "Reseñas",
+    "relatedProducts": "Productos relacionados"
+  },
   "product": {
     "addToCart": "Añadir al carrito",
     "addToFavorites": "Añadir a favoritos",
@@ -65,7 +94,41 @@
     "reviews": "Reseñas",
     "relatedProducts": "Productos relacionados",
     "outOfStock": "Agotado",
-    "inStock": "En existencia"
+    "inStock": "En existencia",
+    "stock": "Stock",
+    "addComment": "Añadir un comentario",
+    "noComments": "No hay comentarios aún.",
+    "discount": " de descuento",
+    "avis": "Avisos",
+    "conseilsUtilisation": "Consejos de uso",
+    "comment": "Comentario",
+    "submit": "Enviar"
+  },
+  "about": {
+    "title": "Acerca de nosotros",
+    "description": "Descubre nuestra misión y visión",
+    "vision": "Nuestra visión",
+    "visionDescription": "Crear un futuro donde cada espacio es respetuoso del medio ambiente.",
+    "mission": "Nuestra misión",
+    "missionDescription": "Ofrecer soluciones eficaces y duraderas para todos.",
+    "values": "Nuestros valores",
+    "valuesDescription": "Integridad, Innovación y Compromiso con nuestros clientes."
+  },
+  "shop": {
+    "categories": "Categorías",
+    "filters": "Filtros",
+    "minPrice": "Precio mínimo",
+    "maxPrice": "Precio máximo",
+    "onlyAvailable": "Sólo disponible",
+    "products": "Nuestros productos",
+    "home": "Inicio"
+  },
+  "contact": {
+    "title": "Contacto",
+    "email": "Correo electrónico",
+    "type": "Tipo de solicitud",
+    "message": "Mensaje",
+    "send": "Enviar"
   },
   "cart": {
     "yourCart": "Tu carrito",
@@ -95,15 +158,6 @@
     "phone": "Teléfono",
     "logoutSuccess": "Has cerrado sesión",
     "loading": "Cargando..."
-  },
-  "contact": {
-    "getInTouch": "Ponte en contacto",
-    "name": "Nombre",
-    "email": "Correo electrónico",
-    "message": "Mensaje",
-    "send": "Enviar",
-    "address": "Dirección",
-    "phone": "Teléfono"
   },
   "auth": {
     "login": "Iniciar sesión",

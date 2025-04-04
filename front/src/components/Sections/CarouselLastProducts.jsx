@@ -6,10 +6,12 @@ import "slick-carousel/slick/slick-theme.css";
 import CardProduct from "../Layouts/CardProduct";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const CarouselLastProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -79,7 +81,7 @@ const CarouselLastProducts = () => {
           fontWeight: "bold",
         }}
       >
-        PRODUITS POPULAIRES
+        {t("carouselLastProducts.title")}
         <IconButton component={Link} to="/shop" sx={{ ml: 1 }}>
           <ArrowForwardIcon />
         </IconButton>

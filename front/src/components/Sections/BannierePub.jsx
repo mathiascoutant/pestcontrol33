@@ -1,10 +1,11 @@
 import { Box, Typography, Button } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function BannierePub() {
   const [product, setProduct] = useState(null);
-
+  const { t } = useTranslation();
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/products/122`)
       .then((response) => response.json())
@@ -80,7 +81,7 @@ function BannierePub() {
             px: 5,
           }}
         >
-          ACHETER
+          {t("bannierePub.buy")}
         </Button>
       </Box>
       <Box

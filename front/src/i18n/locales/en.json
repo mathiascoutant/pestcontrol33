@@ -56,7 +56,63 @@
     "wasp": "Wasp",
     "cockroach": "Cockroach"
   },
+  "bannierePub": {
+    "title": "Welcome to our store",
+    "description": "Discover our products",
+    "buy": "Buy now"
+  },
+  "carouselLastProducts": {
+    "title": "Last products"
+  },
+  "latestComments": {
+    "title": "Latest comments"
+  },
+  "banner": {
+    "quality": "High quality",
+    "satisfaction": "Satisfaction guaranteed",
+    "fastDelivery": "Fast delivery",
+    "support": "Support 24/7"
+  },
+  "CardProduct": {
+    "promotion": "Promotion",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "addToCart": "Add to Cart",
+    "addToFavorites": "Add to Favorites",
+    "description": "Description",
+    "price": "Price",
+    "quantity": "Quantity",
+    "reviews": "Reviews",
+    "relatedProducts": "Related Products"
+  },
+  "about": {
+    "title": "About us",
+    "description": "Discover our mission and vision",
+    "vision": "Our vision",
+    "visionDescription": "Create a future where each space is respectful of the environment.",
+    "mission": "Our mission",
+    "missionDescription": "Offer effective and sustainable solutions for everyone.",
+    "values": "Our values",
+    "valuesDescription": "Integrity, Innovation, and Engagement towards our clients."
+  },
+  "shop": {
+    "categories": "Categories",
+    "filters": "Filters",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "onlyAvailable": "Only Available",
+    "products": "Products",
+    "home": "Home"
+  },
+  "contact": {
+    "title": "Contact us",
+    "email": "Email",
+    "type": "Type of request",
+    "message": "Message",
+    "send": "Send"
+  },
   "product": {
+    "name": "Product",
     "addToCart": "Add to Cart",
     "addToFavorites": "Add to Favorites",
     "description": "Description",
@@ -65,7 +121,16 @@
     "reviews": "Reviews",
     "relatedProducts": "Related Products",
     "outOfStock": "Out of Stock",
-    "inStock": "In Stock"
+    "inStock": "In Stock",
+    "stock": "Stock",
+    "addComment": "Add a comment",
+    "noComments": "No comments yet.",
+    "discount": " discount",
+    "submit": "Submit",
+    "descriptionProduct": "Description",
+    "conseilsUtilisation": "Usage Tips",
+    "avis": "Reviews",
+    "comment": "Comment"
   },
   "cart": {
     "yourCart": "Your Cart",
@@ -95,15 +160,6 @@
     "phone": "Phone",
     "logoutSuccess": "You have been logged out",
     "loading": "Loading..."
-  },
-  "contact": {
-    "getInTouch": "Get in Touch",
-    "name": "Name",
-    "email": "Email",
-    "message": "Message",
-    "send": "Send",
-    "address": "Address",
-    "phone": "Phone"
   },
   "auth": {
     "login": "Login",
@@ -136,5 +192,10 @@
   },
   "errors": {
     "default": "An error occurred"
+  },
+  "promotions": {
+    "new": "New",
+    "sale": "Sale",
+    "hot": "Hot"
   }
 }

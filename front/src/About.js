@@ -12,10 +12,12 @@ import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import StarBorderPurple500OutlinedIcon from "@mui/icons-material/StarBorderPurple500Outlined";
 import SearchBar from "./components/UI/SearchBar";
+import { useTranslation } from "react-i18next";
 
 function About() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { t } = useTranslation();
 
   return (
     <Box>
@@ -48,7 +50,7 @@ function About() {
             mb: 2,
           }}
         >
-          Qui sommes-nous ?
+          {t("about.title")}
         </Typography>
         <Typography
           variant="h6"
@@ -58,7 +60,7 @@ function About() {
             textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
           }}
         >
-          Découvrez notre engagement pour un avenir durable et innovant
+          {t("about.description")}
         </Typography>
       </Box>
       <Box sx={{ my: 8, textAlign: "center", px: 4 }}>
@@ -81,11 +83,10 @@ function About() {
             },
           }}
         >
-          À Propos de Nous
+          {t("about.title")}
         </Typography>
         <Typography variant="body1" sx={{ color: "gray", mb: 4 }}>
-          Nous sommes une entreprise dédiée à fournir des solutions innovantes
-          et durables pour améliorer votre qualité de vie.
+          {t("about.description")}
         </Typography>
         <Box
           sx={{
@@ -112,11 +113,10 @@ function About() {
                 sx={{ fontSize: 40, color: "#72cc77", my: 1 }}
               />
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Notre Vision
+                {t("about.vision")}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Créer un avenir où chaque espace est respectueux de
-                l'environnement.
+                {t("about.visionDescription")}
               </Typography>
             </CardContent>
           </Card>
@@ -138,10 +138,10 @@ function About() {
                 sx={{ fontSize: 40, color: "#89b8f8", my: 1 }}
               />
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Notre Mission
+                {t("about.mission")}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Offrir des solutions efficaces et durables pour tous.
+                {t("about.missionDescription")}
               </Typography>
             </CardContent>
           </Card>
@@ -163,10 +163,10 @@ function About() {
                 sx={{ fontSize: 40, color: "#f3f56f", mb: 1 }}
               />
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Nos Valeurs
+                {t("about.values")}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Intégrité, Innovation, et Engagement envers nos clients.
+                {t("about.valuesDescription")}
               </Typography>
             </CardContent>
           </Card>

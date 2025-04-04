@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useTranslation } from "react-i18next";
 
 function AddComment() {
   const { productId } = useParams();
@@ -23,7 +24,7 @@ function AddComment() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const formRef = useRef(null);
-
+  const { t } = useTranslation();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formRef.current) {
@@ -107,7 +108,7 @@ function AddComment() {
             >
               <ArrowBackIcon />
             </IconButton>
-            Ajouter un Avis
+            {t("product.avis", { defaultValue: "Ajouter un Avis" })}
           </Typography>
           <form
             ref={formRef}
@@ -135,7 +136,7 @@ function AddComment() {
               ))}
             </Box>
             <TextField
-              label="Commentaire"
+              label={t("product.comment", { defaultValue: "Commentaire" })}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               required
@@ -150,7 +151,7 @@ function AddComment() {
               }}
             />
             <Button type="submit" variant="contained" color="primary">
-              Soumettre
+              {t("product.submit", { defaultValue: "Soumettre" })}
             </Button>
           </form>
         </CardContent>

@@ -8,7 +8,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-
+import { useTranslation } from "react-i18next";
 function Contact() {
   const [formData, setFormData] = useState({
     email: "",
@@ -20,7 +20,7 @@ function Contact() {
     message: "",
     severity: "success",
   });
-
+  const { t } = useTranslation();
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -106,13 +106,13 @@ function Contact() {
           }}
           gutterBottom
         >
-          Contactez-nous
+          {t("contact.title")}
         </Typography>
 
         <TextField
           required
           fullWidth
-          label="Email"
+          label={t("contact.email")}
           name="email"
           type="email"
           value={formData.email}
@@ -137,7 +137,7 @@ function Contact() {
           required
           fullWidth
           select
-          label="Type de demande"
+          label={t("contact.type")}
           name="type"
           value={formData.type}
           onChange={handleChange}
@@ -168,7 +168,7 @@ function Contact() {
           fullWidth
           multiline
           rows={4}
-          label="Message"
+          label={t("contact.message")}
           name="message"
           value={formData.message}
           onChange={handleChange}
@@ -201,7 +201,7 @@ function Contact() {
             boxShadow: "0 2px 8px rgb(44 85 69 / 0.3)",
           }}
         >
-          Envoyer votre message
+          {t("contact.send")}
         </Button>
       </Box>
 

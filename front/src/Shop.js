@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import Banner from "./components/UI/Banner";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CardProductMobile from "./components/UI/CardProductMobile";
+import { useTranslation } from "react-i18next";
 
 function Shop() {
   const theme = useTheme();
@@ -31,7 +32,7 @@ function Shop() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
-
+  const { t } = useTranslation();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -104,7 +105,7 @@ function Shop() {
       }}
     >
       <Typography variant="body1" sx={{ mb: 1, fontWeight: "bold" }}>
-        Catégories
+        {t("shop.categories")}
       </Typography>
       <Box
         sx={{
@@ -143,7 +144,7 @@ function Shop() {
       </Box>
 
       <Typography variant="body1" sx={{ mb: 1, mt: 3, fontWeight: "bold" }}>
-        Filtres
+        {t("shop.filters")}
       </Typography>
       <Box
         sx={{
@@ -153,7 +154,7 @@ function Shop() {
         }}
       >
         <TextField
-          label="Prix min"
+          label={t("shop.minPrice")}
           variant="outlined"
           size="small"
           type="number"
@@ -162,7 +163,7 @@ function Shop() {
           fullWidth
         />
         <TextField
-          label="Prix max"
+          label={t("shop.maxPrice")}
           variant="outlined"
           size="small"
           type="number"
@@ -177,7 +178,7 @@ function Shop() {
               onChange={(e) => setOnlyAvailable(e.target.checked)}
             />
           }
-          label="En stock uniquement"
+          label={t("shop.onlyAvailable")}
         />
       </Box>
     </Box>
@@ -209,16 +210,16 @@ function Shop() {
             fontWeight: "bold",
           }}
         >
-          Nos produits
+          {t("shop.products")}
         </Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
           <Typography sx={{ color: "#000" }}>
             <Link to="/" style={{ textDecoration: "none", color: "#000" }}>
-              Accueil
+              {t("shop.home")}
             </Link>
           </Typography>
           <Typography sx={{ color: "#000" }}>{">"}</Typography>
-          <Typography sx={{ color: "#000" }}>Nos produits</Typography>
+          <Typography sx={{ color: "#000" }}>{t("shop.products")}</Typography>
         </Box>
       </Box>
       <Container

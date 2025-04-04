@@ -24,6 +24,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CarouselLastProducts from "./components/Sections/CarouselLastProducts";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { useTranslation } from "react-i18next";
 
 function Product() {
   const [product, setProduct] = useState(null);
@@ -40,6 +41,7 @@ function Product() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+  const { t } = useTranslation();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -253,13 +255,15 @@ function Product() {
                 mb: 3,
               }}
             >
-              <Typography variant="h6">Avis des clients :</Typography>
+              <Typography variant="h6">
+                {t("product.avis", { defaultValue: "Avis des clients" })} :
+              </Typography>
               <Button
                 variant="contained"
                 onClick={handleAddComment}
                 sx={{ width: { xs: "100%", sm: "auto" } }}
               >
-                Ajouter un avis
+                {t("product.addComment")}
               </Button>
             </Box>
             {Array.isArray(customerReviews) && customerReviews.length > 0 && (
@@ -346,7 +350,7 @@ function Product() {
             to="/"
             sx={{ textTransform: "capitalize" }}
           >
-            Accueil
+            {t("shop.home")}
           </MuiLink>
           <MuiLink
             key="shop"
@@ -355,7 +359,7 @@ function Product() {
             color="inherit"
             sx={{ textTransform: "capitalize" }}
           >
-            Nos produits
+            {t("shop.products")}
           </MuiLink>
           <Typography color="text.primary" sx={{ textTransform: "capitalize" }}>
             {product.nom}
@@ -547,14 +551,15 @@ function Product() {
               </>
             ) : (
               <Typography variant="body2" color="text.secondary">
-                Pas d'avis pour le moment.
+                {t("product.noComments")}
               </Typography>
             )}
           </Box>
 
           {product.discount && (
             <Typography variant="body2" color="error">
-              -{product.discount}% de réduction
+              -{product.discount}
+              {t("product.discount")}
             </Typography>
           )}
 
@@ -600,7 +605,7 @@ function Product() {
               onClick={() => addToCart(product.id, quantity)}
               sx={{ flexGrow: { xs: 1, sm: 0 } }}
             >
-              Ajouter au panier
+              {t("product.addToCart")}
             </Button>
             <IconButton
               sx={{ border: "1px solid red" }}
@@ -614,7 +619,7 @@ function Product() {
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <Typography variant="body2">
-              Stock disponible: {product.stock}
+              {t("product.stock")}: {product.stock}
             </Typography>
           </Box>
         </Box>
@@ -636,9 +641,17 @@ function Product() {
           }}
         >
           <Tabs value={tabValue} onChange={handleTabChange}>
-            <Tab label="Description" />
-            <Tab label="Conseils d'utilisation" />
-            <Tab label="Avis" />
+            <Tab
+              label={t("product.descriptionProduct", {
+                defaultValue: "Description",
+              })}
+            />
+            <Tab
+              label={t("product.conseilsUtilisation", {
+                defaultValue: "Conseils d'utilisation",
+              })}
+            />
+            <Tab label={t("product.avis", { defaultValue: "Avis" })} />
           </Tabs>
         </Box>
         <Box
