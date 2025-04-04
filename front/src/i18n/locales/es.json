@@ -1,0 +1,140 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "shop": "Tienda",
+    "contact": "Contacto",
+    "account": "Cuenta",
+    "cart": "Carrito",
+    "favorites": "Favoritos",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión",
+    "dashboard": "Dashboard",
+    "profile": "Perfil",
+    "myOrders": "Mis pedidos",
+    "myFavorites": "Mis favoritos"
+  },
+  "favorites": {
+    "title": "Mis favoritos",
+    "loading": "Cargando tus favoritos...",
+    "noFavorites": "No tienes favoritos aún"
+  },
+  "footer": {
+    "title": "PestControl33",
+    "description": "Tu solución profesional para un entorno sin termitas.",
+    "copyright": "PestControl33",
+    "rights": "Todos los derechos reservados."
+  },
+  "shoppingCart": {
+    "title": "Carrito de compras",
+    "products": "Productos",
+    "price": "Precio",
+    "quantity": "Cantidad",
+    "subtotal": "Subtotal",
+    "action": "Acción",
+    "continueShopping": "Continuar comprando",
+    "empty": "Tu carrito está vacío",
+    "emptyDescription": "Agrega productos a tu carrito para verlos aparecer aquí",
+    "proceedToPayment": "Proceder al pago",
+    "promoCode": "Código promocional",
+    "promoCodePlaceholder": "Ingresa tu código",
+    "applyDiscount": "Aplicar descuento",
+    "total": "Total del carrito",
+    "discount": "Descuento",
+    "unitPrice": "Precio unitario"
+  },
+  "searchBar": {
+    "placeholder": "Buscar un producto..."
+  },
+  "categories": {
+    "mole": "Topo",
+    "ant": "Hormiga",
+    "termite": "Termita",
+    "rat": "Rata",
+    "mouse": "Ratón",
+    "wasp": "Avispa",
+    "cockroach": "Cucaracha"
+  },
+  "product": {
+    "addToCart": "Añadir al carrito",
+    "addToFavorites": "Añadir a favoritos",
+    "description": "Descripción",
+    "price": "Precio",
+    "quantity": "Cantidad",
+    "reviews": "Reseñas",
+    "relatedProducts": "Productos relacionados",
+    "outOfStock": "Agotado",
+    "inStock": "En existencia"
+  },
+  "cart": {
+    "yourCart": "Tu carrito",
+    "checkout": "Finalizar compra",
+    "continue": "Seguir comprando",
+    "empty": "Tu carrito está vacío",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "remove": "Eliminar"
+  },
+  "payment": {
+    "paymentDetails": "Detalles de pago",
+    "cardNumber": "Número de tarjeta",
+    "expiryDate": "Fecha de vencimiento",
+    "cvv": "CVV",
+    "pay": "Pagar ahora",
+    "orderSummary": "Resumen del pedido"
+  },
+  "account": {
+    "profile": "Perfil",
+    "orders": "Pedidos",
+    "settings": "Configuración",
+    "password": "Contraseña",
+    "changePassword": "Cambiar contraseña",
+    "address": "Dirección",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "logoutSuccess": "Has cerrado sesión",
+    "loading": "Cargando..."
+  },
+  "contact": {
+    "getInTouch": "Ponte en contacto",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "message": "Mensaje",
+    "send": "Enviar",
+    "address": "Dirección",
+    "phone": "Teléfono"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "loginButton": "Entrar",
+    "forgotPassword": "Olvidaste tu contraseña?",
+    "noAccount": "No tienes cuenta?",
+    "loginSuccess": "Inicio de sesión exitoso",
+    "updatePassword": "Actualizar contraseña",
+    "updatePasswordSuccess": "Contraseña actualizada con éxito",
+    "updatePasswordError": "Se produjo un error al actualizar la contraseña",
+    "updatePasswordButton": "Actualizar contraseña",
+    "updatePasswordForm": "Formulario de actualización de contraseña",
+    "updatePasswordFormTitle": "Actualizar contraseña",
+    "updatePasswordFormDescription": "Por favor, ingresa tu nueva contraseña",
+    "backToLogin": "Volver al inicio de sesión",
+    "lastName": "Apellido",
+    "firstName": "Nombre",
+    "username": "Nombre de usuario",
+    "confirmPassword": "Confirmar contraseña",
+    "registerButton": "Registrarse"
+  },
+  "language": {
+    "en": "Inglés",
+    "fr": "Francés",
+    "es": "Español",
+    "selectLanguage": "Seleccionar idioma"
+  },
+  "errors": {
+    "default": "Se ha producido un error"
+  }
+}

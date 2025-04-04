@@ -10,8 +10,10 @@ import {
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import fondImage from "../../Assets/landing.jpg";
+import { useTranslation } from "react-i18next";
 
 function RegisterForm() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -138,19 +140,19 @@ function RegisterForm() {
             }}
           >
             <Typography variant="h4" sx={{ textAlign: "center", mb: 2 }}>
-              Inscription
+              {t("auth.register", "Inscription")}
             </Typography>
 
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
+                {t("errors.default", "Une erreur est survenue")}
               </Alert>
             )}
 
             <TextField
               required
               fullWidth
-              label="Nom"
+              label={t("auth.lastName", "Nom")}
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
@@ -159,7 +161,7 @@ function RegisterForm() {
             <TextField
               required
               fullWidth
-              label="Prénom"
+              label={t("auth.firstName", "Prénom")}
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
@@ -167,7 +169,7 @@ function RegisterForm() {
 
             <TextField
               fullWidth
-              label="Pseudo"
+              label={t("auth.username", "Pseudo")}
               name="username"
               value={formData.username}
               onChange={handleChange}
@@ -176,7 +178,7 @@ function RegisterForm() {
             <TextField
               required
               fullWidth
-              label="Email"
+              label={t("auth.email", "Email")}
               name="email"
               type="email"
               value={formData.email}
@@ -186,7 +188,7 @@ function RegisterForm() {
             <TextField
               required
               fullWidth
-              label="Mot de passe"
+              label={t("auth.password", "Mot de passe")}
               name="password"
               type="password"
               value={formData.password}
@@ -196,7 +198,7 @@ function RegisterForm() {
             <TextField
               required
               fullWidth
-              label="Confirmer le mot de passe"
+              label={t("auth.confirmPassword", "Confirmer le mot de passe")}
               name="confirmPassword"
               type="password"
               value={formData.confirmPassword}
@@ -217,7 +219,7 @@ function RegisterForm() {
                 size="large"
                 sx={{ mt: 2 }}
               >
-                S'inscrire
+                {t("auth.registerButton", "S'inscrire")}
               </Button>
               <Button
                 component={Link}
@@ -225,7 +227,7 @@ function RegisterForm() {
                 variant="contained"
                 sx={{ mt: 2 }}
               >
-                Retour
+                {t("auth.backToLogin", "Retour")}
               </Button>
             </Box>
           </Box>

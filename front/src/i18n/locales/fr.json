@@ -1,0 +1,95 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "about": "À propos",
+    "shop": "Boutique",
+    "contact": "Contact",
+    "account": "Compte",
+    "myOrders": "Mes commandes",
+    "myFavorites": "Mes favoris",
+    "cart": "Panier",
+    "favorites": "Favoris",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "viewMore": "Voir plus"
+  },
+  "product": {
+    "addToCart": "Ajouter au panier",
+    "addToFavorites": "Ajouter aux favoris",
+    "description": "Description",
+    "price": "Prix",
+    "quantity": "Quantité",
+    "reviews": "Avis",
+    "relatedProducts": "Produits associés",
+    "outOfStock": "Rupture de stock",
+    "inStock": "En stock"
+  },
+  "cart": {
+    "yourCart": "Votre panier",
+    "checkout": "Commander",
+    "continue": "Continuer vos achats",
+    "empty": "Votre panier est vide",
+    "total": "Total",
+    "subtotal": "Sous-total",
+    "remove": "Supprimer"
+  },
+  "payment": {
+    "paymentDetails": "Détails du paiement",
+    "cardNumber": "Numéro de carte",
+    "expiryDate": "Date d'expiration",
+    "cvv": "CVV",
+    "pay": "Payer maintenant",
+    "orderSummary": "Résumé de la commande"
+  },
+  "account": {
+    "profile": "Profil",
+    "orders": "Commandes",
+    "settings": "Paramètres",
+    "password": "Mot de passe",
+    "changePassword": "Changer le mot de passe",
+    "address": "Adresse",
+    "email": "Email",
+    "phone": "Téléphone",
+    "logoutSuccess": "Vous avez été déconnecté",
+    "loading": "Chargement..."
+  },
+  "contact": {
+    "getInTouch": "Contactez-nous",
+    "name": "Nom",
+    "email": "Email",
+    "message": "Message",
+    "send": "Envoyer",
+    "address": "Adresse",
+    "phone": "Téléphone"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "Email": "Email",
+    "password": "Mot de passe",
+    "loginButton": "Se connecter",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "loginSuccess": "Vous êtes connecté",
+    "updatePassword": "Mettre à jour le mot de passe",
+    "updatePasswordSuccess": "Mot de passe mis à jour avec succès",
+    "updatePasswordError": "Une erreur est survenue lors de la mise à jour du mot de passe",
+    "updatePasswordButton": "Mettre à jour le mot de passe",
+    "updatePasswordForm": "Formulaire de mise à jour du mot de passe",
+    "updatePasswordFormTitle": "Mettre à jour le mot de passe",
+    "updatePasswordFormDescription": "Veuillez entrer votre nouveau mot de passe"
+  },
+  "errors": {
+    "default": "Une erreur est survenue"
+  },
+  "language": {
+    "en": "Anglais",
+    "fr": "Français",
+    "es": "Espagnol",
+    "selectLanguage": "Choisir la langue"
+  }
+}

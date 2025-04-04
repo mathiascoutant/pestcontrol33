@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   AppBar,
   Toolbar,
@@ -24,8 +25,10 @@ import {
 import { jwtDecode } from "jwt-decode";
 import UpdateIcon from "@mui/icons-material/Update";
 import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
+import LanguageSelector from "../LanguageSelector";
 
 function Header() {
+  const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState(null);
@@ -40,6 +43,12 @@ function Header() {
   const location = useLocation();
 
   useEffect(() => {
+    // Load user's preferred language
+    const savedLanguage = localStorage.getItem("preferredLanguage");
+    if (savedLanguage) {
+      i18n.changeLanguage(savedLanguage);
+    }
+
     const token = localStorage.getItem("token");
     if (token) {
       setIsAuthenticated(true);
@@ -67,7 +76,7 @@ function Header() {
           );
         });
     }
-  }, []);
+  }, [i18n]);
 
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -90,7 +99,7 @@ function Header() {
     setIsAuthenticated(false);
     setSnackbar({
       open: true,
-      message: "Vous avez été déconnecté",
+      message: t("account.logoutSuccess", "Vous avez été déconnecté"),
       severity: "success",
     });
     setTimeout(() => {
@@ -144,7 +153,7 @@ function Header() {
               color="inherit"
               sx={{ textTransform: "capitalize", color: "black" }}
             >
-              Accueil
+              {t("navigation.home")}
             </Button>
             <Button
               component={Link}
@@ -152,7 +161,7 @@ function Header() {
               color="inherit"
               sx={{ textTransform: "capitalize", color: "black" }}
             >
-              À propos
+              {t("navigation.about")}
             </Button>
             <Button
               component={Link}
@@ -160,7 +169,7 @@ function Header() {
               color="inherit"
               sx={{ textTransform: "capitalize", color: "black" }}
             >
-              Nos produits
+              {t("navigation.shop")}
             </Button>
             <Button
               component={Link}
@@ -168,10 +177,12 @@ function Header() {
               color="inherit"
               sx={{ textTransform: "capitalize", color: "black" }}
             >
-              Contact
+              {t("navigation.contact")}
             </Button>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <LanguageSelector />
+
             <IconButton color="inherit" component={Link} to="/favorites">
               <FavoriteIcon />
             </IconButton>
@@ -214,7 +225,9 @@ function Header() {
                         variant="subtitle1"
                         sx={{ fontWeight: "bold", textAlign: "center" }}
                       >
-                        {userName ? userName : "Chargement..."}
+                        {userName
+                          ? userName
+                          : t("account.loading", "Chargement...")}
                       </Typography>
                       {isAdmin && (
                         <Typography
@@ -246,7 +259,7 @@ function Header() {
                           fontSize="small"
                           sx={{ color: "primary.main" }}
                         />
-                        <Typography>Dashboard</Typography>
+                        <Typography>{t("navigation.dashboard")}</Typography>
                       </MenuItem>
                     ),
                     isAdmin && (
@@ -270,7 +283,9 @@ function Header() {
                         fontSize="small"
                         sx={{ color: "primary.main" }}
                       />
-                      <Typography>Profil</Typography>
+                      <Typography>
+                        {t("navigation.profile", "Profil")}
+                      </Typography>
                     </MenuItem>,
                     <Divider key="divider-2" variant="middle" />,
                     <MenuItem
@@ -288,7 +303,9 @@ function Header() {
                         fontSize="small"
                         sx={{ color: "primary.main" }}
                       />
-                      <Typography>Mes commandes</Typography>
+                      <Typography>
+                        {t("navigation.myOrders", "Mes commandes")}
+                      </Typography>
                     </MenuItem>,
                     <Divider key="divider-2" variant="middle" />,
                     <MenuItem
@@ -300,8 +317,13 @@ function Header() {
                         "&:hover": { bgcolor: "action.hover" },
                       }}
                     >
-                      <LogoutIcon fontSize="small" sx={{ color: "#d50000" }} />
-                      <Typography>Déconnexion</Typography>
+                      <LogoutIcon
+                        fontSize="small"
+                        sx={{ color: "error.main" }}
+                      />
+                      <Typography>
+                        {t("navigation.logout", "Déconnexion")}
+                      </Typography>
                     </MenuItem>,
                   ]
                 : [
@@ -310,18 +332,30 @@ function Header() {
                       component={Link}
                       to="/connexion"
                       onClick={handleClose}
-                      sx={{ "&:hover": { bgcolor: "action.hover" } }}
+                      sx={{
+                        display: "flex",
+                        gap: 1,
+                        "&:hover": { bgcolor: "action.hover" },
+                      }}
                     >
-                      Connexion
+                      <Typography>
+                        {t("navigation.login", "Connexion")}
+                      </Typography>
                     </MenuItem>,
                     <MenuItem
                       key="register"
                       component={Link}
                       to="/register"
                       onClick={handleClose}
-                      sx={{ "&:hover": { bgcolor: "action.hover" } }}
+                      sx={{
+                        display: "flex",
+                        gap: 1,
+                        "&:hover": { bgcolor: "action.hover" },
+                      }}
                     >
-                      Inscription
+                      <Typography>
+                        {t("navigation.register", "Inscription")}
+                      </Typography>
                     </MenuItem>,
                   ]}
             </Menu>

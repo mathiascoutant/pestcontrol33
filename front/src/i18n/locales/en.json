@@ -1,0 +1,140 @@
+{
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "shop": "Shop",
+    "contact": "Contact",
+    "account": "Account",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "myOrders": "My orders",
+    "myFavorites": "My favorites",
+    "cart": "Cart",
+    "favorites": "Favorites",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "favorites": {
+    "title": "My favorites",
+    "loading": "Loading your favorites...",
+    "noFavorites": "You have no favorites yet"
+  },
+  "footer": {
+    "title": "PestControl33",
+    "description": "Your professional solution for an environment without termites.",
+    "copyright": "PestControl33",
+    "rights": "All rights reserved."
+  },
+  "shoppingCart": {
+    "title": "Shopping Cart",
+    "products": "Products",
+    "price": "Price",
+    "quantity": "Quantity",
+    "subtotal": "Subtotal",
+    "action": "Action",
+    "continueShopping": "Continue Shopping",
+    "empty": "Your cart is empty",
+    "emptyDescription": "Add products to your cart to see them appear here",
+    "proceedToPayment": "Proceed to Payment",
+    "promoCode": "Promo Code",
+    "promoCodePlaceholder": "Enter your code",
+    "applyDiscount": "Apply Discount",
+    "total": "Total Cart",
+    "discount": "Discount",
+    "unitPrice": "Unit Price"
+  },
+  "searchBar": {
+    "placeholder": "Search for a product..."
+  },
+  "categories": {
+    "mole": "Mole",
+    "ant": "Ant",
+    "termite": "Termite",
+    "rat": "Rat",
+    "mouse": "Mouse",
+    "wasp": "Wasp",
+    "cockroach": "Cockroach"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "addToFavorites": "Add to Favorites",
+    "description": "Description",
+    "price": "Price",
+    "quantity": "Quantity",
+    "reviews": "Reviews",
+    "relatedProducts": "Related Products",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock"
+  },
+  "cart": {
+    "yourCart": "Your Cart",
+    "checkout": "Checkout",
+    "continue": "Continue Shopping",
+    "empty": "Your cart is empty",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "remove": "Remove"
+  },
+  "payment": {
+    "paymentDetails": "Payment Details",
+    "cardNumber": "Card Number",
+    "expiryDate": "Expiry Date",
+    "cvv": "CVV",
+    "pay": "Pay Now",
+    "orderSummary": "Order Summary"
+  },
+  "account": {
+    "profile": "Profile",
+    "orders": "Orders",
+    "settings": "Settings",
+    "password": "Password",
+    "changePassword": "Change Password",
+    "address": "Address",
+    "email": "Email",
+    "phone": "Phone",
+    "logoutSuccess": "You have been logged out",
+    "loading": "Loading..."
+  },
+  "contact": {
+    "getInTouch": "Get in Touch",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send",
+    "address": "Address",
+    "phone": "Phone"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Sign in",
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "Don't have an account?",
+    "loginSuccess": "Login successful",
+    "updatePassword": "Update password",
+    "updatePasswordSuccess": "Password updated successfully",
+    "updatePasswordError": "An error occurred while updating the password",
+    "updatePasswordButton": "Update password",
+    "updatePasswordForm": "Password update form",
+    "updatePasswordFormTitle": "Update password",
+    "updatePasswordFormDescription": "Please enter your new password",
+    "backToLogin": "Back to login",
+    "lastName": "Last name",
+    "firstName": "First name",
+    "username": "Username",
+    "confirmPassword": "Confirm password",
+    "registerButton": "Register"
+  },
+  "language": {
+    "en": "English",
+    "fr": "French",
+    "es": "Spanish",
+    "selectLanguage": "Select Language"
+  },
+  "errors": {
+    "default": "An error occurred"
+  }
+}

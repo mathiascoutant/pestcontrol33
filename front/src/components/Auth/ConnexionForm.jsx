@@ -12,9 +12,11 @@ import {
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import fondImage from "../../Assets/fond.png";
+import { useTranslation } from "react-i18next";
 
 function ConnexionForm() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -47,7 +49,10 @@ function ConnexionForm() {
         navigate("/");
       }, 1000);
     } catch (err) {
-      setError(err.response?.data?.message || "Une erreur est survenue");
+      setError(
+        err.response?.data?.message ||
+          t("errors.default", "Une erreur est survenue")
+      );
     }
   };
 
@@ -89,12 +94,12 @@ function ConnexionForm() {
             }}
           >
             <Typography variant="h4" sx={{ textAlign: "center", mb: 4 }}>
-              Connexion
+              {t("auth.login", "Connexion")}
             </Typography>
 
             <TextField
               fullWidth
-              label="Email"
+              label={t("auth.email", "Email")}
               name="email"
               type="email"
               value={formData.email}
@@ -103,7 +108,7 @@ function ConnexionForm() {
             />
             <TextField
               fullWidth
-              label="Mot de passe"
+              label={t("auth.password", "Mot de passe")}
               name="password"
               type="password"
               value={formData.password}
@@ -128,7 +133,7 @@ function ConnexionForm() {
                   padding: "12px",
                 }}
               >
-                Se connecter
+                {t("auth.loginButton", "Se connecter")}
               </Button>
               <Typography
                 component={Link}
@@ -140,11 +145,14 @@ function ConnexionForm() {
                   "&:hover": { color: "primary.main" },
                 }}
               >
-                Vous avez oublié votre mot de passe ?
+                {t(
+                  "auth.forgotPassword",
+                  "Vous avez oublié votre mot de passe ?"
+                )}
               </Typography>
               <Divider sx={{ width: "100%", my: 1 }} />
               <Typography variant="body1">
-                Vous n'avez pas de compte ?
+                {t("auth.noAccount", "Vous n'avez pas de compte ?")}
                 <Typography
                   component={Link}
                   to="/register"
@@ -155,7 +163,7 @@ function ConnexionForm() {
                     ml: 1,
                   }}
                 >
-                  Inscription
+                  {t("auth.register", "Inscription")}
                 </Typography>
               </Typography>
             </Box>
@@ -181,7 +189,7 @@ function ConnexionForm() {
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
         >
           <Alert severity="success" sx={{ width: "100%" }}>
-            Connexion réussie
+            {t("auth.loginSuccess", "Connexion réussie")}
           </Alert>
         </Snackbar>
 

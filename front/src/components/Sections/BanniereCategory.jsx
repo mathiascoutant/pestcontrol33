@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Avatar, Typography, Grid } from "@mui/material";
+import { Box, Avatar, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useTranslation } from "react-i18next";
 
 const CircularAvatar = styled(Avatar)(({ theme }) => ({
   width: 120,
@@ -39,6 +40,7 @@ const CategoryItem = styled(Box)(({ theme }) => ({
 function BanniereCategory() {
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -110,7 +112,7 @@ function BanniereCategory() {
             <CategoryItem onClick={() => handleCategoryClick(category.id)}>
               <CircularAvatar
                 src={category.picture}
-                alt={category.name}
+                alt={t(`categories.${category.name}`)}
                 sx={{
                   bgcolor: "grey.300",
                   width: { xs: 60, sm: 70, md: 80 },
@@ -126,7 +128,7 @@ function BanniereCategory() {
                   fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" },
                 }}
               >
-                {category.name}
+                {t(`categories.${category.name}`)}
               </Typography>
             </CategoryItem>
           </Box>

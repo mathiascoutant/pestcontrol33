@@ -5,10 +5,11 @@ import Header from "./components/Layouts/Header";
 import CardProduct from "./components/Layouts/CardProduct";
 import fondImage from "../src/Assets/fond.png";
 import Footer from "./components/Layouts/Footer";
-
+import { useTranslation } from "react-i18next";
 function Favorites() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchLikedProducts = async () => {
@@ -89,27 +90,29 @@ function Favorites() {
             px: 2,
           }}
         >
-          Mes favoris
+          {t("favorites.title", "Mes favoris")}
         </Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
           <Typography sx={{ color: "#000" }}>
             <Link to="/" style={{ textDecoration: "none", color: "#000" }}>
-              Accueil
+              {t("navigation.home", "Accueil")}
             </Link>
           </Typography>
           <Typography sx={{ color: "#000" }}>{">"}</Typography>
-          <Typography sx={{ color: "#000" }}>Mes favoris</Typography>
+          <Typography sx={{ color: "#000" }}>
+            {t("favorites.title", "Mes favoris")}
+          </Typography>
         </Box>
       </Box>
       <Box sx={{ flexGrow: 1, py: { xs: 4, sm: 6, md: 10 } }}>
         <Container maxWidth="lg">
           {loading ? (
             <Typography variant="body1" sx={{ textAlign: "center" }}>
-              Chargement de vos favoris...
+              {t("favorites.loading", "Chargement de vos favoris...")}
             </Typography>
           ) : favorites.length === 0 ? (
             <Typography variant="h6" sx={{ textAlign: "center" }}>
-              Vous n'avez pas encore de favoris
+              {t("favorites.noFavorites", "Vous n'avez pas encore de favoris")}
             </Typography>
           ) : (
             <Grid

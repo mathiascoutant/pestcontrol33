@@ -24,8 +24,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { jwtDecode } from "jwt-decode";
 
 const stripePromise = loadStripe(
-  //"pk_test_51QlSltB3Wls447R5cDklYX7cNoB2lX86UmHGlmSKIUysLgeU4GujbQGnRRRDHrUaXQRkAaSE152DyZkiQLzGe7aD00gThgaxGp"
-  "pk_live_51QlSlkBizCqLJgK04f6a2DgzD4HRRQOQGhjKELqBcZSOyUxTzY9zQOuH0m7a7aJ4TqneQQe1sHmsAEetlervbn6200MvoCCXb9"
+  "pk_test_51QlSltB3Wls447R5cDklYX7cNoB2lX86UmHGlmSKIUysLgeU4GujbQGnRRRDHrUaXQRkAaSE152DyZkiQLzGe7aD00gThgaxGp"
+  //"pk_live_51QlSlkBizCqLJgK04f6a2DgzD4HRRQOQGhjKELqBcZSOyUxTzY9zQOuH0m7a7aJ4TqneQQe1sHmsAEetlervbn6200MvoCCXb9"
 );
 
 const PersonalInfoForm = ({

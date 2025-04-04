@@ -21,6 +21,7 @@ import Header from "./components/Layouts/Header";
 import fondImage from "./Assets/fond.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 function ShoppingCart() {
   const [cartItems, setCartItems] = useState([]);
@@ -31,7 +32,7 @@ function ShoppingCart() {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Pour gérer la couleur de la Snackbar
   const [discountAmount, setDiscountAmount] = useState(0);
   const [discountError, setDiscountError] = useState("");
-
+  const { t } = useTranslation();
   const fetchCartItems = useCallback(async () => {
     const token = localStorage.getItem("token");
 
@@ -114,40 +115,75 @@ function ShoppingCart() {
     setTotal(sum);
   };
 
-  const fetchProductById = async (userId) => {
-    const token = localStorage.getItem("token");
-
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}/shopping/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Erreur lors de la récupération des produits :", error);
-      return [];
-    }
-  };
-
   const updateQuantity = async (id, newQuantity) => {
     if (newQuantity < 1) return;
 
-    const updatedCart = cartItems.map((item) =>
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    );
+    try {
+      // Trouver l'élément à mettre à jour
+      const itemToUpdate = cartItems.find((item) => item.id === id);
+      if (!itemToUpdate) return;
 
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    calculateTotal(updatedCart);
-    window.dispatchEvent(new Event("cartUpdate"));
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("Token non trouvé");
+        return;
+      }
 
-    const userId = 5;
-    const products = await fetchProductById(userId);
-    console.log(products);
+      // Calcul de la différence de quantité
+      const quantityDifference = newQuantity - itemToUpdate.quantity;
+
+      // Si la quantité n'a pas changé, ne rien faire
+      if (quantityDifference === 0) return;
+
+      // Préparer le corps de la requête pour l'API
+      const requestBody = {
+        productId: itemToUpdate.productId,
+        quantity: Math.abs(quantityDifference), // Utiliser la valeur absolue de la différence
+      };
+
+      // Mettre à jour la quantité sur le serveur
+      if (quantityDifference > 0) {
+        // Ajouter des produits si la quantité augmente
+        await axios.post(
+          `${process.env.REACT_APP_API_BASE_URL}/shopping/`,
+          requestBody,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      } else {
+        // Supprimer des produits si la quantité diminue
+        await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/shopping/`, {
+          data: requestBody,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+
+      // Mettre à jour l'état local après la réussite de la requête API
+      const updatedCart = cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      );
+
+      setCartItems(updatedCart);
+      calculateTotal(updatedCart);
+
+      // Déclencher l'événement de mise à jour du panier
+      window.dispatchEvent(new Event("cartUpdate"));
+
+      // Afficher une notification de succès
+      setSnackbarMessage("Quantité mise à jour avec succès !");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de la quantité :", error);
+      setSnackbarMessage("Erreur lors de la mise à jour de la quantité");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
   };
 
   const removeItemFromAPI = async (productId, quantity) => {
@@ -331,16 +367,18 @@ function ShoppingCart() {
             fontWeight: "bold",
           }}
         >
-          Panier
+          {t("shoppingCart.title", "Panier")}
         </Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
           <Typography sx={{ color: "#000" }}>
             <Link to="/" style={{ textDecoration: "none", color: "#000" }}>
-              Accueil
+              {t("navigation.home", "Accueil")}
             </Link>
           </Typography>
           <Typography sx={{ color: "#000" }}>{">"}</Typography>
-          <Typography sx={{ color: "#000" }}>Panier</Typography>
+          <Typography sx={{ color: "#000" }}>
+            {t("shoppingCart.title", "Panier")}
+          </Typography>
         </Box>
       </Box>
 
@@ -354,10 +392,10 @@ function ShoppingCart() {
             }}
           >
             <Typography variant="h5" sx={{ mb: 2 }}>
-              Votre panier est vide
+              {t("shoppingCart.empty", "Votre panier est vide")}
             </Typography>
             <Typography sx={{ mb: 3, color: "text.secondary" }}>
-              Ajoutez des produits à votre panier pour les voir apparaître ici
+              {t("shoppingCart.emptyDescription", "Ajoutez des produits à votre panier pour les voir apparaître ici")}
             </Typography>
             <Button
               variant="contained"
@@ -370,7 +408,7 @@ function ShoppingCart() {
                 to="/shop"
                 style={{ textDecoration: "none", color: "black" }}
               >
-                Continuer mes achats
+                {t("shoppingCart.continueShopping", "Continuer mes achats")}
               </Link>
             </Button>
           </Box>
@@ -390,48 +428,66 @@ function ShoppingCart() {
                   overflow: "auto",
                   borderRadius: 2,
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  "& .MuiTable-root": {
-                    minWidth: { xs: 500, sm: 650 }, // Assure une meilleure expérience sur mobile
-                  },
+                  maxWidth: "100%",
+                  mb: { xs: 3, sm: 0 }, // Ajoute une marge en bas sur mobile
                 }}
               >
                 <Table
                   sx={{
-                    // Ajuste la table pour mobile
-                    "& .MuiTableCell-root": {
-                      px: { xs: 1, sm: 2 }, // Padding réduit sur mobile
-                      py: { xs: 1, sm: 2 },
-                      whiteSpace: "nowrap",
-                    },
+                    minWidth: { xs: 280, sm: 650 },
                   }}
                 >
-                  <TableHead>
+                  <TableHead
+                    sx={{ display: { xs: "none", sm: "table-header-group" } }}
+                  >
+                    {" "}
+                    {/* Masque l'en-tête sur mobile */}
                     <TableRow>
-                      <TableCell>Produits</TableCell>
-                      <TableCell align="center">Prix</TableCell>
-                      <TableCell align="center">Quantité</TableCell>
-                      <TableCell align="center">Sous-Total</TableCell>
-                      <TableCell align="center">Action</TableCell>
+                      <TableCell>{t("shoppingCart.products", "Produits")}</TableCell>
+                      <TableCell align="center">{t("shoppingCart.price", "Prix")}</TableCell>
+                      <TableCell align="center">{t("shoppingCart.quantity", "Quantité")}</TableCell>
+                      <TableCell align="center">{t("shoppingCart.subtotal", "Sous-Total")}</TableCell>
+                      <TableCell align="center">{t("shoppingCart.action", "Action")}</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {cartItems.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
+                      <TableRow
+                        key={item.id}
+                        sx={{
+                          "&:not(:last-child)": {
+                            borderBottom: {
+                              xs: "8px solid #e0e0e0",
+                              sm: "1px solid rgba(224, 224, 224, 1)",
+                            },
+                          },
+                          py: { xs: 2, sm: 1 },
+                        }}
+                      >
+                        <TableCell
+                          sx={{
+                            display: { xs: "table-cell", sm: "table-cell" },
+                            py: { xs: 2, sm: 1 },
+                          }}
+                        >
                           <Box
                             sx={{
                               display: "flex",
-                              alignItems: "center",
-                              gap: { xs: 1, sm: 2 },
+                              flexDirection: { xs: "column", sm: "row" },
+                              alignItems: { xs: "flex-start", sm: "center" },
+                              gap: { xs: 2, sm: 2 },
+                              width: "100%", // Utilise toute la largeur disponible
                             }}
                           >
                             <Box
                               sx={{
-                                width: { xs: "60px", sm: "80px" },
-                                height: { xs: "60px", sm: "80px" },
+                                width: { xs: "100px", sm: "80px" },
+                                height: { xs: "100px", sm: "80px" },
                                 borderRadius: 1,
                                 overflow: "hidden",
                                 bgcolor: "#fff",
+                                border: "1px solid #eaeaea",
+                                flexShrink: 0, // Empêche l'image de rétrécir
                               }}
                             >
                               <img
@@ -449,17 +505,135 @@ function ShoppingCart() {
                                 }}
                               />
                             </Box>
-                            <Typography
+                            <Box
                               sx={{
-                                fontSize: { xs: "0.875rem", sm: "1rem" },
+                                display: "flex",
+                                flexDirection: "column",
+                                width: { xs: "100%", sm: "auto" }, // Prend toute la largeur sur mobile
                               }}
                             >
-                              {item.name}
-                            </Typography>
+                              <Typography
+                                sx={{
+                                  fontSize: { xs: "1rem", sm: "1rem" },
+                                  fontWeight: "500",
+                                  mb: { xs: 1, sm: 0 },
+                                }}
+                              >
+                                {item.name}
+                              </Typography>
+                              {/* Informations supplémentaires visibles uniquement sur mobile */}
+                              <Box
+                                sx={{
+                                  display: { xs: "flex", sm: "none" },
+                                  flexDirection: "column",
+                                  mt: 1,
+                                  gap: 1.5,
+                                  width: "100%",
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    width: "100%",
+                                    pb: 1,
+                                    borderBottom: "1px dashed #e0e0e0",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
+                                    {t("shoppingCart.unitPrice", "Prix unitaire")}
+                                  </Typography>
+                                  <Typography variant="body1" fontWeight="500">
+                                    {item.price}
+                                  </Typography>
+                                </Box>
+
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    width: "100%",
+                                    pb: 1,
+                                    borderBottom: "1px dashed #e0e0e0",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
+                                    {t("shoppingCart.quantity", "Quantité")}
+                                  </Typography>
+                                  <TextField
+                                    type="number"
+                                    value={item.quantity}
+                                    onChange={(e) =>
+                                      updateQuantity(
+                                        item.id,
+                                        parseInt(e.target.value) || 1
+                                      )
+                                    }
+                                    InputProps={{
+                                      inputProps: { min: 1 },
+                                      sx: {
+                                        borderRadius: 1,
+                                        height: "36px",
+                                        bgcolor: "#fff",
+                                      },
+                                    }}
+                                    size="small"
+                                    sx={{ width: "80px" }}
+                                  />
+                                </Box>
+
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    width: "100%",
+                                    pb: 1,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
+                                    {t("shoppingCart.subtotal", "Sous-Total")}
+                                  </Typography>
+                                  <Typography
+                                    variant="body1"
+                                    fontWeight="bold"
+                                    color="primary"
+                                  >
+                                    {(
+                                      parseFloat(
+                                        item.price.replace
+                                          ? item.price.replace("€", "").trim()
+                                          : item.price
+                                      ) * item.quantity
+                                    ).toFixed(2)}
+                                    €
+                                  </Typography>
+                                </Box>
+                              </Box>
+                            </Box>
                           </Box>
                         </TableCell>
-                        <TableCell align="center">{item.price}</TableCell>
-                        <TableCell align="center">
+                        <TableCell
+                          align="center"
+                          sx={{ display: { xs: "none", sm: "table-cell" } }}
+                        >
+                          {item.price}
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ display: { xs: "none", sm: "table-cell" } }}
+                        >
                           <TextField
                             type="number"
                             value={item.quantity}
@@ -469,12 +643,21 @@ function ShoppingCart() {
                                 parseInt(e.target.value) || 1
                               )
                             }
-                            InputProps={{ inputProps: { min: 1 } }}
+                            InputProps={{
+                              inputProps: { min: 1 },
+                              sx: {
+                                borderRadius: 1,
+                                height: "36px",
+                              },
+                            }}
                             size="small"
                             sx={{ width: "70px" }}
                           />
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell
+                          align="center"
+                          sx={{ display: { xs: "none", sm: "table-cell" } }}
+                        >
                           {(
                             parseFloat(
                               item.price.replace
@@ -484,10 +667,31 @@ function ShoppingCart() {
                           ).toFixed(2)}
                           €
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell
+                          align="center"
+                          sx={{
+                            display: { xs: "table-cell", sm: "table-cell" },
+                            position: { xs: "absolute", sm: "static" },
+                            right: { xs: 16, sm: "auto" },
+                            top: { xs: "auto", sm: "auto" },
+                          }}
+                        >
                           <IconButton
                             onClick={() => removeItem(item.id)}
                             color="error"
+                            sx={{
+                              padding: { xs: 1, sm: 1 },
+                              bgcolor: {
+                                xs: "rgba(255,255,255,0.5)",
+                                sm: "transparent",
+                              },
+                              "&:hover": {
+                                bgcolor: {
+                                  xs: "rgba(255,0,0,0.05)",
+                                  sm: "rgba(255,0,0,0.05)",
+                                },
+                              },
+                            }}
                           >
                             <DeleteIcon />
                           </IconButton>
@@ -501,22 +705,28 @@ function ShoppingCart() {
 
             <Box
               sx={{
-                width: { xs: "100%", md: 300 }, // Pleine largeur sur mobile
+                width: { xs: "100%", md: 300 },
                 bgcolor: "#FAF4F4",
-                p: 3,
-                borderRadius: 1,
+                p: { xs: 3, sm: 3 },
+                borderRadius: 2,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                border: "1px solid #eaeaea",
               }}
             >
-              <Typography variant="h5" sx={{ mb: 3 }}>
-                Total panier
+              <Typography variant="h5" sx={{ mb: 3, fontWeight: "500" }}>
+                {t("shoppingCart.total", "Total panier")}
               </Typography>
+
               <Box
-                sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+                sx={{
+                  py: 2,
+                  px: 2,
+                  bgcolor: "#fff",
+                  borderRadius: 2,
+                  mb: 3,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                }}
               >
-                <Typography>Sous-total</Typography>
-                <Typography>{total.toFixed(2)}€</Typography>
-              </Box>
-              {discountAmount > 0 && (
                 <Box
                   sx={{
                     display: "flex",
@@ -524,22 +734,57 @@ function ShoppingCart() {
                     mb: 2,
                   }}
                 >
-                  <Typography>Réduction</Typography>
-                  <Typography color="error">-{discountAmount}%</Typography>
+                  <Typography color="text.secondary">{t("shoppingCart.subtotal", "Sous-Total")}</Typography>
+                  <Typography>{total.toFixed(2)}€</Typography>
                 </Box>
-              )}
-              <Box
-                sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}
-              >
-                <Typography>Total</Typography>
-                <Typography sx={{ color: "#B88E2F", fontWeight: "bold" }}>
-                  {total.toFixed(2)}€
-                </Typography>
+
+                {discountAmount > 0 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 2,
+                      pb: 2,
+                      borderBottom: "1px dashed #e0e0e0",
+                    }}
+                  >
+                    <Typography color="text.secondary">{t("shoppingCart.discount", "Réduction")}</Typography>
+                    <Typography color="error">-{discountAmount}%</Typography>
+                  </Box>
+                )}
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    pt: discountAmount > 0 ? 1 : 0,
+                    borderTop:
+                      discountAmount > 0 ? "none" : "1px dashed #e0e0e0",
+                  }}
+                >
+                  <Typography fontWeight="500">{t("shoppingCart.total", "Total")}</Typography>
+                  <Typography
+                    sx={{
+                      color: "#B88E2F",
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                    }}
+                  >
+                    {total.toFixed(2)}€
+                  </Typography>
+                </Box>
               </Box>
-              <Box sx={{ mb: 2 }}>
+
+              <Box sx={{ mb: 3 }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ mb: 1, fontWeight: "500" }}
+                >
+                  {t("shoppingCart.promoCode", "Code promo")}
+                </Typography>
                 <TextField
                   fullWidth
-                  placeholder="Code promo"
+                  placeholder={t("shoppingCart.promoCodePlaceholder", "Entrez votre code")}
                   value={couponCode}
                   onChange={(e) => {
                     setCouponCode(e.target.value);
@@ -547,17 +792,34 @@ function ShoppingCart() {
                   }}
                   error={!!discountError}
                   helperText={discountError}
-                  sx={{ mb: 1, bgcolor: "#fff" }}
+                  sx={{
+                    mb: 1.5,
+                    "& .MuiOutlinedInput-root": {
+                      bgcolor: "#fff",
+                      borderRadius: 1,
+                    },
+                  }}
                 />
                 <Button
                   fullWidth
                   variant="outlined"
                   onClick={applyDiscount}
-                  sx={{ mb: 2 }}
+                  sx={{
+                    mb: 0,
+                    py: 1,
+                    borderRadius: 1,
+                    borderColor: "#B88E2F",
+                    color: "#B88E2F",
+                    "&:hover": {
+                      borderColor: "#9A7526",
+                      bgcolor: "rgba(184, 142, 47, 0.04)",
+                    },
+                  }}
                 >
-                  Appliquer le code
+                  {t("shoppingCart.applyDiscount", "Appliquer le code")}
                 </Button>
               </Box>
+
               <Button
                 variant="contained"
                 component={Link}
@@ -566,15 +828,16 @@ function ShoppingCart() {
                 sx={{
                   bgcolor: "#000",
                   color: "#fff",
-                  py: { xs: 1.5, sm: 2 }, // Hauteur plus grande sur mobile pour faciliter le toucher
-                  fontSize: { xs: "1rem", sm: "1.1rem" },
-                  fontWeight: "bold",
+                  py: { xs: 1.5, sm: 1.5 },
+                  fontSize: { xs: "1rem", sm: "1rem" },
+                  fontWeight: "500",
+                  borderRadius: 1,
                   "&:hover": {
                     bgcolor: "#333",
                   },
                 }}
               >
-                Paiement
+                {t("shoppingCart.proceedToPayment", "Procéder au paiement")}
               </Button>
             </Box>
           </Box>

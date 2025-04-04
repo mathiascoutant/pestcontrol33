@@ -12,8 +12,10 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function SearchBar() {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
@@ -96,23 +98,23 @@ function SearchBar() {
             onClose={handleClose}
           >
             <MenuItem component={Link} to="/" onClick={handleClose}>
-              Accueil
+              {t("navigation.home", "Accueil")}
             </MenuItem>
             <MenuItem component={Link} to="/about" onClick={handleClose}>
-              À propos
+              {t("navigation.about", "À propos")}
             </MenuItem>
             <MenuItem component={Link} to="/shop" onClick={handleClose}>
-              Nos produits
+              {t("navigation.shop", "Nos produits")}
             </MenuItem>
             <MenuItem component={Link} to="/contact" onClick={handleClose}>
-              Contact
+              {t("navigation.contact", "Contact")}
             </MenuItem>
           </Menu>
         </Box>
 
         <TextField
           variant="outlined"
-          placeholder="Rechercher un produit..."
+          placeholder={t("searchBar.placeholder", "Rechercher un produit...")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{
