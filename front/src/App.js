@@ -4,7 +4,7 @@ import About from "./About";
 import Shop from "./Shop";
 import Product from "./Product";
 import Contact from "./Contact";
-import ShoppingCart from "./ShoppingCart";
+import MaintenancePage from "./components/MaintenancePage";
 import Register from "./Register";
 import Connexion from "./Connexion";
 import Favorites from "./Favorites";
@@ -35,7 +35,7 @@ function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/addcomment/:productId" element={<AddComment />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/shopping" element={<ShoppingCart />} />
+          <Route path="/shopping" element={<MaintenancePage />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/allproduct" element={<AllProduct />} />

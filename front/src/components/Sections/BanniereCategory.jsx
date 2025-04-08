@@ -42,6 +42,28 @@ function BanniereCategory() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // Fonction pour obtenir la clé de traduction standardisée
+  const getCategoryTranslationKey = (categoryName) => {
+    // Convertir le nom de la catégorie en minuscules et sans accents
+    const normalizedName = categoryName
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    // Mapper les noms de catégories aux clés de traduction
+    const categoryMap = {
+      fourmis: "ant",
+      guepe: "wasp",
+      taupe: "mole",
+      termite: "termite",
+      rat: "rat",
+      souris: "mouse",
+      cafard: "cockroach",
+    };
+
+    return categoryMap[normalizedName] || normalizedName;
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -112,7 +134,9 @@ function BanniereCategory() {
             <CategoryItem onClick={() => handleCategoryClick(category.id)}>
               <CircularAvatar
                 src={category.picture}
-                alt={t(`categories.${category.name}`)}
+                alt={t(
+                  `categories.${getCategoryTranslationKey(category.name)}`
+                )}
                 sx={{
                   bgcolor: "grey.300",
                   width: { xs: 60, sm: 70, md: 80 },
@@ -128,7 +152,7 @@ function BanniereCategory() {
                   fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" },
                 }}
               >
-                {t(`categories.${category.name}`)}
+                {t(`categories.${getCategoryTranslationKey(category.name)}`)}
               </Typography>
             </CategoryItem>
           </Box>

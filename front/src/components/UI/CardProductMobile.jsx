@@ -5,10 +5,11 @@ import Box from "@mui/material/Box";
 import { IconButton, Snackbar, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useTranslation } from "react-i18next";
 
 function CardProduct({ promotion, name, status, price, reduction, id, image }) {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState("");
   const [snackbarSeverity, setSnackbarSeverity] = React.useState("success");
@@ -144,7 +145,9 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
             boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           }}
         >
-          {status}
+          {status === "En stock"
+            ? t("CardProductMobile.inStock")
+            : t("CardProductMobile.outOfStock")}
         </Typography>
 
         <Box

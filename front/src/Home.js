@@ -7,12 +7,14 @@ import Banner from "./components/UI/Banner";
 import CarouselLastProducts from "./components/Sections/CarouselLastProducts";
 import BannierePub from "./components/Sections/BannierePub";
 import BanniereCategory from "./components/Sections/BanniereCategory";
+import UnderConstructionBanner from "./components/UI/UnderConstructionBanner";
 
 function Home() {
   return (
     <Box>
       <Header />
       <SearchBar />
+      <UnderConstructionBanner />
       <BanniereCategory />
       <BannierePub />
       <CarouselLastProducts />

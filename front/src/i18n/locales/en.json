@@ -71,7 +71,9 @@
     "quality": "High quality",
     "satisfaction": "Satisfaction guaranteed",
     "fastDelivery": "Fast delivery",
-    "support": "Support 24/7"
+    "support": "24/7 Support",
+    "underConstruction": "Our site is being enhanced",
+    "paymentNotWorking": "• Payment functionality will be available soon"
   },
   "CardProduct": {
     "promotion": "Promotion",
@@ -84,6 +86,41 @@
     "quantity": "Quantity",
     "reviews": "Reviews",
     "relatedProducts": "Related Products"
+  },
+  "categoryPage": {
+    "noProducts": "No products found for this category.",
+    "noProductsDescription": "Discover our products available in this category.",
+    "noProductsTitle": "No products available"
+  },
+  "commande": {
+    "title": "My orders",
+    "description": "Discover our orders",
+    "noOrders": "No orders available",
+    "commande": "Order",
+    "invoice": "Invoice",
+    "products": "Products",
+    "transport": "Transport",
+    "viewInvoice": "View Invoice",
+    "unit": "£/unit"
+  },
+  "reviewCard": {
+    "pseudo": "Pseudo",
+    "comment": "Comment",
+    "notation": "Notation",
+    "createdAt": "Created at"
+  },
+  "CardProductMobile": {
+    "name": "Product",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock"
+  },
+  "profil": {
+    "title": "Welcome to your profile",
+    "nom": "Name",
+    "prenom": "First name",
+    "pseudo": "Pseudo",
+    "email": "Email",
+    "modifier": "Modify"
   },
   "about": {
     "title": "About us",

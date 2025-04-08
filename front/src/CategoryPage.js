@@ -3,12 +3,36 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Box, Typography, Grid } from "@mui/material";
 import CardProduct from "./components/Layouts/CardProduct";
+import { useTranslation } from "react-i18next";
 
 function CategoryPage() {
   const { categoryId } = useParams();
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
+
+  // Fonction pour obtenir la clé de traduction standardisée
+  const getCategoryTranslationKey = (categoryName) => {
+    // Convertir le nom de la catégorie en minuscules et sans accents
+    const normalizedName = categoryName
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    // Mapper les noms de catégories aux clés de traduction
+    const categoryMap = {
+      fourmis: "ant",
+      guepe: "wasp",
+      taupe: "mole",
+      termite: "termite",
+      rat: "rat",
+      souris: "mouse",
+      cafard: "cockroach",
+    };
+
+    return categoryMap[normalizedName] || normalizedName;
+  };
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -71,18 +95,22 @@ function CategoryPage() {
           letterSpacing: "0.05em",
         }}
       >
-        {category.name || "Nom de catégorie non disponible"}{" "}
+        {category
+          ? t(`categories.${getCategoryTranslationKey(category.name)}`)
+          : "Nom de catégorie non disponible"}
       </Typography>
       <Typography
         variant="body2"
         color="textSecondary"
         sx={{ mb: 5, maxWidth: "800px", mx: "auto" }}
       >
-        {category.description ||
+        {t(category.description) ||
           "Découvrez nos produits disponibles dans cette catégorie."}
       </Typography>
       {products.length === 0 ? (
-        <Typography>Aucun produit trouvé pour cette catégorie.</Typography>
+        <Typography>
+          {t("Aucun produit trouvé pour cette catégorie.")}
+        </Typography>
       ) : (
         <Grid container spacing={3} justifyContent="center">
           {products.map((product) => (
@@ -94,7 +122,9 @@ function CategoryPage() {
                 }
                 promotion={product.discount ? `-${product.discount}%` : null}
                 name={product.nom}
-                status={product.stock > 0 ? "En stock" : "Rupture de stock"}
+                status={
+                  product.stock > 0 ? t("En stock") : t("Rupture de stock")
+                }
                 price={`${product.prix}€`}
                 reduction={product.newPrice ? `${product.newPrice}€` : null}
               />

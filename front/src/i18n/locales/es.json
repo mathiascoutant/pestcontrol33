@@ -70,12 +70,14 @@
   "banner": {
     "quality": "Alta calidad",
     "satisfaction": "Satisfacción garantizada",
-    "fastDelivery": "Envío rápido",
-    "support": "Soporte 24/7"
+    "fastDelivery": "Entrega rápida",
+    "support": "Soporte 24/7",
+    "underConstruction": "Nuestro sitio está siendo mejorado",
+    "paymentNotWorking": "• La funcionalidad de pago estará disponible pronto"
   },
   "CardProduct": {
     "promotion": "Promoción",
-    "inStock": "En stock",
+    "inStock": "en existencias",
     "outOfStock": "Agotado",
     "addToCart": "Añadir al carrito",
     "addToFavorites": "Añadir a favoritos",
@@ -84,6 +86,42 @@
     "quantity": "Cantidad",
     "reviews": "Reseñas",
     "relatedProducts": "Productos relacionados"
+  },
+  "CardProductMobile": {
+    "name": "Producto",
+    "inStock": "en existencias",
+    "outOfStock": "Agotado",
+    "price": "Precio"
+  },
+  "reviewCard": {
+    "pseudo": "Pseudónimo",
+    "comment": "Comentario",
+    "notation": "Nota",
+    "createdAt": "Creado el"
+  },
+  "commande": {
+    "title": "Mis pedidos",
+    "description": "Descubre nuestros pedidos",
+    "commande": "Pedido",
+    "invoice": "Factura",
+    "products": "Productos",
+    "transport": "Transporte",
+    "viewInvoice": "Ver factura",
+    "unit": "€/unidad",
+    "noOrders": "No hay pedidos disponibles"
+  },
+  "profil": {
+    "title": "Bienvenido a tu perfil",
+    "nom": "Nombre",
+    "prenom": "Primer nombre",
+    "pseudo": "Pseudónimo",
+    "email": "Correo electrónico",
+    "modifier": "Modificar"
+  },
+  "categoryPage": {
+    "noProducts": "No hay productos para esta categoría.",
+    "noProductsDescription": "Descubre nuestros productos disponibles en esta categoría.",
+    "noProductsTitle": "No hay productos disponibles"
   },
   "product": {
     "addToCart": "Añadir al carrito",

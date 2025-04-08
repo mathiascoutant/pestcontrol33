@@ -298,7 +298,7 @@ function CardProduct({ promotion, name, status, price, reduction, id, image }) {
       <Typography
         level="body-sm"
         sx={{
-          bgcolor: status === t("product.inStock") ? "#2EC1AC" : "#E97171",
+          bgcolor: status === "En stock" ? "#2EC1AC" : "#E97171",
           color: "white",
           width: "fit-content",
           px: 1.5,

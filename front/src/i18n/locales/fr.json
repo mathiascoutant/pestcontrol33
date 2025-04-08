@@ -29,7 +29,9 @@
     "quality": "Haute qualité",
     "satisfaction": "Satisfaction garantie",
     "fastDelivery": "Livraison rapide",
-    "support": "Support 24/7"
+    "support": "Support 24/7",
+    "underConstruction": "Notre site est en cours d'amélioration",
+    "paymentNotWorking": "• La fonctionnalité de paiement sera bientôt disponible"
   },
   "CardProduct": {
     "promotion": "Promotion",
@@ -42,6 +44,42 @@
     "quantity": "Quantité",
     "reviews": "Avis",
     "relatedProducts": "Produits associés"
+  },
+  "categoryPage": {
+    "noProducts": "Aucun produit trouvé pour cette catégorie.",
+    "noProductsDescription": "Découvrez nos produits disponibles dans cette catégorie.",
+    "noProductsTitle": "Aucun produit trouvé"
+  },
+  "CardProductMobile": {
+    "name": "Produit",
+    "inStock": "En stock",
+    "outOfStock": "Rupture de stock",
+    "price": "Prix"
+  },
+  "reviewCard": {
+    "pseudo": "Pseudo",
+    "comment": "Commentaire",
+    "notation": "Notation",
+    "createdAt": "Créé le"
+  },
+  "commande": {
+    "title": "Mes commandes",
+    "description": "Découvrez nos commandes",
+    "commande": "Commande",
+    "invoice": "Facture",
+    "products": "Produits",
+    "transport": "Transport",
+    "viewInvoice": "Voir la facture",
+    "unit": "€/unité",
+    "noOrders": "Aucune commande disponible"
+  },
+  "profil": {
+    "title": "Bienvenue sur votre profil",
+    "nom": "Nom",
+    "prenom": "Prénom",
+    "pseudo": "Pseudo",
+    "email": "Email",
+    "modifier": "Modifier"
   },
   "about": {
     "title": "À propos de nous",
@@ -146,5 +184,17 @@
     "new": "Nouveau",
     "sale": "Soldes",
     "hot": "Populaire"
+  },
+  "searchBar": {
+    "placeholder": "Rechercher un produit..."
+  },
+  "categories": {
+    "mole": "Taupe",
+    "ant": "Fourmi",
+    "termite": "Termite",
+    "rat": "Rat",
+    "mouse": "Souris",
+    "wasp": "Guêpe",
+    "cockroach": "Cafard"
   }
 }

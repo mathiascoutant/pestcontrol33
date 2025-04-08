@@ -11,7 +11,7 @@ import {
 import Header from "./components/Layouts/Header";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 function Profil() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,7 @@ function Profil() {
     message: "",
     severity: "success",
   });
-
+  const { t } = useTranslation();
   const [user, setUser] = useState({
     nom: "",
     prenom: "",
@@ -139,7 +139,7 @@ function Profil() {
             fontWeight: "bold",
           }}
         >
-          Bienvenue sur votre profil
+          {t("profil.title", { defaultValue: "Bienvenue sur votre profil" })}
         </Typography>
         <Box
           sx={{
@@ -154,28 +154,28 @@ function Profil() {
           }}
         >
           <TextField
-            label="Nom"
+            label={t("profil.nom", { defaultValue: "Nom" })}
             name="nom"
             value={user.nom || ""}
             onChange={handleChange}
             fullWidth
           />
           <TextField
-            label="Prénom"
+            label={t("profil.prenom", { defaultValue: "Prénom" })}
             name="prenom"
             value={user.prenom || ""}
             onChange={handleChange}
             fullWidth
           />
           <TextField
-            label="Pseudo"
+            label={t("profil.pseudo", { defaultValue: "Pseudo" })}
             name="pseudo"
             value={user.pseudo || ""}
             onChange={handleChange}
             fullWidth
           />
           <TextField
-            label="Email"
+            label={t("profil.email", { defaultValue: "Email" })}
             name="email"
             value={user.email || ""}
             onChange={handleChange}
@@ -191,7 +191,7 @@ function Profil() {
               fontSize: { xs: "0.9rem", sm: "1rem" },
             }}
           >
-            Modifier
+            {t("profil.modifier", { defaultValue: "Modifier" })}
           </Button>
         </Box>
       </Box>

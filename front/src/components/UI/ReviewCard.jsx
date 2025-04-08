@@ -1,8 +1,10 @@
 import React from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import { useTranslation } from "react-i18next";
 
 const ReviewCard = ({ review }) => {
+  const { t } = useTranslation();
   return (
     <Card
       sx={{
@@ -25,10 +27,10 @@ const ReviewCard = ({ review }) => {
     >
       <CardContent>
         <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
-          {review.user.pseudo}
+          {t("reviewCard.pseudo", { defaultValue: "Pseudo" })}
         </Typography>
         <Typography variant="body2" sx={{ mb: 1, color: "#555" }}>
-          {review.comment}
+          {t("reviewCard.comment", { defaultValue: "Commentaire" })}
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
           {Array.from({ length: 5 }, (_, index) => (
@@ -38,11 +40,12 @@ const ReviewCard = ({ review }) => {
             />
           ))}
           <Typography variant="body2" sx={{ ml: 1, color: "#777" }}>
-            {review.notation} / 5
+            {t("reviewCard.notation", { defaultValue: "Notation" })} / 5
           </Typography>
         </Box>
         <Typography variant="caption" sx={{ color: "#999" }}>
-          Créé le: {new Date(review.createdAt).toLocaleDateString()}
+          {t("reviewCard.createdAt", { defaultValue: "Créé le" })}{" "}
+          {new Date(review.createdAt).toLocaleDateString()}
         </Typography>
       </CardContent>
     </Card>

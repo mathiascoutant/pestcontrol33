@@ -1,109 +1,125 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, MenuItem, Select, FormControl } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 
 const LanguageSelector = () => {
-  const { i18n, t } = useTranslation();
+  const { i18n } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const changeLanguage = (event) => {
-    const language = event.target.value;
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const changeLanguage = (language) => {
     i18n.changeLanguage(language);
-
-    // Optionally save the selected language in localStorage
     localStorage.setItem("preferredLanguage", language);
-  };
-
-  // Styles pour le select
-  const selectStyles = {
-    height: "32px",
-    minWidth: "110px",
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    borderRadius: "4px",
-    boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-    "& .MuiOutlinedInput-notchedOutline": {
-      borderColor: "rgba(0, 0, 0, 0.1)",
-    },
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "rgba(0, 0, 0, 0.2)",
-    },
-    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#B6DEDD",
-    },
-  };
-
-  // Style pour les éléments du menu
-  const menuItemStyles = {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    padding: "8px 14px",
+    handleClose();
   };
 
   // Style pour les drapeaux
   const flagStyle = {
-    width: "20px",
-    height: "15px",
+    width: isMobile ? "24px" : "20px",
+    height: isMobile ? "18px" : "15px",
     objectFit: "cover",
     borderRadius: "2px",
-    marginRight: "5px",
   };
 
+  const languages = [
+    { code: "fr", flag: "/flags/fr.png", alt: "Français" },
+    { code: "en", flag: "/flags/en.png", alt: "English" },
+    { code: "es", flag: "/flags/es.png", alt: "Español" },
+  ];
+
   return (
-    <Box>
-      <FormControl fullWidth size="small">
-        <Select
-          value={i18n.language}
-          onChange={changeLanguage}
-          sx={selectStyles}
-          renderValue={(selected) => (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={`/flags/${selected}.png`}
-                alt={selected}
-                style={flagStyle}
-                onError={(e) => {
-                  e.target.style.display = "none";
-                }}
-              />
-              {t(`language.${selected}`)}
-            </Box>
-          )}
-        >
-          <MenuItem value="fr" sx={menuItemStyles}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        borderRadius: "4px",
+        padding: "1px",
+      }}
+    >
+      <IconButton
+        onClick={handleClick}
+        sx={{
+          padding: isMobile ? 1 : 0.5,
+          "&:hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.04)",
+          },
+        }}
+      >
+        <img
+          src={`/flags/${i18n.language}.png`}
+          alt={i18n.language}
+          style={flagStyle}
+          onError={(e) => {
+            console.error("Erreur de chargement du drapeau:", e.target.src);
+            e.target.style.display = "none";
+          }}
+        />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        PaperProps={{
+          sx: {
+            mt: 1,
+            minWidth: isMobile ? "50px" : "50px",
+            borderRadius: 2,
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+          },
+        }}
+      >
+        {languages.map((lang) => (
+          <MenuItem
+            key={lang.code}
+            onClick={() => changeLanguage(lang.code)}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              py: 1,
+              px: 2,
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.04)",
+              },
+            }}
+          >
             <img
-              src="/flags/fr.png"
-              alt="Français"
+              src={lang.flag}
+              alt={lang.alt}
               style={flagStyle}
               onError={(e) => {
+                console.error("Erreur de chargement du drapeau:", e.target.src);
                 e.target.style.display = "none";
               }}
             />
-            {t("language.fr")}
           </MenuItem>
-          <MenuItem value="en" sx={menuItemStyles}>
-            <img
-              src="/flags/en.png"
-              alt="English"
-              style={flagStyle}
-              onError={(e) => {
-                e.target.style.display = "none";
-              }}
-            />
-            {t("language.en")}
-          </MenuItem>
-          <MenuItem value="es" sx={menuItemStyles}>
-            <img
-              src="/flags/es.png"
-              alt="Español"
-              style={flagStyle}
-              onError={(e) => {
-                e.target.style.display = "none";
-              }}
-            />
-            {t("language.es")}
-          </MenuItem>
-        </Select>
-      </FormControl>
+        ))}
+      </Menu>
     </Box>
   );
 };

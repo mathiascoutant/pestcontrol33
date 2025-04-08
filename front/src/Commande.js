@@ -12,12 +12,13 @@ import {
   Alert,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 function Commande() {
   const [factures, setFactures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const { t } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -89,7 +90,7 @@ function Commande() {
       }}
     >
       <Typography variant="h4" sx={{ textAlign: "center", mt: 5, mb: 4 }}>
-        Mes commandes
+        {t("commande.title", { defaultValue: "Mes commandes" })}
       </Typography>
 
       {loading && (
@@ -106,7 +107,9 @@ function Commande() {
 
       {!loading && !error && factures.length === 0 && (
         <Alert severity="info" sx={{ width: "80%", mx: "auto", mb: 3 }}>
-          Aucune facture disponible
+          {t("commande.noOrders", {
+            defaultValue: "Aucune commande disponible",
+          })}
         </Alert>
       )}
 
@@ -141,7 +144,8 @@ function Commande() {
                         }}
                       >
                         <Typography variant="h6" fontWeight="bold">
-                          Commande #{facture.id}
+                          {t("commande.order", { defaultValue: "Commande" })} #
+                          {facture.id}
                         </Typography>
                         <Chip
                           label={`${parseFloat(facture.totalPrice).toFixed(2)}${
@@ -165,7 +169,10 @@ function Commande() {
                         fontWeight="bold"
                         sx={{ mb: 1 }}
                       >
-                        Référence de facture:
+                        {t("commande.invoice", {
+                          defaultValue: "Référence de facture",
+                        })}
+                        :
                       </Typography>
                       <Typography variant="body2" sx={{ mb: 2 }}>
                         {facture.invoice}
@@ -176,14 +183,14 @@ function Commande() {
                         fontWeight="bold"
                         sx={{ mb: 1 }}
                       >
-                        Produits:
+                        {t("commande.products", { defaultValue: "Produits" })}:
                       </Typography>
 
                       {products.map((product, index) => (
                         <Box key={index} sx={{ mb: 1 }}>
                           <Typography variant="body2">
                             {product.name} x{product.quantity} ({product.price}
-                            €/unité)
+                            {t("commande.unit", { defaultValue: "€/unité" })})
                           </Typography>
                         </Box>
                       ))}
@@ -196,8 +203,14 @@ function Commande() {
                         }}
                       >
                         <Typography variant="body2">
-                          <strong>Frais de transport:</strong>{" "}
-                          {facture.fraisTransport}€
+                          <strong>
+                            {t("commande.transport", {
+                              defaultValue: "Frais de transport",
+                            })}
+                            :
+                          </strong>{" "}
+                          {facture.fraisTransport}
+                          {t("commande.unit", { defaultValue: "€" })}
                         </Typography>
                       </Box>
 
@@ -207,7 +220,9 @@ function Commande() {
                           onClick={() => downloadFacture(facture.urlInvoice)}
                           fullWidth
                         >
-                          Voir la facture
+                          {t("commande.viewInvoice", {
+                            defaultValue: "Voir la facture",
+                          })}
                         </Button>
                       </Box>
                     </CardContent>
